@@ -1,3 +1,4 @@
+HOME=${HOME}/app-root/data/
 cd ${OPENSHIFT_HOMEDIR}/app-root/runtime/repo/frontend
 npm install
 
