@@ -1,0 +1,4 @@
+cd ${OPENSHIFT_HOMEDIR}/app-root/runtime/repo/frontend
+npm install
+
+./node_modules/jspm/jspm.js install

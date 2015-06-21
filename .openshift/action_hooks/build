@@ -1,4 +1,0 @@
-cd $OPENSHIFT_HOMEDIR/app-deployments/$date_$time/repo/frontend
-npm install
-
-./node_modules/jspm/jspm.js install
