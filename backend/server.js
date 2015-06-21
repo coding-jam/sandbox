@@ -3,11 +3,10 @@
 var express = require('express');
 var fs      = require('fs');
 
-
 /**
  *  Define the sample application.
  */
-var SampleApp = function() {
+var SandboxApp = function() {
 
     //  Scope.
     var self = this;
@@ -45,25 +44,8 @@ var SampleApp = function() {
         }
 
         //  Local cache for static content.
-        //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
-        //self.zcache['config.js'] = fs.readFileSync('./frontend/config.js');
-        //self.zcache['css/style.css'] = fs.readFileSync('./frontend/css/style.css');
-        //self.zcache['jspm_packages/system.js'] = fs.readFileSync('./frontend/css/style.css');
-        //self.zcache['index.html'] = fs.readFileSync('./frontend/src/main.js');
+        self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
-        populateFromFolder('./frontend');
-        populateFromFolder('./frontend/css', 'css');
-        populateFromFolder('./frontend/src', 'src');
-
-        function populateFromFolder(folder, path) {
-            fs.readdirSync(folder).forEach(function(file) {
-                if (self.webForbidden.indexOf(file) == -1) {
-                    fs.readFile(folder + '/' + file, function(err, content) {
-                        self.zcache[(path ? path + '/' : '') + file] = content;
-                    });
-                }
-            });
-        }
     };
 
 
@@ -136,9 +118,10 @@ var SampleApp = function() {
         self.app = express();
 
         //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
+        //for (var r in self.routes) {
+        //    self.app.get(r, self.routes[r]);
+        //}
+        self.app.use(express.static('./frontend'));
     };
 
 
@@ -173,7 +156,7 @@ var SampleApp = function() {
 /**
  *  main():  Main code.
  */
-var zapp = new SampleApp();
+var zapp = new SandboxApp();
 zapp.initialize();
 zapp.start();
 
