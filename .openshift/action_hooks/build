@@ -1,4 +1,4 @@
 home='./app-root/runtime/repo'
 cd ${home}/frontend
 npm install
-${home}/frontend/node_modules/jspm/jspm.js install
+./node_modules/jspm/jspm.js install
