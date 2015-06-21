@@ -1,0 +1,23 @@
+{
+  "name": "gitmap",
+  "version": "1.0.0",
+  "description": "The Git-map!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commit-non-javisti/sandbox.git"
+  },
+  "keywords": [
+    "git",
+    "map"
+  ],
+  "author": "CoseNonJaviste",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/commit-non-javisti/sandbox/issues"
+  },
+  "homepage": "https://github.com/commit-non-javisti/sandbox"
+}
