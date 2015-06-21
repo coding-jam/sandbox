@@ -2,7 +2,6 @@
   "name": "gitmap",
   "version": "1.0.0",
   "description": "The Git-map!",
-  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,9 +19,8 @@
     "url": "https://github.com/commit-non-javisti/sandbox/issues"
   },
   "homepage": "https://github.com/commit-non-javisti/sandbox",
-  "scripts": {
-    "start": "node backend/server.js"
-  }
+
+  "main": "backend/server.js"
 }
 
 
