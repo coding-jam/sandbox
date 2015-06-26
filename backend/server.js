@@ -121,7 +121,7 @@ var SandboxApp = function() {
         //for (var r in self.routes) {
         //    self.app.get(r, self.routes[r]);
         //}
-        self.app.use(express.static('./frontend'));
+        self.app.use(express.static('./build'));
     };
 
 
