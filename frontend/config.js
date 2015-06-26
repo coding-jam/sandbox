@@ -19,6 +19,7 @@ System.config({
     "babel": "npm:babel-core@5.5.8",
     "babel-runtime": "npm:babel-runtime@5.5.8",
     "core-js": "npm:core-js@0.9.18",
+    "css": "github:systemjs/plugin-css@0.1.13",
     "react": "npm:react@0.14.0-alpha3",
     "github:jspm/nodelibs-buffer@0.1.0": {
       "buffer": "npm:buffer@3.2.2"
