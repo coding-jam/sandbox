@@ -20,8 +20,10 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.5.8",
     "core-js": "npm:core-js@0.9.18",
     "css": "github:systemjs/plugin-css@0.1.13",
+    "jquery": "github:components/jquery@2.1.4",
     "react": "npm:react@0.13.3",
     "react-router": "npm:react-router@0.13.3",
+    "underscore": "npm:underscore@1.8.3",
     "github:jspm/nodelibs-buffer@0.1.0": {
       "buffer": "npm:buffer@3.2.2"
     },
