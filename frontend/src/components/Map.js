@@ -6,15 +6,16 @@ export default class Map extends React.Component{
 
 		var data = google.visualization.arrayToDataTable([
           ['Country', 'Popularity'],
-          ['Germany', 200],
-          ['United States', 300],
-          ['Brazil', 400],
-          ['Canada', 500],
-          ['France', 600],
-          ['RU', 700]
+          ['IT-36',200],
+          ['IT-52',300],
+          ['IT-57',250]
         ]);
 
-        var options = {};
+        var options = {
+        	region:'IT',
+        	resolution:'provinces',
+        	displayMode: 'region',
+        };
 
         var chart = new google.visualization.GeoChart(React.findDOMNode(this.refs.chart));
 
