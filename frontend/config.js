@@ -21,6 +21,8 @@ System.config({
     "core-js": "npm:core-js@0.9.18",
     "css": "github:systemjs/plugin-css@0.1.13",
     "flux": "npm:flux@2.0.1",
+    "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@4.1.7",
+    "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.7",
     "jquery": "github:components/jquery@2.1.4",
     "react": "npm:react@0.13.3",
     "react-router": "npm:react-router@0.13.3",
