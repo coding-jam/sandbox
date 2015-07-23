@@ -39,13 +39,14 @@ var SandboxApp = function() {
      *  Populate the cache.
      */
     self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
+        //if (typeof self.zcache === "undefined") {
+        //    self.zcache = { 'index.html': '' };
+        //}
+        //
+        ////  Local cache for static content.
+        //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
-
+        //https://api.github.com/search/users?q=created:%222008-01-01%20..%202008-06-30%22%20location:italy%20type:user&sort=joined
     };
 
 
@@ -95,17 +96,17 @@ var SandboxApp = function() {
      *  Create the routing table entries + handlers for the application.
      */
     self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
+        //self.routes = { };
+        //
+        //self.routes['/asciimo'] = function(req, res) {
+        //    var link = "http://i.imgur.com/kmbjB.png";
+        //    res.send("<html><body><img src='" + link + "'></body></html>");
+        //};
+        //
+        //self.routes['/'] = function(req, res) {
+        //    res.setHeader('Content-Type', 'text/html');
+        //    res.send(self.cache_get('index.html') );
+        //};
     };
 
 
@@ -114,8 +115,8 @@ var SandboxApp = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.createRoutes();
         self.app = express();
+        self.createRoutes();
 
         //  Add handlers for the app (from the routes).
         //for (var r in self.routes) {
