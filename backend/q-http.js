@@ -3,7 +3,7 @@ var Q = require("q");
 
 var qHttp = {
 
-    requestLimit: 10,
+    requestLimit: 30,
 
     activeRequests: 0,
 
