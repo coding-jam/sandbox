@@ -36,10 +36,17 @@ var qHttp = {
 
     getWithLimit: function(url) {
 
-        if (qHttp.activeRequests <= qHttp.requestLimit) {
-            return executeRequest();
-        } else {
-            return Q.delay(60000).then(executeRequest);
+        return delayRequest(60000);
+
+        function delayRequest(delay) {
+            if (qHttp.activeRequests < qHttp.requestLimit) {
+                return executeRequest();
+            } else {
+                console.log('Apply request delay of ' + (delay / 1000 / 60) + ' minute/s');
+                return Q.delay(delay).then(function() {
+                    return delayRequest(delay);
+                });
+            }
         }
 
         function executeRequest() {
