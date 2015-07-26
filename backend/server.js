@@ -49,7 +49,7 @@ var SandboxApp = function() {
         //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
         //https://api.github.com/search/users?q=created:%222008-01-01%20..%202008-06-30%22%20location:italy%20type:user&sort=joined
-        dataCollector.collect();
+        dataCollector.collectUsers();
     };
 
 

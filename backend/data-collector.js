@@ -1,4 +1,4 @@
-var qHttp = require('./q-http');
+var ghHttp = require('./gh-http');
 var Q = require('q');
 var fs = require('fs')
 
@@ -15,7 +15,7 @@ var collector = {
         ]
     },
 
-    collect: function () {
+    collectUsers: function () {
 
         var year = 2008;
 
@@ -35,9 +35,11 @@ var collector = {
 
         function executeRequest(i) {
             var url = collector.options.resourceTemplate.replace(/\{secret\}/g, collector.options.secrets);
-            return qHttp.getWithLimit(createRange(url, year, i))
+            return ghHttp.getWithLimit(createRange(url, year, i), true)
                 .then(function (resp) {
                     return resp.body;
+                }, function(err) {
+                    console.error(err);
                 });
 
             function createRange(resource, year, i) {
