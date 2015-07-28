@@ -135,7 +135,7 @@ var collector = {
             });
 
             Q.all(promises).then(function() {
-                fs.writeFile(collector.data.folder + collector.data.users + '.full', JSON.stringify(users), function (err) {
+                fs.writeFile(collector.data.folder + collector.data.users, JSON.stringify(users), function (err) {
                     if (err) {
                         console.error(err);
                     }
