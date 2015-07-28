@@ -76,7 +76,7 @@ var ghHttp = {
                 var interval = limitParams.resetTime - Math.floor(Date.now() / 1000);
                 console.log('Apply request delay of ' + (interval) + ' seconds');
                 return Q.delay(interval * 1000).then(function() {
-                    return delayRequest(limitParams);
+                    return ghHttp.getWithLimit(url, isSearch);
                 });
             }
         }
