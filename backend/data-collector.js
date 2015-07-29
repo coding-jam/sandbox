@@ -181,7 +181,7 @@ var collector = {
             if (!exists) {
                 collector.collectUserDetails()
                     .then(function (users) {
-                        cacheLocations(users, deferred);
+                        getLocations(users, deferred);
                     }, function(err) {
                         deferred.reject(err);
                     });
@@ -191,12 +191,27 @@ var collector = {
                         deferred.reject(err);
                     }
                     var users = JSON.parse(data);
-                    cacheLocations(users, deferred);
+                    getLocations(users, deferred);
                 });
             }
         });
 
         return deferred.promise;
+
+        function getLocations(users, deferred) {
+            fs.exists(collector.data.folder + collector.data.locations, function (exists) {
+                if (!exists) {
+                    cacheLocations(users, deferred);
+                } else {
+                    fs.readFile(collector.data.folder + collector.data.locations, 'utf8', function (err, data) {
+                        if (err) {
+                            deferred.reject(err);
+                        }
+                        deferred.resolve(_.keys(JSON.parse(data)));
+                    });
+                }
+            });
+        };
 
         function cacheLocations(users, deferred) {
             var distinctLocations = _.chain(users.items).map(function(item) {return item.location ? item.location.toLowerCase() : item.location}).unique().value();
