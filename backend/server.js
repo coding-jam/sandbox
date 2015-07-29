@@ -51,8 +51,8 @@ var SandboxApp = function() {
         //dataCollector.collectUserDetails();
         dataCollector.collectLocations()
             .then(function(locations) {
+                console.log(locations.length + ' locations known:');
                 console.log(locations);
-                console.log(locations.length);
             });
     };
 
@@ -129,7 +129,7 @@ var SandboxApp = function() {
         //for (var r in self.routes) {
         //    self.app.get(r, self.routes[r]);
         //}
-        self.app.use(express.static('./build'));
+        self.app.use(express.static(__dirname + '/../build'));
     };
 
 
