@@ -48,7 +48,12 @@ var SandboxApp = function() {
         ////  Local cache for static content.
         //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
-        dataCollector.collectUserDetails();
+        //dataCollector.collectUserDetails();
+        dataCollector.collectLocations()
+            .then(function(locations) {
+                console.log(locations);
+                console.log(locations.length);
+            });
     };
 
 

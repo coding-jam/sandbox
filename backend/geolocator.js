@@ -1,22 +1,19 @@
 var request = require("request");
-var requestSync = require('sync-request');
 var Q = require("q");
 var _ = require("underscore");
 
-var ghHttp = {
+var geolocator = {
 
-    secrets: 'client_id=51f5e69c42514ef98707&client_secret=a57c2fabcf4f3c655d9381b2c56134f76fa8fdc5',
+    secrets: 'key=AIzaSyAlSne2x3ZJufuyPrK0imC36SOiqY76hDg',
 
     rateLimit: {
-        requests: {
-            limit: 5000,
-            interval: 60 * 60 * 1000,
-            resetTime: 0
+        seconds: {
+            limit: 5,
+            interval: 1 * 1000
         },
-        search: {
-            limit: 30,
-            interval: 1 * 60 * 1000,
-            resetTime: 0
+        day: {
+            limit: 2500,
+            interval: 24 * 60 * 60 * 1000
         },
         queue: {
             limit: 50,
@@ -26,109 +23,75 @@ var ghHttp = {
 
     },
 
+    badStatus: ['OVER_QUERY_LIMIT', 'REQUEST_DENIED', 'INVALID_REQUEST', 'UNKNOWN_ERROR'],
+
     options: {
         method: "GET",
         timeout: 1000000,
         followRedirect: true,
         maxRedirects: 10,
-        headers: {
-            'User-Agent': 'gitmap'
-        }
+        json: true
     },
 
-    get: function (url) {
+    locate: function(query) {
 
-        var deferred = Q.defer();
-        ghHttp.options.uri = url;
-        request(ghHttp.options, function (error, response, body) {
-            if (error) {
-                console.log('REJECT:');
-                deferred.reject(error);
-            } else {
-                console.log('RESOLVE:');
-                deferred.resolve({response: response, body: body});
-            }
-        });
-
-        return deferred.promise;
-    },
-
-    getWithLimit: function(url, isSearch) {
-
-        if (ghHttp.rateLimit.activeRequests < ghHttp.rateLimit.queue.limit) {
-            if (isSearch) {
-                return delayRequest(ghHttp.rateLimit.search);
-            } else {
-                return delayRequest(ghHttp.rateLimit.requests);
-            }
+        if (geolocator.rateLimit.activeRequests < geolocator.rateLimit.day.limit) {
+            return execOrdelayRequest(query);
         } else {
-            console.info('Queue limit of ' + ghHttp.rateLimit.queue.limit + ' exceeded, add delay of ' + (ghHttp.rateLimit.queue.interval / 1000) + ' seconds');
-            return Q.delay(ghHttp.rateLimit.queue.interval).then(function() {
-                return ghHttp.getWithLimit(url, isSearch);
-            });
+            console.info('Requests per day limit of ' + geolocator.rateLimit.day.limit + ' exceeded, add delay of ' + (geolocator.rateLimit.day.interval / 1000) + ' seconds');
+            return delayRequest(geolocator.rateLimit.day.interval);
         }
 
-        function delayRequest(limitParams) {
-            if (ghHttp.rateLimit.activeRequests < limitParams.limit || limitParams.resetTime < Math.floor(Date.now() / 1000)) {
-                console.info('Execute request now: limit set to ' + limitParams.limit);
-                return executeRequest(limitParams);
+        function execOrdelayRequest(query) {
+            if (geolocator.rateLimit.activeRequests < geolocator.rateLimit.seconds.limit) {
+                console.info('Execute request now');
+                return executeRequest(query);
             } else {
-                var interval = limitParams.resetTime - Math.floor(Date.now() / 1000);
-                console.log('Apply request delay of ' + (interval) + ' seconds');
-                return Q.delay(interval * 1000).then(function() {
-                    return ghHttp.getWithLimit(url, isSearch);
-                });
+                console.info('Requests per seconds limit of ' + geolocator.rateLimit.seconds.limit + ' exceeded, add delay of ' + (geolocator.rateLimit.seconds.interval / 1000) + ' seconds');
+                return delayRequest(geolocator.rateLimit.seconds.interval);
             }
         }
 
-        function executeRequest(limitParams) {
-            var options = _.clone(ghHttp.options);
-            options.uri = url;
-            ghHttp.rateLimit.activeRequests++
+        function delayRequest(delay) {
+            return Q.delay(delay).then(geolocator.locate);
+        }
 
-            console.log('Start new request. Active requests: ' + ghHttp.rateLimit.activeRequests);
+        function executeRequest(query) {
+            var options = _.clone(geolocator.options);
+            options.uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + query + '&region=it&' + geolocator.secrets;
+            geolocator.rateLimit.activeRequests++
+
+            console.log('Start new request. Active requests: ' + geolocator.rateLimit.activeRequests);
 
             var deferred = Q.defer();
             request(options, function (error, response, body) {
-                ghHttp.rateLimit.activeRequests--
-                if (error) {
-                    console.log('Rejected. Active requests: ' + ghHttp.rateLimit.activeRequests);
-                    deferred.reject(error);
-                } else {
-                    ghHttp.updateLimits(response, limitParams);
-                    console.log('Resolved. Active requests: ' + ghHttp.rateLimit.activeRequests);
-                    var responseObj = {response: response, body: body};
-                    if (response.headers['content-type'].match('application/json')) {
-                        responseObj.body = JSON.parse(body);
+                geolocator.rateLimit.activeRequests--
+                if (error || _.contains(geolocator.badStatus, body.status)) {
+                    console.log('Rejected. Active requests: ' + geolocator.rateLimit.activeRequests);
+                    if (body.status == 'OVER_QUERY_LIMIT') {
+                        resetQueryLimit();
                     }
-                    deferred.resolve(responseObj);
+                    deferred.reject(error || body);
+                } else {
+                    console.log('Resolved. Active requests: ' + geolocator.rateLimit.activeRequests);
+                    deferred.resolve({response: response, body: body});
                 }
             });
             return deferred.promise;
+
+            function resetQueryLimit() {
+                var originaDaylLimit = geolocator.rateLimit.day.limit;
+                var originaSecondslLimit = geolocator.rateLimit.seconds.limit;
+                geolocator.rateLimit.day.limit = 0;
+                geolocator.rateLimit.seconds.limit = 0;
+                Q.delay(geolocator.rateLimit.day.interval)
+                    .then(function() {
+                        geolocator.rateLimit.day.limit = originaDaylLimit;
+                        geolocator.rateLimit.seconds.limit = originaSecondslLimit;
+                    });
+            }
         }
-    },
-
-    updateLimits: function (response, limitParams) {
-        limitParams.limit = response.headers['x-ratelimit-remaining'];
-        limitParams.resetTime = response.headers['x-ratelimit-reset'];
-    },
-
-    setupApiLimits: function() {
-
-        var headers = _.extend({}, ghHttp.options.headers);
-        headers['If-None-Match'] = 'W/"bbb234d54455c9ae9fe93d66e6c041a1"';
-        getLimitsFor(ghHttp.rateLimit.requests, 'https://api.github.com/users/cosenonjaviste?');
-        getLimitsFor(ghHttp.rateLimit.search, 'https://api.github.com/search/users?q=cosenonjaviste%20in:name%20type:user&');
-
-        function getLimitsFor(limitParams, url) {
-            var res = requestSync('GET', url + ghHttp.secrets, {
-                'headers': headers
-            });
-            ghHttp.updateLimits(res, limitParams);
-        };
     }
 }
 
-ghHttp.setupApiLimits();
-
-module.exports = ghHttp;
+module.exports = geolocator;

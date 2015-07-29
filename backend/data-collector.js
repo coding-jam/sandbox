@@ -1,4 +1,5 @@
 var ghHttp = require('./gh-http');
+var geolocator = require('./geolocator');
 var Q = require('q');
 var fs = require('fs');
 var _ = require("underscore");
@@ -7,7 +8,8 @@ var collector = {
 
     data: {
         folder: __dirname + '/data/',
-        users: 'it_users.json'
+        users: 'it_users.json',
+        locations: 'it_locations.json'
     },
 
     options: {
@@ -170,6 +172,61 @@ var collector = {
                     return user;
                 });
             }
+        }
+    },
+
+    collectLocations: function() {
+        var deferred = Q.defer();
+        fs.exists(collector.data.folder + collector.data.users, function (exists) {
+            if (!exists) {
+                collector.collectUserDetails()
+                    .then(function (users) {
+                        cacheLocations(users, deferred);
+                    }, function(err) {
+                        deferred.reject(err);
+                    });
+            } else {
+                fs.readFile(collector.data.folder + collector.data.users, 'utf8', function (err, data) {
+                    if (err) {
+                        deferred.reject(err);
+                    }
+                    var users = JSON.parse(data);
+                    cacheLocations(users, deferred);
+                });
+            }
+        });
+
+        return deferred.promise;
+
+        function cacheLocations(users, deferred) {
+            var distinctLocations = _.chain(users.items).map(function(item) {return item.location ? item.location.toLowerCase() : item.location}).unique().value();
+            var promises = [];
+            var locationCache = {};
+            distinctLocations.forEach(function(location) {
+                if (location) {
+                    var deferredLoop = Q.defer();
+                    geolocator.locate(location)
+                        .then(function (resp) {
+                            locationCache[location] = resp.body;
+                            deferredLoop.resolve(location);
+                        })
+                        .catch(function (err) {
+                            deferredLoop.reject(err);
+                        });
+                    promises.push(deferredLoop.promise);
+                }
+            });
+
+            Q.all(promises).then(function() {
+                fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
+                    if (err) {
+                        console.error(err);
+                    }
+
+                    console.log(collector.data.locations + ' saved');
+                    deferred.resolve(distinctLocations);
+                });
+            });
         }
     }
 }
