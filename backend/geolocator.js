@@ -36,31 +36,50 @@ var ghHttp = {
         }
     },
 
+    get: function (url) {
+
+        var deferred = Q.defer();
+        ghHttp.options.uri = url;
+        request(ghHttp.options, function (error, response, body) {
+            if (error) {
+                console.log('REJECT:');
+                deferred.reject(error);
+            } else {
+                console.log('RESOLVE:');
+                deferred.resolve({response: response, body: body});
+            }
+        });
+
+        return deferred.promise;
+    },
+
     getWithLimit: function(url, isSearch) {
 
         if (ghHttp.rateLimit.activeRequests < ghHttp.rateLimit.queue.limit) {
-            return execOrdelayRequest(isSearch ? ghHttp.rateLimit.search : ghHttp.rateLimit.requests);
+            if (isSearch) {
+                return delayRequest(ghHttp.rateLimit.search);
+            } else {
+                return delayRequest(ghHttp.rateLimit.requests);
+            }
         } else {
             console.info('Queue limit of ' + ghHttp.rateLimit.queue.limit + ' exceeded, add delay of ' + (ghHttp.rateLimit.queue.interval / 1000) + ' seconds');
-            return delayRequest(ghHttp.rateLimit.queue.interval, url, isSearch);
+            return Q.delay(ghHttp.rateLimit.queue.interval).then(function() {
+                return ghHttp.getWithLimit(url, isSearch);
+            });
         }
 
-        function execOrdelayRequest(limitParams) {
+        function delayRequest(limitParams) {
             if (ghHttp.rateLimit.activeRequests < limitParams.limit || limitParams.resetTime < Math.floor(Date.now() / 1000)) {
                 console.info('Execute request now: limit set to ' + limitParams.limit);
                 return executeRequest(limitParams);
             } else {
                 var interval = limitParams.resetTime - Math.floor(Date.now() / 1000);
                 console.log('Apply request delay of ' + (interval) + ' seconds');
-                return delayRequest(interval * 1000, url, isSearch);
+                return Q.delay(interval * 1000).then(function() {
+                    return ghHttp.getWithLimit(url, isSearch);
+                });
             }
         }
-
-        function delayRequest(delay, url, isSearch) {
-            return Q.delay(delay).then(function() {
-                return ghHttp.getWithLimit(url, isSearch);
-            });
-        };
 
         function executeRequest(limitParams) {
             var options = _.clone(ghHttp.options);
