@@ -1,7 +1,9 @@
 #!/bin/env node
 //  OpenShift sample Node application
 var express = require('express');
-var fs      = require('fs');
+var fs = require('fs');
+
+var dataCollector  = require('./data-collector');
 
 /**
  *  Define the sample application.
@@ -46,7 +48,12 @@ var SandboxApp = function() {
         ////  Local cache for static content.
         //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
-        //https://api.github.com/search/users?q=created:%222008-01-01%20..%202008-06-30%22%20location:italy%20type:user&sort=joined
+        //dataCollector.collectUserDetails();
+        dataCollector.collectLocations()
+            .then(function(locations) {
+                console.log(locations);
+                console.log(locations.length);
+            });
     };
 
 
