@@ -118,22 +118,20 @@ var collector = {
 
             users.items.forEach(function(user, i) {
                 var deferredLoop = Q.defer();
-                //if (user.url == 'https://api.github.com/users/mcollina') {
-                    ghHttp.getWithLimit(user.url + '?' + collector.options.secrets, false)
-                        .then(function(resp) {
-                            return _.extend(user, resp.body);
-                        })
-                        .then(function(user) {
-                            return addRepoDetails(user);
-                        })
-                        .then(function(user) {
-                            deferredLoop.resolve(user);
-                        })
-                        .catch(function(err) {
-                            throw err;
-                        });
-                    promises.push(deferredLoop.promise);
-                //}
+                ghHttp.getWithLimit(user.url + '?' + collector.options.secrets, false)
+                    .then(function(resp) {
+                        return _.extend(user, resp.body);
+                    })
+                    .then(function(user) {
+                        return addRepoDetails(user);
+                    })
+                    .then(function(user) {
+                        deferredLoop.resolve(user);
+                    })
+                    .catch(function(err) {
+                        throw err;
+                    });
+                promises.push(deferredLoop.promise);
             });
 
             Q.all(promises).then(function() {
