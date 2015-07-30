@@ -4,4 +4,15 @@
     left: 0;
     position: absolute;
     top: 0;    
+    z-index: 0;
+}
+
+.SearchForm {
+	height: 100%;
+    width: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;  
+    z-index: 1;
+    padding-top: 50px;
 }

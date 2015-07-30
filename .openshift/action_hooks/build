@@ -5,3 +5,6 @@ npm install
 ./node_modules/jspm/jspm.js install
 
 ./node_modules/gulp/bin/gulp.js build
+
+cd ${OPENSHIFT_HOMEDIR}/app-root/runtime/repo
+npm install
