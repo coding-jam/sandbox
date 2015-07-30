@@ -10,10 +10,10 @@ export default class Map extends React.Component {
 	componentDidMount() {
 		var mapOptions = {
 			center: {
-				lat: -34.397,
-				lng: 150.644
+				lat: 42.019159,
+				lng: 12.583761
 			},
-			zoom: 8
+			zoom: 6
 		};
 
 		var map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
