@@ -49,10 +49,12 @@ var SandboxApp = function() {
         //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
         //dataCollector.collectUserDetails();
-        dataCollector.collectLocations()
+        return dataCollector.collectLocations()
             .then(function(locations) {
                 console.log(locations.length + ' locations known:');
                 console.log(locations);
+
+                return {};
             });
     };
 
@@ -114,6 +116,11 @@ var SandboxApp = function() {
         //    res.setHeader('Content-Type', 'text/html');
         //    res.send(self.cache_get('index.html') );
         //};
+
+        self.app.use(express.static(__dirname + '/../build'));
+
+        var users = require('./users');
+        self.app.use('/users', users);
     };
 
 
@@ -123,13 +130,12 @@ var SandboxApp = function() {
      */
     self.initializeServer = function() {
         self.app = express();
-        self.createRoutes();
-
-        //  Add handlers for the app (from the routes).
-        //for (var r in self.routes) {
-        //    self.app.get(r, self.routes[r]);
-        //}
-        self.app.use(express.static(__dirname + '/../build'));
+        //self.createRoutes();
+        //
+        ////  Add handlers for the app (from the routes).
+        ////for (var r in self.routes) {
+        ////    self.app.get(r, self.routes[r]);
+        ////}
     };
 
 
@@ -138,7 +144,8 @@ var SandboxApp = function() {
      */
     self.initialize = function() {
         self.setupVariables();
-        self.populateCache();
+        self.populateCache()
+            .then(self.createRoutes);
         self.setupTerminationHandlers();
 
         // Create the express server and routes.
