@@ -8,7 +8,14 @@ export default class SearchForm extends React.Component {
 	render() {
 		return (
 			<div className="SearchForm">
-				<input type="text"></input>
+				<div className="container">
+					<div className="row">
+						<input 
+							placeholder="Inserisci qui la tua ricerca..."
+							className="form-control" 
+							type="text"></input>
+					</div>
+				</div>
 			</div>
 		);
 	}
