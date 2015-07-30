@@ -7,7 +7,7 @@ var _ = require("underscore");
 var collector = {
 
     data: {
-        folder: __dirname + '/data/',
+        folder: __dirname + '/../data/',
         users: 'it_users.json',
         locations: 'it_locations.json'
     },
@@ -220,7 +220,7 @@ var collector = {
                     var deferredLoop = Q.defer();
                     geolocator.locate(location)
                         .then(function (resp) {
-                            locationCache[location] = resp.body;
+                            locationCache[location] = resp.body.results;
                             deferredLoop.resolve(location);
                         })
                         .catch(function (err) {
@@ -230,16 +230,21 @@ var collector = {
                 }
             });
 
-            Q.all(promises).then(function() {
-                fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
-                    if (err) {
-                        console.error(err);
-                    }
+            Q.all(promises)
+                .then(function() {
+                    fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
+                        if (err) {
+                            console.error(err);
+                        }
 
-                    console.log(collector.data.locations + ' saved');
-                    deferred.resolve(distinctLocations);
+                        console.log(collector.data.locations + ' saved');
+                        deferred.resolve(distinctLocations);
+                    });
+                })
+                .catch(function(err) {
+                    console.info('Ops! Some promises are not resolved...');
+                    console.error(err);
                 });
-            });
         }
     }
 }

@@ -1,8 +1,8 @@
 var express = require('express');
 var _ = require("underscore");
 
-var usersData = require(__dirname + '/data/it_users');
-var locationData = require(__dirname + '/data/it_locations');
+var usersData = require(__dirname + '/../data/it_users');
+var locationData = require(__dirname + '/../data/it_locations');
 
 var router = express.Router();
 

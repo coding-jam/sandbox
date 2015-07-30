@@ -3,7 +3,7 @@
 var express = require('express');
 var fs = require('fs');
 
-var dataCollector  = require('./data-collector');
+var dataCollector  = require('./services/data-collector');
 
 /**
  *  Define the sample application.
@@ -119,7 +119,7 @@ var SandboxApp = function() {
 
         self.app.use(express.static(__dirname + '/../build'));
 
-        var users = require('./users');
+        var users = require('./routes/users');
         self.app.use('/users', users);
     };
 
