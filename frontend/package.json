@@ -3,6 +3,7 @@
     "directories": {},
     "dependencies": {
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
+      "clean-css": "npm:clean-css@^3.3.7",
       "css": "github:systemjs/plugin-css@^0.1.13",
       "flux": "npm:flux@2.0.1",
       "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@^4.1.7",
