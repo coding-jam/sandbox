@@ -7,6 +7,7 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 		var mapOptions = {
+			disableDefaultUI: true,
 			center: {
 				lat: 42.019159,
 				lng: 12.583761
