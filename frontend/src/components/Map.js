@@ -1,6 +1,4 @@
 import React from "react";
-import jQuery from "jquery";
-import _ from "underscore";
 
 export default class Map extends React.Component {
 	constructor(props) {
