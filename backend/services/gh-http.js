@@ -19,7 +19,7 @@ var ghHttp = {
             resetTime: 0
         },
         queue: {
-            limit: 50,
+            limit: 20,
             interval: 15 * 1000
         },
         activeRequests: 0,
@@ -46,13 +46,13 @@ var ghHttp = {
         }
 
         function execOrdelayRequest(limitParams) {
-            if (ghHttp.rateLimit.activeRequests < limitParams.limit || limitParams.resetTime < Math.floor(Date.now() / 1000)) {
+            if (ghHttp.rateLimit.activeRequests < limitParams.limit || limitParams.resetTime * 1000 <= Date.now()) {
                 console.info('Execute request now: limit set to ' + limitParams.limit);
                 return executeRequest(limitParams);
             } else {
-                var interval = limitParams.resetTime - Math.floor(Date.now() / 1000);
-                console.log('Apply request delay of ' + (interval) + ' seconds');
-                return delayRequest(interval * 1000, url, isSearch);
+                var interval = limitParams.resetTime * 1000 - Date.now() + (ghHttp.rateLimit.queue.interval * 3);
+                console.log('Apply request delay of ' + (interval / 1000) + ' seconds');
+                return delayRequest(interval, url, isSearch);
             }
         }
 
@@ -72,17 +72,14 @@ var ghHttp = {
             var deferred = Q.defer();
             request(options, function (error, response, body) {
                 ghHttp.rateLimit.activeRequests--
-                if (error) {
-                    console.log('Rejected. Active requests: ' + ghHttp.rateLimit.activeRequests);
-                    deferred.reject(error);
+                if (error || !response.headers['content-type'].match('application/json')) {
+                    console.error('REJECTED. Active requests: ' + ghHttp.rateLimit.activeRequests);
+                    console.error(error || body);
+                    deferred.reject(error || body);
                 } else {
                     ghHttp.updateLimits(response, limitParams);
                     console.log('Resolved. Active requests: ' + ghHttp.rateLimit.activeRequests);
-                    var responseObj = {response: response, body: body};
-                    if (response.headers['content-type'].match('application/json')) {
-                        responseObj.body = JSON.parse(body);
-                    }
-                    deferred.resolve(responseObj);
+                    deferred.resolve({response: response, body: JSON.parse(body)});
                 }
             });
             return deferred.promise;

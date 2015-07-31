@@ -30,8 +30,8 @@ var collector = {
 
         var allPromises = [];
         while (year <= new Date().getFullYear()) {
-            collector.options.rangeTemplate.forEach(function (el, i) {
-                allPromises.push(executeRequest(i));
+            collector.options.rangeTemplate.forEach(function (rangeTemplate) {
+                allPromises.push(executeRequest(rangeTemplate));
             });
             year++;
         }
@@ -45,19 +45,60 @@ var collector = {
 
         return deferred.promise;
 
-        function executeRequest(i) {
-            var url = collector.options.resourceTemplate.replace(/\{secret\}/g, collector.options.secrets);
-            return ghHttp.getWithLimit(createRange(url, year, i), true)
+        function executeRequest(rangeTemplate) {
+            var range = createRange(year, rangeTemplate);
+            var url = collector.options.resourceTemplate.replace(/\{secret\}/g, collector.options.secrets).replace('{range}', range);
+            return ghHttp.getWithLimit(url, true)
                 .then(function (resp) {
-                    return resp.body;
-                }, function (err) {
-                    console.error(err);
+                    console.info(resp.body.total_count + ' users found in range ' + range);
+                    if (resp.body.total_count > 100) {
+                        return handlePagination(resp.body, url);
+                    } else {
+                        return resp.body;
+                    }
                 });
 
-            function createRange(resource, year, i) {
-                var range = collector.options.rangeTemplate[i].replace(/\{year\}/g, year);
+            function createRange(year, rangeTemplate) {
+                var range = rangeTemplate.replace(/\{year\}/g, year);
                 console.log('Query range ' + range);
-                return resource.replace('{range}', range);
+                return range;
+            }
+
+            function handlePagination(users, url) {
+                var promises = [];
+                for (var i = 2; i <= (Math.floor(users.total_count / 100) + 1); i++) {
+                    (function() {
+                        var pagedDeferred = Q.defer();
+                        ghHttp.getWithLimit(url + '&page=' + i, true)
+                            .then(function (resp) {
+                                if (resp.body.total_count) {
+                                    pagedDeferred.resolve(resp.body);
+                                } else {
+                                    pagedDeferred.reject(resp.body);
+                                }
+                            })
+                            .catch(function (err) {
+                                console.error(err);
+                                pagedDeferred.reject(err);
+                            });
+                        promises.push(pagedDeferred.promise);
+                    })();
+                }
+                return Q.all(promises).then(function(usersPages) {
+                    var result = {
+                        total_count: users.total_count,
+                        items: users.items
+                    };
+
+                    usersPages.forEach(function(usersPage) {
+                        result.items = result.items.concat(usersPage.items);
+                    });
+                    checkConsistency(result, 'handlePagination');
+                    return result;
+                }, function(err) {
+                    console.error(err);
+                    return err;
+                });
             }
         }
 
@@ -67,14 +108,15 @@ var collector = {
                 items: []
             };
 
-            data.forEach(function (jsonObj, i) {
+            data.forEach(function (jsonObj) {
                 if (jsonObj.total_count != undefined) {
                     result.total_count = result.total_count + jsonObj.total_count;
                     result.items = result.items.concat(jsonObj.items);
                 } else {
-                    console.error('Found json: ' + jsonObj)
+                    console.error('Found json: ' + JSON.stringify(jsonObj));
                 }
             });
+            checkConsistency(result, 'saveUsers');
             fs.writeFile(collector.data.folder + collector.data.users, JSON.stringify(result), function (err) {
                 if (err) {
                     console.error(err);
@@ -84,6 +126,12 @@ var collector = {
                 deferred.resolve(result);
             });
             console.log('Total users found ' + result.total_count);
+        }
+
+        function checkConsistency(users, log) {
+            if (users.total_count != users.items.length) {
+                throw 'NOOOOOOOOO!!! Found ' + users.items.length + ' instead of ' + users.total_count + ' in ' + log;
+            }
         }
     },
 
@@ -129,21 +177,25 @@ var collector = {
                         deferredLoop.resolve(user);
                     })
                     .catch(function(err) {
-                        throw err;
+                        logger.error(err);
+                        deferredLoop.reject(err);
                     });
                 promises.push(deferredLoop.promise);
             });
 
-            Q.all(promises).then(function() {
-                fs.writeFile(collector.data.folder + collector.data.users, JSON.stringify(users), function (err) {
-                    if (err) {
-                        console.error(err);
-                    }
+            Q.all(promises)
+                .then(function() {
+                    fs.writeFile(collector.data.folder + collector.data.users, JSON.stringify(users), function (err) {
+                        if (err) {
+                            console.error(err);
+                        }
 
-                    console.log(collector.data.users + ' updated');
-                    deferred.resolve();
+                        console.log(collector.data.users + ' updated');
+                        deferred.resolve();
+                    });
+                }).catch(function(err) {
+                    deferred.reject(err);
                 });
-            });
 
             function addRepoDetails(user) {
                 var promises = [];
@@ -153,7 +205,11 @@ var collector = {
                         ghHttp.getWithLimit(user.repos_url + '?' + collector.options.secrets + '&per_page=100&page=' + i, false)
                             .then(function (resp) {
                                 var languages = _.pluck(resp.body, 'language');
-                                pagedDeferred.resolve(languages);
+                                if (languages) {
+                                    pagedDeferred.resolve(languages);
+                                } else {
+                                    pagedDeferred.reject(resp.body);
+                                }
                             })
                             .catch(function (err) {
                                 console.error(err);
@@ -235,6 +291,7 @@ var collector = {
                     fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
                         if (err) {
                             console.error(err);
+                            deferred.reject(err);
                         }
 
                         console.log(collector.data.locations + ' saved');
@@ -244,6 +301,7 @@ var collector = {
                 .catch(function(err) {
                     console.info('Ops! Some promises are not resolved...');
                     console.error(err);
+                    deferred.reject(err);
                 });
         }
     }
