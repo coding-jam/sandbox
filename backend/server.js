@@ -51,10 +51,7 @@ var SandboxApp = function() {
         //dataCollector.collectUserDetails();
         return dataCollector.collectLocations()
             .then(function(locations) {
-                console.log(locations.length + ' locations known:');
-                console.log(locations);
-
-                return {};
+                console.log(locations.length + ' locations known');
             });
     };
 

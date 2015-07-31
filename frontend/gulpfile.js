@@ -5,9 +5,22 @@ var del = require('del');
 var shell = require('gulp-shell');
 
 gulp.task('serve', function () {
+    require('../backend/server');
     connect.server({
         livereload: true,
-        port: 8000
+        port: 8000,
+        root: ['../build'],
+        middleware: function(connect,o){
+            return [
+                (function() {
+                    var url = require('url');
+                    var proxy = require('proxy-middleware');
+                    var options = url.parse('http://localhost:8080');
+                    options.route = '/';
+                    return proxy(options);
+                })()
+            ]
+        }
     });
 });
 
