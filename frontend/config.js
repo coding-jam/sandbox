@@ -29,6 +29,7 @@ System.config({
     "react": "npm:react@0.13.3",
     "react-router": "npm:react-router@0.13.3",
     "underscore": "npm:underscore@1.8.3",
+    "url": "github:jspm/nodelibs-url@0.1.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },

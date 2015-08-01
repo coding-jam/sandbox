@@ -39,7 +39,7 @@ var geolocator = {
             return execOrdelayRequest(query);
         } else {
             console.info('Requests per day limit of ' + geolocator.rateLimit.day.limit + ' exceeded, add delay of ' + (geolocator.rateLimit.day.interval / 1000) + ' seconds');
-            return delayRequest(geolocator.rateLimit.day.interval);
+            return delayRequest(query, geolocator.rateLimit.day.interval);
         }
 
         function execOrdelayRequest(query) {
@@ -48,17 +48,19 @@ var geolocator = {
                 return executeRequest(query);
             } else {
                 console.info('Requests per seconds limit of ' + geolocator.rateLimit.seconds.limit + ' exceeded, add delay of ' + (geolocator.rateLimit.seconds.interval / 1000) + ' seconds');
-                return delayRequest(geolocator.rateLimit.seconds.interval);
+                return delayRequest(query, geolocator.rateLimit.seconds.interval);
             }
         }
 
-        function delayRequest(delay) {
-            return Q.delay(delay).then(geolocator.locate);
+        function delayRequest(query, delay) {
+            return Q.delay(delay).then(function() {
+                return geolocator.locate(query);
+            });
         }
 
         function executeRequest(query) {
             var options = _.clone(geolocator.options);
-            options.uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + query + '&region=it&' + geolocator.secrets;
+            options.uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(query) + '&language=it&region=it&' + geolocator.secrets;
             geolocator.rateLimit.activeRequests++
 
             console.log('Start new request. Active requests: ' + geolocator.rateLimit.activeRequests);
@@ -67,11 +69,11 @@ var geolocator = {
             request(options, function (error, response, body) {
                 geolocator.rateLimit.activeRequests--
                 if (error || _.contains(geolocator.badStatus, body.status)) {
-                    console.log('Rejected. Active requests: ' + geolocator.rateLimit.activeRequests);
+                    console.log('REJECTED. Active requests: ' + geolocator.rateLimit.activeRequests);
                     if (body.status == 'OVER_QUERY_LIMIT') {
                         resetQueryLimit();
                     }
-                    deferred.reject(error || body);
+                    deferred.reject({errorUrl: options.uri, error: error || body});
                 } else {
                     console.log('Resolved. Active requests: ' + geolocator.rateLimit.activeRequests);
                     deferred.resolve({response: response, body: body});
@@ -80,12 +82,14 @@ var geolocator = {
             return deferred.promise;
 
             function resetQueryLimit() {
+                console.log('Day limits exceeded. See you tomorrow');
                 var originaDaylLimit = geolocator.rateLimit.day.limit;
                 var originaSecondslLimit = geolocator.rateLimit.seconds.limit;
                 geolocator.rateLimit.day.limit = 0;
                 geolocator.rateLimit.seconds.limit = 0;
                 Q.delay(geolocator.rateLimit.day.interval)
                     .then(function() {
+                        console.log('Reset all limits');
                         geolocator.rateLimit.day.limit = originaDaylLimit;
                         geolocator.rateLimit.seconds.limit = originaSecondslLimit;
                     });

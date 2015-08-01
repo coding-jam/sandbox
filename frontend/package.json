@@ -11,7 +11,8 @@
       "jquery": "github:components/jquery@^2.1.4",
       "react": "npm:react@0.13.3",
       "react-router": "npm:react-router@0.13.3",
-      "underscore": "npm:underscore@^1.8.3"
+      "underscore": "npm:underscore@^1.8.3",
+      "url": "github:jspm/nodelibs-url@^0.1.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",
@@ -26,5 +27,8 @@
     "gulp-rename": "1.2.2",
     "gulp-shell": "0.4.2",
     "jspm": "^0.15.7"
+  },
+  "dependencies": {
+    "proxy-middleware": "^0.13.0"
   }
 }

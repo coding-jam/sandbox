@@ -3,7 +3,7 @@
 var express = require('express');
 var fs = require('fs');
 
-var dataCollector  = require('./data-collector');
+var dataCollector  = require('./services/data-collector');
 
 /**
  *  Define the sample application.
@@ -48,11 +48,11 @@ var SandboxApp = function() {
         ////  Local cache for static content.
         //self.zcache['index.html'] = fs.readFileSync('./frontend/index.html');
 
-        //dataCollector.collectUserDetails();
-        dataCollector.collectLocations()
+        //return dataCollector.collectUsers().catch(function(err) {throw err});
+        //return dataCollector.collectUserDetails().catch(function(err) {throw err});
+        return dataCollector.collectLocations()
             .then(function(locations) {
-                console.log(locations.length + ' locations known:');
-                console.log(locations);
+                console.log(locations.length + ' locations known');
             });
     };
 
@@ -114,6 +114,11 @@ var SandboxApp = function() {
         //    res.setHeader('Content-Type', 'text/html');
         //    res.send(self.cache_get('index.html') );
         //};
+
+        self.app.use(express.static(__dirname + '/../build'));
+
+        var users = require('./routes/users');
+        self.app.use('/users', users);
     };
 
 
@@ -123,13 +128,12 @@ var SandboxApp = function() {
      */
     self.initializeServer = function() {
         self.app = express();
-        self.createRoutes();
-
-        //  Add handlers for the app (from the routes).
-        //for (var r in self.routes) {
-        //    self.app.get(r, self.routes[r]);
-        //}
-        self.app.use(express.static(__dirname + '/../build'));
+        //self.createRoutes();
+        //
+        ////  Add handlers for the app (from the routes).
+        ////for (var r in self.routes) {
+        ////    self.app.get(r, self.routes[r]);
+        ////}
     };
 
 
@@ -138,7 +142,8 @@ var SandboxApp = function() {
      */
     self.initialize = function() {
         self.setupVariables();
-        self.populateCache();
+        self.populateCache()
+            .then(self.createRoutes);
         self.setupTerminationHandlers();
 
         // Create the express server and routes.
