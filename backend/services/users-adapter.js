@@ -4,14 +4,19 @@ var locationDs = require("./locations-datasource");
 
 var userAdapter = {
 
-    getByRegione: function(regione) {
-        var locations = locationDs.findBy('administrative_area_level_1', regione);
-        var users = userDs.findBy(_.keys(locations));
-
-        return _.map(users, function(user) {
-            user.geolocation = locations[user.location];
-            return user;
-        });
+    getByRegione: function (regione) {
+        var locationsFound;
+        return locationDs.findBy('administrative_area_level_1', regione)
+            .then(function (locations) {
+                locationsFound = locations;
+                return userDs.findBy(_.keys(locations));
+            })
+            .then(function (users) {
+                return _.map(users, function (user) {
+                    user.geolocation = locationsFound[user.location];
+                    return user;
+                });
+            });
     }
 
 };
