@@ -18,10 +18,6 @@ var ghHttp = {
             interval: 1 * 60 * 1000,
             resetTime: 0
         },
-        queue: {
-            limit: 20,
-            interval: 15 * 1000
-        },
         activeRequests: 0,
 
     },
@@ -38,19 +34,34 @@ var ghHttp = {
 
     getWithLimit: function(url, isSearch) {
 
-        if (ghHttp.rateLimit.activeRequests < ghHttp.rateLimit.queue.limit) {
-            return execOrdelayRequest(isSearch ? ghHttp.rateLimit.search : ghHttp.rateLimit.requests);
+        var queueRateLimit = getQueueLimits(isSearch);
+        if (ghHttp.rateLimit.activeRequests < queueRateLimit.limit) {
+            return execOrdelayRequest(isSearch ? ghHttp.rateLimit.search : ghHttp.rateLimit.requests, queueRateLimit);
         } else {
-            console.info('Queue limit of ' + ghHttp.rateLimit.queue.limit + ' exceeded, add delay of ' + (ghHttp.rateLimit.queue.interval / 1000) + ' seconds');
-            return delayRequest(ghHttp.rateLimit.queue.interval, url, isSearch);
+            console.info('Queue limit of ' + queueRateLimit.limit + ' exceeded, add delay of ' + (queueRateLimit.interval / 1000) + ' seconds');
+            return delayRequest(queueRateLimit.interval, url, isSearch);
         }
 
-        function execOrdelayRequest(limitParams) {
+        function getQueueLimits(isSearch) {
+            if (isSearch) {
+                return {
+                    limit: 5,
+                    interval: 1 * 1000
+                }
+            } else {
+                return {
+                    limit: 20,
+                    interval: 15 * 1000
+                }
+            }
+        }
+
+        function execOrdelayRequest(limitParams, queueRateLimit) {
             if (ghHttp.rateLimit.activeRequests < limitParams.limit || limitParams.resetTime * 1000 <= Date.now()) {
                 console.info('Execute request now: limit set to ' + limitParams.limit);
                 return executeRequest(limitParams);
             } else {
-                var interval = limitParams.resetTime * 1000 - Date.now() + (ghHttp.rateLimit.queue.interval * 3);
+                var interval = limitParams.resetTime * 1000 - Date.now() + (queueRateLimit.interval * 3);
                 console.log('Apply request delay of ' + (interval / 1000) + ' seconds');
                 return delayRequest(interval, url, isSearch);
             }
