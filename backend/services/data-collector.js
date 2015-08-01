@@ -283,24 +283,6 @@ var collector = {
                         deferred.reject(err);
                     });
             });
-        //fs.exists(collector.data.folder + collector.data.users, function (exists) {
-        //    if (!exists) {
-        //        collector.collectUserDetails()
-        //            .then(function (users) {
-        //                getLocations(users, deferred);
-        //            }, function (err) {
-        //                deferred.reject(err);
-        //            });
-        //    } else {
-        //        fs.readFile(collector.data.folder + collector.data.users, 'utf8', function (err, data) {
-        //            if (err) {
-        //                deferred.reject(err);
-        //            }
-        //            var users = JSON.parse(data);
-        //            getLocations(users, deferred);
-        //        });
-        //    }
-        //});
 
         return deferred.promise;
 
