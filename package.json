@@ -21,6 +21,7 @@
   "homepage": "https://github.com/commit-non-javisti/sandbox",
   "main": "backend/server.js",
   "dependencies": {
+    "express": "^4.13.2",
     "q": "^1.4.1",
     "request": "^2.60.0",
     "sync-request": "^2.0.1",
