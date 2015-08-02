@@ -6,6 +6,7 @@ var fs = require('fs');
 var dataCollector  = require(__dirname + '/services/data-collector');
 var users = require(__dirname + '/routes/users');
 var languages = require(__dirname + '/routes/languages');
+var api = require(__dirname + '/services/api-params');
 
 /**
  *  Define the sample application.
@@ -119,8 +120,8 @@ var SandboxApp = function() {
 
         self.app.use(express.static(__dirname + '/../build'));
 
-        self.app.use('/users', users);
-        self.app.use('/languages', languages);
+        self.app.use(api.getApiPath() + api.usersPath, users);
+        self.app.use(api.getApiPath() + api.languagesPath, languages);
     };
 
 
