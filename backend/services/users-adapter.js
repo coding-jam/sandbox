@@ -6,16 +6,22 @@ var userAdapter = {
 
     getByRegione: function (regione) {
         var locationsFound;
-        return locationDs.findBy('administrative_area_level_1', regione)
+        return locationDs.findRegioneBy(regione)
             .then(function (locations) {
                 locationsFound = locations;
                 return userDs.findBy(_.keys(locations));
             })
             .then(function (users) {
-                return _.map(users, function (user) {
+                return _.map(users.items, function (user) {
                     user.geolocation = locationsFound[user.location];
                     return user;
                 });
+            })
+            .then(function(filtered) {
+                return {
+                    total_count: filtered.length,
+                    items: filtered
+                }
             });
     }
 

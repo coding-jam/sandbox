@@ -23,6 +23,10 @@ var locationsDs = {
 
             return locationsFound;
         });
+    },
+
+    findRegioneBy: function (shortName) {
+        return locationsDs.findBy('administrative_area_level_1', shortName);
     }
 }
 

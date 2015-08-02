@@ -14,7 +14,7 @@ var usersDs = {
         usersFolder: 'users'
     },
 
-    getUsers: function() {
+    getUsers: function () {
         if (users.total_count) {
             return Q.when(users);
         } else {
@@ -41,10 +41,10 @@ var usersDs = {
                         }
                     });
                     Q.all(promises)
-                        .then(function() {
+                        .then(function () {
                             deferred.resolve(users);
                         })
-                        .catch(function(err) {
+                        .catch(function (err) {
                             deferred.reject(err);
                         });
                 }
@@ -53,12 +53,19 @@ var usersDs = {
         }
     },
 
-    findBy: function(locations) {
-        return usersDs.getUsers().then(function(users) {
-            return _.filter(users.items, function(user) {
-                return _.contains(locations, user.location.toLowerCase());
+    findBy: function (locations) {
+        return usersDs.getUsers()
+            .then(function (users) {
+                return _.filter(users.items, function (user) {
+                    return _.contains(locations, user.location.toLowerCase());
+                });
+            })
+            .then(function(filtered) {
+                return {
+                    total_count: filtered.length,
+                    items: filtered
+                }
             });
-        });
     }
 };
 
