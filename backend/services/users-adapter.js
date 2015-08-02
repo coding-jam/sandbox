@@ -26,7 +26,7 @@ var userAdapter = {
             });
     },
 
-    getUsersPerRegione: function() {
+    getUsersPerRegione: function(baseUrl) {
         var result = {
             locations: []
         };
@@ -39,7 +39,7 @@ var userAdapter = {
                         .then(function(users) {
                             deferredLoop.resolve({
                                 name: regione,
-                                url: 'TODO',
+                                url: baseUrl + '/' + encodeURIComponent(regione.toLowerCase()),
                                 users: users.total_count
                             });
                         })
