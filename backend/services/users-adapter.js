@@ -1,6 +1,6 @@
 var _ = require("underscore");
-var userDs = require("./users-datasource");
-var locationDs = require("./locations-datasource");
+var userDs = require(__dirname + "/users-datasource");
+var locationDs = require(__dirname + "/locations-datasource");
 
 var userAdapter = {
 

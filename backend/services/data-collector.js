@@ -1,9 +1,9 @@
-var ghHttp = require('./gh-http');
-var geolocator = require('./geolocator');
 var Q = require('q');
 var fs = require('fs');
 var _ = require("underscore");
-var usersDs = require('./users-datasource')
+var ghHttp = require(__dirname + '/gh-http');
+var geolocator = require(__dirname + '/geolocator');
+var usersDs = require(__dirname + '/users-datasource')
 
 var collector = {
 
