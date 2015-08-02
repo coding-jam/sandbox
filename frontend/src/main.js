@@ -5,7 +5,9 @@ import Map from "src/components/Map";
 import SearchForm from "src/components/SearchForm";
 
 Dispatcher.register(function(action) {
-	console.log(action);
+	if(window.ENV != 'PROD'){
+		console.log(action);	
+	}
 });
 
 export default (function(){

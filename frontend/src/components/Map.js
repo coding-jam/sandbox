@@ -1,14 +1,29 @@
 import React from "react";
 import Actions from "src/Actions";
+import Store from "src/Store";
 
 export default class Map extends React.Component {
 	constructor(props) {
-		super(props);
+	    super(props);
+	    this.state = {
+	      locations:Store.getLocations()
+	    };
+
+	    this.listener = this._listener.bind(this);
+	}
+
+	_listener(){
+		console.log(Store.getLocations());
+		this.setState({
+      		locations:Store.getLocations()
+	    });
 	}
 
 	componentDidMount() {
 
 		Actions.caricaListaRegioni();
+
+		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);
 
@@ -25,6 +40,10 @@ export default class Map extends React.Component {
 			map: map
 		});
 	}
+
+  	componentWillUnmount() {
+    	Store.removeChangeListener(this.listener);
+  	}
 
 	render() {
 		return (
