@@ -3,7 +3,9 @@
 var express = require('express');
 var fs = require('fs');
 
-var dataCollector  = require('./services/data-collector');
+var dataCollector  = require(__dirname + '/services/data-collector');
+var users = require(__dirname + '/routes/users');
+var languages = require(__dirname + '/routes/languages');
 
 /**
  *  Define the sample application.
@@ -117,8 +119,8 @@ var SandboxApp = function() {
 
         self.app.use(express.static(__dirname + '/../build'));
 
-        var users = require('./routes/users');
         self.app.use('/users', users);
+        self.app.use('/languages', languages);
     };
 
 
