@@ -4,24 +4,29 @@ var rename = require("gulp-rename");
 var del = require('del');
 var shell = require('gulp-shell');
 
-gulp.task('serve', function () {
-    require('../backend/server');
+var serve = function(build){
     connect.server({
         livereload: true,
         port: 8000,
-        root: ['../build'],
+        root: build ? '../build' : '.',
         middleware: function(connect,o){
             return [
                 (function() {
                     var url = require('url');
                     var proxy = require('proxy-middleware');
-                    var options = url.parse('http://localhost:8080');
-                    options.route = '/';
+                    var options = url.parse('http://localhost:8080/api/');
+                    options.route = '/api/';
                     return proxy(options);
                 })()
             ]
         }
     });
+
+    require('../backend/server');   
+};
+
+gulp.task('serve', function () {
+    serve(false);
 });
 
 gulp.task('build', function () {
@@ -37,8 +42,5 @@ gulp.task('build', function () {
 });
 
 gulp.task('serve-build', ['build'], function () {
-    connect.server({
-        root: '../build',
-        port: 8001
-    });
+    serve(true);
 });
