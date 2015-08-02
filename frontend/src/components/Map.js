@@ -1,4 +1,5 @@
 import React from "react";
+import Actions from "src/Actions";
 
 export default class Map extends React.Component {
 	constructor(props) {
@@ -6,6 +7,9 @@ export default class Map extends React.Component {
 	}
 
 	componentDidMount() {
+
+		Actions.caricaListaRegioni();
+
 		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);
 
 		var mapOptions = {
