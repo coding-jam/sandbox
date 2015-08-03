@@ -37,6 +37,11 @@ var locationsDs = {
         return locationsDs.findBy('administrative_area_level_1', shortName);
     },
 
+    /**
+     * Find regions from it_locations.json
+     *
+     * @returns a promise to italian regions
+     */
     findRegioni: function () {
         return Q.fcall(function () {
             var regions = [];
@@ -54,8 +59,16 @@ var locationsDs = {
         });
     },
 
-    getRegioniWithDetails: function() {
+    getRegioniWithDetails: function () {
         return Q.when(regionsData);
+    },
+
+    getRegioni: function () {
+        return Q.fcall(function () {
+            return _.map(regionsData.regions, function (region) {
+                return region.region;
+            });
+        });
     }
 
 }
