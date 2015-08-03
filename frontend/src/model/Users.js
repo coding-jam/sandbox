@@ -11,7 +11,7 @@ var listUsersInLocation = function() {
 			
 			_.each(locations,function(location){
 				var currentUserLocation = _.find(usersInLocations,function(userLocation){
-					return userLocation.regionName = location.name;
+					return userLocation.regionName === location.name;
 				});
 
 				location.usersCount = currentUserLocation.usersCount
