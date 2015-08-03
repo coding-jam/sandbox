@@ -1,19 +1,23 @@
 import Dispatcher from "src/Dispatcher";
-import jQuery from "jquery";
+import Locations from "src/model/Locations";
 
-var caricaListaRegioni = function() {
+var loadRegionList = function() {
 	Dispatcher.dispatch({
-		actionType: "loadingListaRegioni"
+		actionType: "loadingStart"
 	});
 
-	jQuery.get('/api/v1/users').then(function(response){
+	Locations.listRegions().then(function(regions){
 		Dispatcher.dispatch({
-			actionType: "listaRegioniLoaded",
-			locations:response.locations
+			actionType: "loadingEnd"
+		});
+
+		Dispatcher.dispatch({
+			actionType: "regionsLoaded",
+			regions:regions
 		});
 	})
 };
 
 export default {
-	caricaListaRegioni: caricaListaRegioni
+	loadRegionList: loadRegionList
 };

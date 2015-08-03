@@ -10,8 +10,8 @@ Dispatcher.register(function(action) {
 	var text;
 
 	switch (action.actionType) {
-		case "listaRegioniLoaded":
-			Store.setLocations(action.locations);
+		case "regionsLoaded":
+			Store.setLocations(action.regions);
 			break;
 	};
 });

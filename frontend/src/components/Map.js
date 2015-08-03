@@ -1,6 +1,9 @@
 import React from "react";
 import Actions from "src/Actions";
 import Store from "src/Store";
+import _ from "underscore";
+
+var map;
 
 export default class Map extends React.Component {
 	constructor(props) {
@@ -13,7 +16,6 @@ export default class Map extends React.Component {
 	}
 
 	_listener(){
-		console.log(Store.getLocations());
 		this.setState({
       		locations:Store.getLocations()
 	    });
@@ -21,8 +23,7 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		Actions.caricaListaRegioni();
-
+		Actions.loadRegionList();
 		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);
@@ -33,12 +34,7 @@ export default class Map extends React.Component {
 			zoom: 6
 		};
 
-		var map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
-
-		var marker = new google.maps.Marker({
-			position: myLatlng,
-			map: map
-		});
+		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
 	}
 
   	componentWillUnmount() {
@@ -46,6 +42,16 @@ export default class Map extends React.Component {
   	}
 
 	render() {
+		if(map){
+			var markers = [];
+			_.each(this.state.locations,function(location){
+				markers.push(new google.maps.Marker({
+					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
+					map: map
+				}));
+			});	
+		}
+
 		return (
 			<div>
 				<div 
