@@ -22,6 +22,7 @@ System.config({
     "clean-css": "npm:clean-css@3.3.7",
     "core-js": "npm:core-js@0.9.18",
     "css": "github:systemjs/plugin-css@0.1.13",
+    "events": "github:jspm/nodelibs-events@0.1.1",
     "flux": "npm:flux@2.0.1",
     "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@4.1.7",
     "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.7",

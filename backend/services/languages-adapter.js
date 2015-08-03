@@ -25,6 +25,15 @@ function findLanguages(users) {
     return sortByValue(languages, true);
 }
 
+function adaptLanguages(languages) {
+    return _.map(languages, function(language) {
+        return {
+            language: language[0],
+            usersPerLanguage: language[1]
+        }
+    });
+}
+
 var languagesAdapter = {
 
     getRankedLanguages: function (regione) {
@@ -34,10 +43,12 @@ var languagesAdapter = {
                 .then(function (locations) {
                     return userDs.findBy(_.keys(locations));
                 })
-                .then(findLanguages);
+                .then(findLanguages)
+                .then(adaptLanguages)
         } else {
             return userDs.getUsers()
-                .then(findLanguages);
+                .then(findLanguages)
+                .then(adaptLanguages);
         }
     }
 }

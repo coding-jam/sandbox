@@ -3,14 +3,16 @@ var fs = require('fs');
 var _ = require("underscore");
 var ghHttp = require(__dirname + '/gh-http');
 var geolocator = require(__dirname + '/geolocator');
-var usersDs = require(__dirname + '/users-datasource')
+var usersDs = require(__dirname + '/users-datasource');
+var locationDs = require(__dirname + "/locations-datasource");
 
 var collector = {
 
     data: {
         folder: usersDs.data.folder,
         users: 'it_users.json',
-        locations: 'it_locations.json'
+        locations: 'it_locations.json',
+        regions: 'it_regions.json'
     },
 
     options: {
@@ -340,6 +342,44 @@ var collector = {
                     deferred.reject(err);
                 });
         }
+    },
+
+    collectItalianRegions: function() {
+        var result = {
+            regions: []
+        };
+        return locationDs.findRegioni()
+            .then(function(regioni) {
+                var promises = [];
+                regioni.forEach(function(regione) {
+                    var deferredLoop = Q.defer();
+                    geolocator.locate(regione + ', Italy')
+                        .then(function(resp) {
+                            result.regions.push({
+                                region: regione,
+                                details: resp.body
+                            });
+                            deferredLoop.resolve();
+                        })
+                        .catch(deferredLoop.reject);
+                    promises.push(deferredLoop.promise);
+                });
+                return Q.all(promises);
+            })
+            .then(function() {
+                var deferred = Q.defer();
+                fs.writeFile(collector.data.folder + collector.data.regions, JSON.stringify(result), function (err) {
+                    if (err) {
+                        console.error(err);
+                        deferred.reject(err);
+                    }
+
+                    console.log(collector.data.regions + ' saved');
+                    deferred.resolve(result);
+                });
+                return deferred.promise;
+            })
+            .catch(collector.collectLocations);
     }
 }
 
