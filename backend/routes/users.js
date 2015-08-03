@@ -9,15 +9,21 @@ router.get('/', function (req, res) {
     userAdapter.getUsersPerRegione(api.getApiPath() + api.usersPath)
         .then(function(users) {
             var resBody = _.extend({}, users);
+            resBody.links = {};
             addLanguagesInfo(resBody);
+            addLocationsInfo(resBody);
             res.json(resBody);
         });
 
     function addLanguagesInfo(resBody) {
-        resBody.languages = api.getApiPath() + api.languagesPath;
-        resBody.locations.forEach(function(location) {
-            location.languages = location.url.replace(api.usersPath, api.languagesPath);
+        resBody.links.languages = api.getApiPath() + api.languagesPath;
+        resBody.usersInLocations.forEach(function(location) {
+            location.languages = location.usersDetails.replace(api.usersPath, api.languagesPath);
         });
+    }
+
+    function addLocationsInfo(resBody) {
+        resBody.links.locationsDetails = api.getApiPath() + api.locationsPath;
     }
 });
 

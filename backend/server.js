@@ -6,6 +6,7 @@ var fs = require('fs');
 var dataCollector  = require(__dirname + '/services/data-collector');
 var users = require(__dirname + '/routes/users');
 var languages = require(__dirname + '/routes/languages');
+var locations = require(__dirname + '/routes/locations');
 var api = require(__dirname + '/services/api-params');
 
 /**
@@ -56,6 +57,7 @@ var SandboxApp = function() {
         return dataCollector.collectLocations()
             .then(function(locations) {
                 console.log(locations.length + ' locations known');
+                //dataCollector.collectItalianRegions();
             });
     };
 
@@ -122,6 +124,7 @@ var SandboxApp = function() {
 
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);
+        self.app.use(api.getApiPath() + api.locationsPath, locations);
     };
 
 

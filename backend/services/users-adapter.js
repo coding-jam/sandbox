@@ -28,7 +28,7 @@ var userAdapter = {
 
     getUsersPerRegione: function(baseUrl) {
         var result = {
-            locations: []
+            usersInLocations: []
         };
         return locationDs.findRegioni()
             .then(function(regioni) {
@@ -38,9 +38,9 @@ var userAdapter = {
                     userAdapter.getByRegione(regione.toLowerCase())
                         .then(function(users) {
                             deferredLoop.resolve({
-                                name: regione,
-                                url: baseUrl + '/' + encodeURIComponent(regione.toLowerCase()),
-                                users: users.total_count
+                                regionName: regione,
+                                usersDetails: baseUrl + '/' + encodeURIComponent(regione.toLowerCase()),
+                                usersCount: users.total_count
                             });
                         })
                         .catch(function(err) {
@@ -51,7 +51,7 @@ var userAdapter = {
                 return Q.all(promises);
             })
             .then(function(usersPerRegions) {
-                result.locations = usersPerRegions
+                result.usersInLocations = usersPerRegions
                 return result;
             });
 

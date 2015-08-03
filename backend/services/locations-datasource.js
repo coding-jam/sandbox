@@ -1,6 +1,14 @@
 var _ = require("underscore");
 var Q = require('q');
 var locationData = require(__dirname + '/../data/it_locations');
+var regionsData = require(__dirname + '/../data/it_regions');
+
+function isItaly(addresses) {
+    var found = _.find(addresses, function (address) {
+        return (_.contains(address.types, 'country') && address.short_name == 'IT');
+    });
+    return found;
+}
 
 var locationsDs = {
 
@@ -44,14 +52,12 @@ var locationsDs = {
             });
             return _.unique(regions).sort();
         });
+    },
 
-        function isItaly(addresses) {
-            var found = _.find(addresses, function (address) {
-                return (_.contains(address.types, 'country') && address.short_name == 'IT');
-            });
-            return found;
-        }
+    getRegioniWithDetails: function() {
+        return Q.when(regionsData);
     }
+
 }
 
 module.exports = locationsDs;
