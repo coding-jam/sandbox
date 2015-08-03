@@ -23,7 +23,7 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		Actions.loadRegionList();
+		Actions.loadUserInLocationList();
 		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);

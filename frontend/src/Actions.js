@@ -1,5 +1,6 @@
 import Dispatcher from "src/Dispatcher";
 import Locations from "src/model/Locations";
+import users from "src/model/Users";
 
 var loadRegionList = function() {
 	Dispatcher.dispatch({
@@ -18,6 +19,24 @@ var loadRegionList = function() {
 	})
 };
 
+var loadUserInLocationList = function() {
+	Dispatcher.dispatch({
+		actionType: "loadingStart"
+	});
+
+	users.listUsersInLocation().then(function(regions){
+		Dispatcher.dispatch({
+			actionType: "loadingEnd"
+		});
+
+		Dispatcher.dispatch({
+			actionType: "usersInLocationLoaded",
+			regions:regions
+		});
+	})
+};
+
 export default {
-	loadRegionList: loadRegionList
+	loadRegionList: loadRegionList,
+	loadUserInLocationList: loadUserInLocationList
 };

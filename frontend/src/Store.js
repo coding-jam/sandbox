@@ -10,7 +10,7 @@ Dispatcher.register(function(action) {
 	var text;
 
 	switch (action.actionType) {
-		case "regionsLoaded":
+		case "usersInLocationLoaded":
 			Store.setLocations(action.regions);
 			break;
 	};
