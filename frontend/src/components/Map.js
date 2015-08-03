@@ -23,7 +23,7 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		Actions.loadRegionList();
+		Actions.loadUserInLocationList();
 		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);
@@ -47,7 +47,9 @@ export default class Map extends React.Component {
 			_.each(this.state.locations,function(location){
 				markers.push(new google.maps.Marker({
 					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
-					map: map
+					map: map,
+					animation: google.maps.Animation.DROP,
+					icon:"http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
 				}));
 			});	
 		}
