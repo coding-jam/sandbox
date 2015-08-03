@@ -1,7 +1,7 @@
 import React from "react";
 import Actions from "src/Actions";
 import Store from "src/Store";
-import _ from "underscore";
+import _ from "lodash";
 
 var map;
 
@@ -26,7 +26,7 @@ export default class Map extends React.Component {
 		Actions.loadUserInLocationList();
 		Store.addChangeListener(this.listener);
 
-		var myLatlng = new google.maps.LatLng(42.019159, 12.583761);
+		var myLatlng = new google.maps.LatLng(43.5, 12.583761);
 
 		var mapOptions = {
 			disableDefaultUI: true,

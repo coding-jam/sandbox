@@ -1,5 +1,5 @@
 import jQuery from "jquery";
-import _ from "underscore";
+import _ from "lodash";
 import locations from "src/model/Locations";
 
 var listUsersInLocation = function() {

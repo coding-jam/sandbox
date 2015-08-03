@@ -1,6 +1,6 @@
 import Dispatcher from "src/Dispatcher";
 import Events from "events";
-import _ from "underscore";
+import _ from "lodash";
 
 var EventEmitter = Events.EventEmitter;
 

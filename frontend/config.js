@@ -17,7 +17,7 @@ System.config({
 System.config({
   "map": {
     "babel": "npm:babel-core@5.5.8",
-    "babel-runtime": "npm:babel-runtime@5.5.8",
+    "babel-runtime": "npm:babel-runtime@5.8.20",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
     "clean-css": "npm:clean-css@3.3.7",
     "core-js": "npm:core-js@0.9.18",
@@ -27,9 +27,10 @@ System.config({
     "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@4.1.7",
     "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.7",
     "jquery": "github:components/jquery@2.1.4",
+    "lodash": "npm:lodash@3.10.0",
     "react": "npm:react@0.13.3",
+    "react-bootstrap": "npm:react-bootstrap@0.25.0-alpha.0",
     "react-router": "npm:react-router@0.13.3",
-    "underscore": "npm:underscore@1.8.3",
     "url": "github:jspm/nodelibs-url@0.1.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -72,12 +73,6 @@ System.config({
     "github:twbs/bootstrap@3.3.5": {
       "jquery": "github:components/jquery@2.1.4"
     },
-    "npm:amdefine@0.1.1": {
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "module": "github:jspm/nodelibs-module@0.1.0",
-      "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.1"
-    },
     "npm:amdefine@1.0.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "module": "github:jspm/nodelibs-module@0.1.0",
@@ -87,18 +82,18 @@ System.config({
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
-    "npm:babel-runtime@5.5.8": {
+    "npm:babel-runtime@5.8.20": {
       "process": "github:jspm/nodelibs-process@0.1.1"
-    },
-    "npm:buffer@3.2.2": {
-      "base64-js": "npm:base64-js@0.0.8",
-      "ieee754": "npm:ieee754@1.1.6",
-      "is-array": "npm:is-array@1.0.1"
     },
     "npm:buffer@3.3.1": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.6",
       "is-array": "npm:is-array@1.0.1"
+    },
+    "npm:classnames@2.1.3": {
+      "assert": "github:jspm/nodelibs-assert@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:clean-css@3.3.7": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
@@ -155,6 +150,9 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "source-map": "npm:source-map@0.1.31"
     },
+    "npm:lodash@3.10.0": {
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
     "npm:os-browserify@0.1.2": {
       "os": "github:jspm/nodelibs-os@0.1.0"
     },
@@ -163,6 +161,13 @@ System.config({
     },
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:react-bootstrap@0.25.0-alpha.0": {
+      "babel-runtime": "npm:babel-runtime@5.8.20",
+      "classnames": "npm:classnames@2.1.3",
+      "lodash": "npm:lodash@3.10.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "react": "npm:react@0.13.3"
     },
     "npm:react-router@0.13.3": {
       "object-assign": "npm:object-assign@2.1.1",
@@ -204,10 +209,6 @@ System.config({
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
-    },
-    "npm:through@2.3.7": {
-      "process": "github:jspm/nodelibs-process@0.1.1",
-      "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
     "npm:through@2.3.8": {
       "process": "github:jspm/nodelibs-process@0.1.1",

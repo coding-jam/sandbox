@@ -1,5 +1,5 @@
 import jQuery from "jquery";
-import _ from "underscore";
+import _ from "lodash";
 
 var listRegions = function() {
 	return jQuery.get('/api/v1/locations').then(function(response){

@@ -10,9 +10,10 @@
       "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@^4.1.7",
       "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@^1.1.7",
       "jquery": "github:components/jquery@^2.1.4",
+      "lodash": "npm:lodash@^3.10.0",
       "react": "npm:react@0.13.3",
+      "react-bootstrap": "npm:react-bootstrap@^0.25.0-alpha.0",
       "react-router": "npm:react-router@0.13.3",
-      "underscore": "npm:underscore@^1.8.3",
       "url": "github:jspm/nodelibs-url@^0.1.0"
     },
     "devDependencies": {
