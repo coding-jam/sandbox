@@ -5,10 +5,18 @@ export default class SearchForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.search = this._search.bind(this);
+		this.onKeypress = this._onKeypress.bind(this);
 	}
 
 	_search(){
 		Actions.loadUserInLocationList(React.findDOMNode(this.refs.querySearch).value);
+	};
+
+	_onKeypress(e){
+		if (e.charCode === 13) {
+			this.search();
+        	return false;
+    	}
 	};
 
 	render() {
@@ -20,7 +28,12 @@ export default class SearchForm extends React.Component {
 		        </div>
 		        <form className="navbar-form navbar-right" role="search">
 			        <div className="form-group">
-			          <input ref="querySearch" type="text" className="form-control" placeholder="Cerca per linguaggio..."></input>
+			          <input 
+			          	ref="querySearch" 
+			          	type="text" 
+			          	className="form-control" 
+			          	onKeyPress={this.onKeypress}
+			          	placeholder="Cerca per linguaggio..."></input>
 			        </div>
 			        <button 
 			        	type="button"
