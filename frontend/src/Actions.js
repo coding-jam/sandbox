@@ -19,12 +19,12 @@ var loadRegionList = function() {
 	})
 };
 
-var loadUserInLocationList = function() {
+var loadUserInLocationList = function(query) {
 	Dispatcher.dispatch({
 		actionType: "loadingStart"
 	});
 
-	users.listUsersInLocation().then(function(regions){
+	users.listUsersInLocation(query).then(function(regions){
 		Dispatcher.dispatch({
 			actionType: "loadingEnd"
 		});

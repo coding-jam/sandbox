@@ -4,6 +4,7 @@ import Store from "src/Store";
 import _ from "lodash";
 
 var map;
+var markers = [];
 
 export default class Map extends React.Component {
 	constructor(props) {
@@ -31,6 +32,7 @@ export default class Map extends React.Component {
 		var mapOptions = {
 			disableDefaultUI: true,
 			center: myLatlng,
+			draggable:true,
 			zoom: 6
 		};
 
@@ -43,7 +45,13 @@ export default class Map extends React.Component {
 
 	render() {
 		if(map){
-			var markers = [];
+
+			_.each(markers,function(marker){
+				marker.setMap(null);
+			});
+
+			markers = [];
+
 			_.each(this.state.locations,function(location){
 				markers.push(new google.maps.Marker({
 					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
