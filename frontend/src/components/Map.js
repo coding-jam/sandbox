@@ -6,20 +6,51 @@ import _ from "lodash";
 var map;
 var markers = [];
 
+var draw = function(locations) {
+	if (map) {
+
+		_.each(markers, function(marker) {
+			marker.setMap(null);
+		});
+
+		markers = [];
+
+		_.each(locations, function(location) {
+			if (location.usersCount > 0) {
+				markers.push(new google.maps.Marker({
+					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
+					map: map,
+					animation: google.maps.Animation.DROP,
+					icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
+				}));
+			}
+		});
+	}
+};
+
+var checkUsers = function(locations){
+	var totalUsers = _.reduce(locations, function(memo, location){ return memo + location.usersCount; }, 0);
+	return totalUsers > 0;
+};
+
 export default class Map extends React.Component {
 	constructor(props) {
-	    super(props);
-	    this.state = {
-	      locations:Store.getLocations()
-	    };
+		super(props);
+		this.state = {
+			locations: Store.getLocations()
+		};
 
-	    this.listener = this._listener.bind(this);
+		this.listener = this._listener.bind(this);
 	}
 
-	_listener(){
+	_listener() {
 		this.setState({
-      		locations:Store.getLocations()
-	    });
+			locations: Store.getLocations()
+		});
+
+		if(this.state.locations.length > 0 && !checkUsers(this.state.locations)){
+			swal("Nessun utente corrisponde alla ricerca!");
+		}
 	}
 
 	componentDidMount() {
@@ -32,45 +63,25 @@ export default class Map extends React.Component {
 		var mapOptions = {
 			disableDefaultUI: true,
 			center: myLatlng,
-			draggable:true,
+			draggable: true,
 			zoom: 6
 		};
 
 		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
 	}
 
-  	componentWillUnmount() {
-    	Store.removeChangeListener(this.listener);
-  	}
+	componentWillUnmount() {
+		Store.removeChangeListener(this.listener);
+	}
 
 	render() {
-		if(map){
 
-			_.each(markers,function(marker){
-				marker.setMap(null);
-			});
+		draw(this.state.locations);
 
-			markers = [];
-
-			_.each(this.state.locations,function(location){
-				if(location.usersCount > 0){
-					markers.push(new google.maps.Marker({
-						position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
-						map: map,
-						animation: google.maps.Animation.DROP,
-						icon:"http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
-					}));	
-				}
-			});	
-		}
-
-		return (
-			<div>
-				<div 
-					className="Map"
-					ref="chart">
-				</div>
-			</div>
+		return ( < div >
+			< div className = "Map"
+			ref = "chart" >
+			< /div> < /div>
 		);
 	}
 }

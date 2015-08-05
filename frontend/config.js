@@ -31,6 +31,7 @@ System.config({
     "react": "npm:react@0.13.3",
     "react-bootstrap": "npm:react-bootstrap@0.25.0-alpha.0",
     "react-router": "npm:react-router@0.13.3",
+    "sweetalert": "npm:sweetalert@1.1.0",
     "url": "github:jspm/nodelibs-url@0.1.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -209,6 +210,9 @@ System.config({
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
+    },
+    "npm:sweetalert@1.1.0": {
+      "path": "github:jspm/nodelibs-path@0.1.0"
     },
     "npm:through@2.3.8": {
       "process": "github:jspm/nodelibs-process@0.1.1",
