@@ -53,12 +53,14 @@ export default class Map extends React.Component {
 			markers = [];
 
 			_.each(this.state.locations,function(location){
-				markers.push(new google.maps.Marker({
-					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
-					map: map,
-					animation: google.maps.Animation.DROP,
-					icon:"http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
-				}));
+				if(location.usersCount > 0){
+					markers.push(new google.maps.Marker({
+						position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
+						map: map,
+						animation: google.maps.Animation.DROP,
+						icon:"http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
+					}));	
+				}
 			});	
 		}
 
