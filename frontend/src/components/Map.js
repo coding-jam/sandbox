@@ -64,6 +64,8 @@ export default class Map extends React.Component {
 			disableDefaultUI: true,
 			center: myLatlng,
 			draggable: true,
+			minZoom:6,
+			maxZoom:6,
 			zoom: 6
 		};
 
