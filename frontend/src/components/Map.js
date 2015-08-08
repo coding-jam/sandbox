@@ -16,13 +16,22 @@ var draw = function(locations) {
 		markers = [];
 
 		_.each(locations, function(location) {
+			var marker;
 			if (location.usersCount > 0) {
-				markers.push(new google.maps.Marker({
+				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
 					map: map,
 					animation: google.maps.Animation.DROP,
 					icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
-				}));
+				});
+
+				google.maps.event.addListener(marker, 'click', function() {
+					Actions.listUserByLocation({
+						location:location.name
+					});
+				});
+
+				markers.push(marker);
 			}
 		});
 	}
@@ -55,7 +64,7 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		Actions.loadUserInLocationList();
+		Actions.loadUserByLanguage();
 		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(43.5, 12.583761);

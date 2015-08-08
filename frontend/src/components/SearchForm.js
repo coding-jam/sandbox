@@ -9,7 +9,7 @@ export default class SearchForm extends React.Component {
 	}
 
 	_search(){
-		Actions.loadUserInLocationList(React.findDOMNode(this.refs.querySearch).value);
+		Actions.loadUserByLanguage(React.findDOMNode(this.refs.querySearch).value);
 	};
 
 	_onKeypress(e){

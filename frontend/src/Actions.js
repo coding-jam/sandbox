@@ -19,24 +19,42 @@ var loadRegionList = function() {
 	})
 };
 
-var loadUserInLocationList = function(query) {
+var loadUserByLanguage = function(query) {
 	Dispatcher.dispatch({
 		actionType: "loadingStart"
 	});
 
-	users.listUsersInLocation(query).then(function(regions){
+	users.listUsersByLanguage(query).then(function(regions){
 		Dispatcher.dispatch({
 			actionType: "loadingEnd"
 		});
 
 		Dispatcher.dispatch({
-			actionType: "usersInLocationLoaded",
+			actionType: "userByLanguageLoaded",
 			regions:regions
 		});
-	})
+	});
+};
+
+var listUserByLocation = function(params){
+	Dispatcher.dispatch({
+		actionType: "loadingStart"
+	});
+
+	users.listUserByLocation(params).then(function(users){
+		Dispatcher.dispatch({
+			actionType: "loadingEnd"
+		});
+
+		Dispatcher.dispatch({
+			actionType: "userByLocationLoaded",
+			users:users
+		});
+	});
 };
 
 export default {
 	loadRegionList: loadRegionList,
-	loadUserInLocationList: loadUserInLocationList
+	loadUserByLanguage: loadUserByLanguage,
+	listUserByLocation: listUserByLocation
 };

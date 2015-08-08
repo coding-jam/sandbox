@@ -2,7 +2,7 @@ import jQuery from "jquery";
 import _ from "lodash";
 import locations from "src/model/Locations";
 
-var listUsersInLocation = function(searchQuery) {
+var listUsersByLanguage = function(searchQuery) {
 	if (!searchQuery) {
 		return jQuery.get('/api/v1/users').then(function(response) {
 			var usersInLocations = response.usersInLocations;
@@ -56,6 +56,24 @@ var listUsersInLocation = function(searchQuery) {
 
 };
 
+var listUserByLocation = function(params){
+	return jQuery.get('/api/v1/users/' + params.location.toLowerCase()).then(function(response) {
+			var users = response.items;
+
+			if(params.language){
+				users = _.filter(users,function(user){
+
+					return user.languages && _.find(user.languages,function(language){
+						return language.toUpperCase() === params.language.toUpperCase();
+					});
+				});
+			}
+
+			return users;
+		});
+};
+
 export default {
-	listUsersInLocation: listUsersInLocation
+	listUsersByLanguage: listUsersByLanguage,
+	listUserByLocation: listUserByLocation
 };
