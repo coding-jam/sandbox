@@ -27,7 +27,8 @@ var draw = function(locations) {
 
 				google.maps.event.addListener(marker, 'click', function() {
 					Actions.listUserByLocation({
-						location:location.name
+						location:location.name,
+						language:Store.getLastQuery()
 					});
 				});
 

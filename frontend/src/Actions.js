@@ -32,7 +32,8 @@ var loadUserByLanguage = function(query) {
 
 		Dispatcher.dispatch({
 			actionType: "userByLanguageLoaded",
-			regions:regions
+			regions:regions,
+			query:query
 		});
 	});
 };

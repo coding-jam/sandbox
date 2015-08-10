@@ -5,12 +5,14 @@ import _ from "lodash";
 var EventEmitter = Events.EventEmitter;
 
 var locations = [];
+var lastQuery = null;
 
 Dispatcher.register(function(action) {
 	var text;
 
 	switch (action.actionType) {
 		case "userByLanguageLoaded":
+			lastQuery = action.query;
 			Store.setLocations(action.regions);
 			break;
 	};
@@ -23,6 +25,9 @@ var Store = _.extend({
 	},
 	getLocations: function(){
 		return Object.freeze(locations);
+	},
+	getLastQuery:function(){
+		return lastQuery;
 	},
 	addChangeListener: function(callback) {
 		this.on("LocationChanged", callback);
