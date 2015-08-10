@@ -45,19 +45,69 @@ export default class UserList extends React.Component {
 			return null;
 		}
 
-		var items = this.state.users.map(function(user,i) {
+		var rows = _.map(this.state.users,function(user){
+			return [
+				_.omit(user,"languages"),
+				_.pick(user,"languages","id")
+			];
+		});
+
+		rows = _.flatten(rows);
+
+		var renderUserRow = (user) => {
+
+			var renderBlog = (user) => {
+				if(!user.blog){
+					return "";
+				}
+
+				return (
+					<div>
+						<a target="_blank" href={user.blog}>Blog</a>
+					</div>
+				);
+			};
+
 			return (
 				<tr key={user.id}>
-					<td><img width="50" src={user.avatar_url}></img></td>
-					<td>{user.name}</td>
-					<td>{user.login}</td>
-					<td><a href={"mailto://" + user.email}>{user.email}</a></td>
-					<td><a target="_blank" href={user.blog}>{user.blog}</a></td>
+					<td className="avatarRow">
+						<a href={user.html_url} target="_blank">
+							<img className="img-responsive" src={user.avatar_url}>
+							</img>
+						</a>
+					</td>
+					<td>
+						<strong>{user.login} ({user.name})</strong>
+						{renderBlog(user)}
+						<div>
+							{user.bio}
+						</div>
+					</td>
+				</tr>
+			)
+		};
+
+		var renderLanguagesRow = (user) => {
+
+			var languages = user.languages.map(function(language,i){
+				return (<li key={language}>{language}</li>)
+			});
+
+			return (
+				<tr key={'l' + user.id}>
+					<td colSpan="2">
+						<strong>Linguaggi</strong>
+						<ul className="list-inline">
+						  {languages}
+						</ul>
+					</td>
 				</tr>
 			);
-		},this);
+		};
 
-		return items;
+		return rows.map(function(row,i) {
+			return row.languages ? renderLanguagesRow(row) : renderUserRow(row);
+		},this);
 	}
 
 	render() {
@@ -71,20 +121,11 @@ export default class UserList extends React.Component {
 		            <Modal.Title>{this.state.location}</Modal.Title>
 		          </Modal.Header>
 		          <Modal.Body>
-		            	<Table striped bordered condensed hover>
-						    <thead>
-						      <tr>
-						      	<th></th>
-						        <th>Username</th>
-						        <th>Nome</th>
-						        <th>email</th>
-						        <th>Blog</th>
-						      </tr>
-						    </thead>
-						    <tbody>
-						    	{rows}
-						    </tbody>
-						  </Table>
+		            	<Table striped hover responsive>
+							<tbody>
+								{rows}
+							</tbody>
+						</Table>
 		          </Modal.Body>
 		          <Modal.Footer>
 		          	<button 
