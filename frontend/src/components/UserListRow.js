@@ -57,6 +57,12 @@ export default class UserListRow extends React.Component {
 						<dd>
 							{this.props.user.followers}
 						</dd>
+						<dt>
+							Repository
+						</dt>
+						<dd>
+							{this.props.user.public_repos}
+						</dd>
 						<dt className={this.props.user.languages.length ? 'show' : 'hidden'}>
 							Linguaggi
 						</dt>
