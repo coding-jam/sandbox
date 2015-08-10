@@ -1,6 +1,7 @@
 import Dispatcher from "src/Dispatcher";
 import Locations from "src/model/Locations";
 import users from "src/model/Users";
+import _ from "lodash";
 
 var loadRegionList = function() {
 	Dispatcher.dispatch({
@@ -19,24 +20,45 @@ var loadRegionList = function() {
 	})
 };
 
-var loadUserInLocationList = function(query) {
+var loadUserByLanguage = function(query) {
 	Dispatcher.dispatch({
 		actionType: "loadingStart"
 	});
 
-	users.listUsersInLocation(query).then(function(regions){
+	users.listUsersByLanguage(query).then(function(regions){
 		Dispatcher.dispatch({
 			actionType: "loadingEnd"
 		});
 
 		Dispatcher.dispatch({
-			actionType: "usersInLocationLoaded",
-			regions:regions
+			actionType: "userByLanguageLoaded",
+			regions:regions,
+			query:query
 		});
-	})
+	});
+};
+
+var listUserByLocation = function(params){
+	Dispatcher.dispatch({
+		actionType: "loadingStart"
+	});
+
+	users.listUserByLocation(params).then(function(users){
+		Dispatcher.dispatch({
+			actionType: "loadingEnd"
+		});
+
+		var action = _.extend(params,{
+			actionType: "userByLocationLoaded",
+			users:users
+		});
+
+		Dispatcher.dispatch(action);
+	});
 };
 
 export default {
 	loadRegionList: loadRegionList,
-	loadUserInLocationList: loadUserInLocationList
+	loadUserByLanguage: loadUserByLanguage,
+	listUserByLocation: listUserByLocation
 };

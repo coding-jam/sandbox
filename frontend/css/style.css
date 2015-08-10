@@ -21,3 +21,10 @@ body {
   min-height: 2000px;
   padding-top: 70px;
 }
+
+.modal-container {
+  position: relative;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
