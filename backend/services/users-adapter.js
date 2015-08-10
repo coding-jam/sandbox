@@ -13,10 +13,15 @@ var userAdapter = {
                 return userDs.findBy(_.keys(locations));
             })
             .then(function (users) {
-                return _.map(users.items, function (user) {
-                    user.geolocation = locationsFound[user.location];
-                    return user;
-                });
+                return _.chain(users.items)
+                    .map(function (user) {
+                        user.geolocation = locationsFound[user.location];
+                        return user;
+                    })
+                    .sortBy(function(user) {
+                        return user.login.toLowerCase();
+                    })
+                    .value();
             })
             .then(function(filtered) {
                 return {
