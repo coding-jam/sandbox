@@ -32,3 +32,8 @@ body {
 .avatarRow{
   width: 15%;
 }
+
+.NoPadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
