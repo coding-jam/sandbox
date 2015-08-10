@@ -1,6 +1,6 @@
 import React from "react";
 import Actions from "src/Actions";
-import Store from "src/Store";
+import Store from "src/store/MapStore";
 import _ from "lodash";
 
 var map;
