@@ -3,6 +3,7 @@ import 'sweetalert/dist/sweetalert.css!';
 import React from "react";
 import Dispatcher from "src/Dispatcher";
 import Map from "src/components/Map";
+import UserList from "src/components/UserList";
 import SearchForm from "src/components/SearchForm";
 import swal from "sweetalert";
 
@@ -19,6 +20,7 @@ export default (function(){
 		<div>
 			<SearchForm/>
 			<Map/>
+			<UserList/>
 		</div>,
 	document.getElementById('wrapper'));
 })();

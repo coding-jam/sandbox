@@ -1,6 +1,7 @@
 import Dispatcher from "src/Dispatcher";
 import Locations from "src/model/Locations";
 import users from "src/model/Users";
+import _ from "lodash";
 
 var loadRegionList = function() {
 	Dispatcher.dispatch({
@@ -46,10 +47,12 @@ var listUserByLocation = function(params){
 			actionType: "loadingEnd"
 		});
 
-		Dispatcher.dispatch({
+		var action = _.extend(params,{
 			actionType: "userByLocationLoaded",
 			users:users
 		});
+
+		Dispatcher.dispatch(action);
 	});
 };
 
