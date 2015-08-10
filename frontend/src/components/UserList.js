@@ -69,13 +69,7 @@ export default class UserList extends React.Component {
 							</tbody>
 						</Table>
 		          </Modal.Body>
-		          <Modal.Footer>
-		          	<button 
-			        	type="button"
-			        	onClick={this.close}
-			        	className="btn btn-default">Chiudi</button>
-		          </Modal.Footer>
-				</Modal>
+		        </Modal>
       		</div>
 		);
 	}
