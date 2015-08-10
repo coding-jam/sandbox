@@ -2,6 +2,7 @@ import React from "react";
 import * as bootstrap from "react-bootstrap";
 import Store from "src/store/UserListStore";
 import _ from "lodash";
+import UserListRow from "src/components/UserListRow";
 
 var Modal = bootstrap.Modal;
 var Table = bootstrap.Table;
@@ -41,73 +42,14 @@ export default class UserList extends React.Component {
 	};
 
 	_renderRows(){
+
 		if(!this.state.users){
 			return null;
 		}
 
-		var rows = _.map(this.state.users,function(user){
-			return [
-				_.omit(user,"languages"),
-				_.pick(user,"languages","id")
-			];
+		return this.state.users.map(function(user,i){
+			return (<UserListRow user={user} key={i}></UserListRow>);
 		});
-
-		rows = _.flatten(rows);
-
-		var renderUserRow = (user) => {
-
-			var renderBlog = (user) => {
-				if(!user.blog){
-					return "";
-				}
-
-				return (
-					<div>
-						<a target="_blank" href={user.blog}>Blog</a>
-					</div>
-				);
-			};
-
-			return (
-				<tr key={user.id}>
-					<td className="avatarRow">
-						<a href={user.html_url} target="_blank">
-							<img className="img-responsive" src={user.avatar_url}>
-							</img>
-						</a>
-					</td>
-					<td>
-						<strong>{user.login} ({user.name})</strong>
-						{renderBlog(user)}
-						<div>
-							{user.bio}
-						</div>
-					</td>
-				</tr>
-			)
-		};
-
-		var renderLanguagesRow = (user) => {
-
-			var languages = user.languages.map(function(language,i){
-				return (<li key={language}>{language}</li>)
-			});
-
-			return (
-				<tr key={'l' + user.id}>
-					<td colSpan="2">
-						<strong>Linguaggi</strong>
-						<ul className="list-inline">
-						  {languages}
-						</ul>
-					</td>
-				</tr>
-			);
-		};
-
-		return rows.map(function(row,i) {
-			return row.languages ? renderLanguagesRow(row) : renderUserRow(row);
-		},this);
 	}
 
 	render() {
