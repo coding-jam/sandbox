@@ -63,11 +63,13 @@ export default class UserList extends React.Component {
 		            <Modal.Title>{this.state.location}</Modal.Title>
 		          </Modal.Header>
 		          <Modal.Body>
-		            	<Table striped hover responsive>
-							<tbody>
-								{rows}
-							</tbody>
-						</Table>
+		          		<div>
+			            	<Table striped hover responsive>
+								<tbody>
+									{rows}
+								</tbody>
+							</Table>
+						</div>
 		          </Modal.Body>
 		        </Modal>
       		</div>
