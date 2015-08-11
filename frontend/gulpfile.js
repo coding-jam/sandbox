@@ -37,6 +37,9 @@ gulp.task('build', function () {
         .pipe(shell(['jspm bundle-sfx src/main ../build/app.js']))
         .pipe(gulp.dest('./../build'));
 
+    gulp.src('./images/**')
+        .pipe(gulp.dest('./../build/images'));
+
     gulp.src('./css/**')
         .pipe(gulp.dest('./../build/css'));
 });

@@ -4,7 +4,7 @@ import Store from "src/store/LoaderStore";
 
 var Modal = bootstrap.Modal;
 
-export default class UserList extends React.Component {
+export default class Loader extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,10 +31,7 @@ export default class UserList extends React.Component {
 	render() {
 
 		return ( 
-			<div>
-				<Modal show={this.state.showModal}>
-		          <h1>Please wait</h1>
-		        </Modal>
+			<div className={'Loader ' + (this.state.showModal ? 'show' : 'hidden')}>		
       		</div>
 		);
 	}
