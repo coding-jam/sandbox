@@ -5,7 +5,6 @@ import _ from "lodash";
 import UserListRow from "src/components/UserListRow";
 
 var Modal = bootstrap.Modal;
-var Table = bootstrap.Table;
 
 export default class UserList extends React.Component {
 	constructor(props) {
@@ -47,8 +46,10 @@ export default class UserList extends React.Component {
 			return null;
 		}
 
-		return this.state.users.map(function(user,i){
-			return (<UserListRow user={user} key={i}></UserListRow>);
+		var splittedUsers = _.chunk(this.state.users, 2);
+
+		return splittedUsers.map(function(userPair,i){
+			return (<UserListRow userPair={userPair} key={i} even={i % 2 === 0}></UserListRow>);
 		});
 	}
 
@@ -60,15 +61,11 @@ export default class UserList extends React.Component {
 			<div>
 				<Modal bsSize='large' show={this.state.showModal} onHide={this.close}>
 		          <Modal.Header closeButton>
-		            <Modal.Title>{this.state.location}</Modal.Title>
+		            	<Modal.Title>{this.state.location}</Modal.Title>
 		          </Modal.Header>
 		          <Modal.Body>
-		          		<div>
-			            	<Table striped hover responsive>
-								<tbody>
-									{rows}
-								</tbody>
-							</Table>
+		          		<div className="container-fluid NoPadding">
+			            	{rows}
 						</div>
 		          </Modal.Body>
 		        </Modal>

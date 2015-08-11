@@ -3,6 +3,7 @@ import React from "react";
 export default class UserListRow extends React.Component {
 	constructor(props) {
 		super(props);
+		this.renderRows = this._renderRows.bind(this);
 	}
 
 	renderLanguages(languages) {
@@ -15,40 +16,51 @@ export default class UserListRow extends React.Component {
 		});
 	}
 
-	render() {
-
-		return (
-			<tr key={this.props.user.id}>
-				<td className="avatarRow">
-					<a href={this.props.user.html_url} target="_blank">
-						<img className="img-responsive" src={this.props.user.avatar_url}>
+	_renderRows(){
+		return this.props.userPair.map(function(user,i){
+			return (
+			<div>
+				<div className="col-md-1 col-xs-3">
+					<a href={user.html_url} target="_blank">
+						<img className="img-responsive" src={user.avatar_url}>
 						</img>
 					</a>
-				</td>
-				<td>
+				</div>
+				<div className="col-md-5 col-xs-9">
 					<dl>
 						<dt>
-							<a href={this.props.user.html_url} target="_blank">
-								<h3 className="NoPadding">{this.props.user.login}</h3>
+							<a href={user.html_url} target="_blank">
+								<h3 className="NoPadding">{user.login}</h3>
 							</a>
 						</dt>
-						<dd className={this.props.user.name ? 'show' : 'hidden'}>
-							{this.props.user.name}
+						<dd className={user.name ? 'show' : 'hidden'}>
+							{user.name}
 						</dd>
-						<dd className={this.props.user.blog ? 'show' : 'hidden'}>
-							<a target="_blank" href={this.props.user.blog}>{this.props.user.blog}</a>
+						<dd className={user.blog ? 'show' : 'hidden'}>
+							<a target="_blank" href={user.blog}>{user.blog}</a>
 						</dd>
-						<dd className={this.props.user.languages.length ? 'show' : 'hidden'}>
+						<dd className={user.languages.length ? 'show' : 'hidden'}>
 							<ul className="list-inline">
-								{this.renderLanguages(this.props.user.languages)}
+								{this.renderLanguages(user.languages)}
 							</ul>
 						</dd>
-						<dd className={this.props.user.location ? 'show' : 'hidden'}>
-							<i>{this.props.user.location}</i>
+						<dd className={user.location ? 'show' : 'hidden'}>
+							<i>{user.location}</i>
 						</dd>
 					</dl>
-				</td>
-			</tr>
+				</div>
+			</div>);
+		},this);
+	};
+
+	render() {
+
+		var rows = this.renderRows();
+
+		return (
+			<div className={'row UserRow ' + (this.props.even ? 'Even' : 'Odd')}>
+				{rows}
+			</div>
 		);
 	}
 }
