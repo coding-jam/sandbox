@@ -29,15 +29,6 @@ body {
   position: absolute;
 }
 
-.avatarRow{
-  width: 15%;
-}
-
-.NoPadding {
-   padding: 0 !important;
-   margin: 0 !important;
-}
-
 .modal-dialog,
 .modal-content {
     /* 80% of window height */
@@ -76,4 +67,9 @@ body {
   height: 100%;
   z-index: 9999;
   background: url('../images/loader.svg') 50% 50% no-repeat rgba(249,249,249,0.8);
+}
+
+.NoPadding {
+   padding: 0 !important;
+   margin: 0 !important;
 }
