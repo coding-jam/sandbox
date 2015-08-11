@@ -5,6 +5,7 @@ import Dispatcher from "src/Dispatcher";
 import Map from "src/components/Map";
 import UserList from "src/components/UserList";
 import SearchForm from "src/components/SearchForm";
+import LoadingDialog from "src/components/LoadingDialog";
 import swal from "sweetalert";
 
 Dispatcher.register(function(action) {
@@ -21,6 +22,7 @@ export default (function(){
 			<SearchForm/>
 			<Map/>
 			<UserList/>
+			<LoadingDialog/>
 		</div>,
 	document.getElementById('wrapper'));
 })();

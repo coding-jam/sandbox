@@ -10,13 +10,14 @@ var loadRegionList = function() {
 
 	Locations.listRegions().then(function(regions){
 		Dispatcher.dispatch({
-			actionType: "loadingEnd"
-		});
-
-		Dispatcher.dispatch({
 			actionType: "regionsLoaded",
 			regions:regions
 		});
+
+		Dispatcher.dispatch({
+			actionType: "loadingEnd"
+		});
+
 	})
 };
 
@@ -27,14 +28,15 @@ var loadUserByLanguage = function(query) {
 
 	users.listUsersByLanguage(query).then(function(regions){
 		Dispatcher.dispatch({
-			actionType: "loadingEnd"
-		});
-
-		Dispatcher.dispatch({
 			actionType: "userByLanguageLoaded",
 			regions:regions,
 			query:query
 		});
+
+		Dispatcher.dispatch({
+			actionType: "loadingEnd"
+		});
+
 	});
 };
 
