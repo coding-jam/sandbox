@@ -54,11 +54,11 @@ var SandboxApp = function() {
 
         //return dataCollector.collectUsers().catch(function(err) {throw err});
         //return dataCollector.collectUserDetails().catch(function(err) {throw err});
-        return dataCollector.collectLocations()
-            .then(function(locations) {
-                console.log(locations.length + ' locations known');
-                //dataCollector.collectItalianRegions();
-            });
+        //return dataCollector.collectLocations()
+        //    .then(function(locations) {
+        //        console.log(locations.length + ' locations known');
+        //        //dataCollector.collectItalianRegions();
+        //    });
     };
 
 
