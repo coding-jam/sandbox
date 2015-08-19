@@ -186,12 +186,12 @@ var collector = {
         }
     },
 
-    collectUserDetails: function () {
+    collectUserDetails: function (country) {
 
         var deferred = Q.defer();
-        fs.readdir(collector.data.folder + 'users', function (err, files) {
+        fs.readdir(collector.data.folder + country + '_users', function (err, files) {
             if (err) {
-                collector.collectUsers()
+                collector.collectUsers(country)
                     .then(function (users) {
                         addDetails(users, deferred);
                     })
@@ -199,7 +199,7 @@ var collector = {
                         deferred.reject(err);
                     });
             } else {
-                addDetailsFromFiles(files)
+                addDetailsFromFiles(files, country)
                     .then(function () {
                         deferred.resolve();
                     })
@@ -211,34 +211,35 @@ var collector = {
 
         return deferred.promise;
 
-        function addDetailsFromFiles(files) {
+        function addDetailsFromFiles(files, country) {
             var promises = [];
 
             files.forEach(function (file) {
                 if (file.match('\.json$')) {
                     var loopDeferred = Q.defer();
-                    var filePath = collector.data.folder + 'users/' + file;
-                    fs.readFile(filePath, 'utf8', function (err, data) {
-                        if (err) {
-                            loopDeferred.reject(err);
-                        }
-                        var users = JSON.parse(data);
-                        addDetails(users)
-                            .then(function () {
-                                fs.writeFile(filePath, JSON.stringify(users), function (err) {
-                                    if (err) {
-                                        console.error(err);
-                                        loopDeferred.reject(err);
-                                    }
-
-                                    console.log(file + ' updated');
-                                    loopDeferred.resolve();
+                    var filePath = collector.data.folder + country + '_users/' + file;
+                    Q.nfcall(fs.readFile, filePath, 'utf8')
+                        .then(function (data) {
+                            var users = JSON.parse(data);
+                            return addDetails(users)
+                                .then(function() {
+                                    return users;
                                 });
-                            }).catch(function (err) {
-                                loopDeferred.reject(err);
+                        })
+                        .then(function (users) {
+                            fs.writeFile(filePath, JSON.stringify(users), function (err) {
+                                if (err) {
+                                    console.error(err);
+                                    loopDeferred.reject(err);
+                                }
+
+                                console.log(file + ' updated');
+                                loopDeferred.resolve();
                             });
-                        ;
-                    });
+                        })
+                        .catch(function(err) {
+                            loopDeferred.reject(err);
+                        });
                     promises.push(loopDeferred.promise);
                 }
             });
