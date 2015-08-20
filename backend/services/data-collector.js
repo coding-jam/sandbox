@@ -243,37 +243,6 @@ var collector = {
             } else {
                 return addDetailsFromFiles(files, country, ++i, deferred);
             }
-
-            //files.forEach(function (file) {
-            //    if (file.match('\.json$')) {
-            //        var loopDeferred = Q.defer();
-            //        var filePath = collector.data.folder + country + '_users/' + file;
-            //        Q.nfcall(fs.readFile, filePath, 'utf8')
-            //            .then(function (data) {
-            //                var users = JSON.parse(data);
-            //                return addDetails(users)
-            //                    .then(function() {
-            //                        return users;
-            //                    });
-            //            })
-            //            .then(function (users) {
-            //                fs.writeFile(filePath, JSON.stringify(users), function (err) {
-            //                    if (err) {
-            //                        console.error(err);
-            //                        loopDeferred.reject(err);
-            //                    }
-            //
-            //                    console.log(file + ' updated');
-            //                    loopDeferred.resolve();
-            //                });
-            //            })
-            //            .catch(function(err) {
-            //                loopDeferred.reject(err);
-            //            });
-            //        promises.push(loopDeferred.promise);
-            //    }
-            //});
-            //return Q.all(promises);
         }
 
 
