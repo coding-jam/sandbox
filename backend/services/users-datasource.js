@@ -11,15 +11,15 @@ var usersDs = {
 
     data: {
         folder: __dirname + '/../data/',
-        usersFolder: 'users'
+        usersFolder: '_users'
     },
 
-    getUsers: function () {
+    getUsers: function (country) {
         if (users.total_count) {
             return Q.when(users);
         } else {
             var deferred = Q.defer();
-            fs.readdir(usersDs.data.folder + usersDs.data.usersFolder, function (err, files) {
+            fs.readdir(usersDs.data.folder + country + usersDs.data.usersFolder, function (err, files) {
                 if (err || files.length == 0) {
                     deferred.reject(err || 'No data!');
                 } else {
@@ -27,7 +27,7 @@ var usersDs = {
                     files.forEach(function (file) {
                         if (file.match('\.json$')) {
                             var deferredLoop = Q.defer();
-                            var filePath = usersDs.data.folder + usersDs.data.usersFolder + '/' + file;
+                            var filePath = usersDs.data.folder + country + usersDs.data.usersFolder + '/' + file;
                             fs.readFile(filePath, 'utf8', function (err, data) {
                                 if (err) {
                                     deferredLoop.reject(err);
@@ -54,7 +54,7 @@ var usersDs = {
     },
 
     findBy: function (locations) {
-        return usersDs.getUsers()
+        return usersDs.getUsers('it')
             .then(function (users) {
                 return _.filter(users.items, function (user) {
                     return _.contains(locations, user.location.toLowerCase());

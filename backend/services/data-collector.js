@@ -10,8 +10,8 @@ var collector = {
 
     data: {
         folder: usersDs.data.folder,
-        users: 'it_users.json',
-        locations: 'it_locations.json',
+        //users: 'it_users.json',
+        locations: '_locations.json',
         regions: 'it_regions.json'
     },
 
@@ -200,12 +200,6 @@ var collector = {
                     });
             } else {
                 addDetailsFromFiles(files, country, 0, deferred);
-                    //.then(function () {
-                    //    deferred.resolve();
-                    //})
-                    //.catch(function () {
-                    //    deferred.reject();
-                    //});
             }
         });
 
@@ -303,16 +297,16 @@ var collector = {
         }
     },
 
-    collectLocations: function () {
+    collectLocations: function (country) {
         var deferred = Q.defer();
-        usersDs.getUsers()
+        usersDs.getUsers(country)
             .then(function(users) {
-                getLocations(users, deferred);
+                getLocations(country, users, deferred);
             })
             .catch(function() {
-                collector.collectUserDetails()
+                collector.collectUserDetails(country)
                     .then(function (users) {
-                        getLocations(users, deferred);
+                        getLocations(country, users, deferred);
                     }, function (err) {
                         deferred.reject(err);
                     });
@@ -320,31 +314,48 @@ var collector = {
 
         return deferred.promise;
 
-        function getLocations(users, deferred) {
-            fs.exists(collector.data.folder + collector.data.locations, function (exists) {
+        function getLocations(country, users, deferred) {
+            fs.exists(collector.data.folder + country + collector.data.locations, function (exists) {
                 if (!exists) {
-                    cacheLocations(users, deferred);
+                    createBasicFileStructure(country, users)
+                        .then(function(locationCache) {
+                            cacheLocations(country, locationCache, deferred);
+                        });
                 } else {
-                    fs.readFile(collector.data.folder + collector.data.locations, 'utf8', function (err, data) {
-                        if (err) {
-                            deferred.reject(err);
-                        }
-                        deferred.resolve(_.keys(JSON.parse(data)));
-                    });
+                    Q.nfcall(fs.readFile, collector.data.folder + country + collector.data.locations, 'utf8')
+                        .then(function(data) {
+                            cacheLocations(country, JSON.parse(data), deferred);
+                        });
                 }
             });
         };
 
-        function cacheLocations(users, deferred) {
-            var distinctLocations = _.chain(users.items).map(function (item) {
-                return item.location ? item.location.toLowerCase() : item.location
-            }).unique().value();
-            var promises = [];
+        function createBasicFileStructure(country, users) {
+            var distinctLocations = _.chain(users.items)
+                .map(function (item) {
+                    return item.location ? item.location.toLowerCase() : item.location
+                })
+                .unique()
+                .value();
             var locationCache = {};
             distinctLocations.forEach(function (location) {
                 if (location) {
+                    locationCache[location] = [];
+                }
+            });
+
+            return Q.nfcall(fs.writeFile, collector.data.folder + country + collector.data.locations, JSON.stringify(locationCache))
+                .then(function() {
+                    return locationCache;
+                });
+        }
+
+        function cacheLocations(country, locationCache, deferred) {
+            var promises = [];
+            _.keys(locationCache).forEach(function (location, i) {
+                if (locationCache[location].length == 0) {
                     var deferredLoop = Q.defer();
-                    geolocator.locate(location)
+                    geolocator.locate(location, country)
                         .then(function (resp) {
                             locationCache[location] = resp.body.results;
                             deferredLoop.resolve(location);
@@ -353,26 +364,29 @@ var collector = {
                             deferredLoop.reject(err);
                         });
                     promises.push(deferredLoop.promise);
+                } else {
+                    console.log('Location already acquaired for ' + location + ' in position ' + i);
                 }
             });
 
             Q.all(promises)
-                .then(function () {
-                    fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
-                        if (err) {
-                            console.error(err);
-                            deferred.reject(err);
-                        }
-
-                        console.log(collector.data.locations + ' saved');
-                        deferred.resolve(distinctLocations);
-                    });
-                })
+                .then(writeLocationCache)
+                .then(deferred.resolve)
                 .catch(function (err) {
                     console.info('Ops! Some promises are not resolved...');
                     console.error(err);
-                    deferred.reject(err);
+                    writeLocationCache()
+                        .then(function() {
+                            deferred.reject(err);
+                        });
+                })
+                .finally(function() {
+                    console.log(country + collector.data.locations + ' saved');
                 });
+
+            function writeLocationCache() {
+                return Q.nfcall(fs.writeFile, collector.data.folder + country + collector.data.locations, JSON.stringify(locationCache))
+            }
         }
     },
 
