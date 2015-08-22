@@ -35,7 +35,7 @@ var userAdapter = {
         var result = {
             usersInLocations: []
         };
-        return locationDs.findRegioni()
+        return locationDs.getRegioni()
             .then(function(regioni) {
                 var promises = [];
                 regioni.forEach(function(regione) {

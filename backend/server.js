@@ -149,11 +149,10 @@ var SandboxApp = function() {
     self.initialize = function() {
         self.setupVariables();
         self.populateCache()
-            .then(self.createRoutes);
         self.setupTerminationHandlers();
-
         // Create the express server and routes.
         self.initializeServer();
+        self.createRoutes();
     };
 
 
