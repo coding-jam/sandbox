@@ -5,6 +5,7 @@ var ghHttp = require(__dirname + '/gh-http');
 var geolocator = require(__dirname + '/geolocator');
 var usersDs = require(__dirname + '/users-datasource');
 var locationDs = require(__dirname + "/locations-datasource");
+var countryMapping = require('./country-mappings');
 
 var collector = {
 
@@ -12,7 +13,7 @@ var collector = {
         folder: usersDs.data.folder,
         //users: 'it_users.json',
         locations: '_locations.json',
-        regions: 'it_regions.json'
+        districts: '_districts.json'
     },
 
     options: {
@@ -32,13 +33,6 @@ var collector = {
             '{year}-11-01%20..%20{year}-11-30',
             '{year}-12-01%20..%20{year}-12-31'
         ]
-    },
-
-    locationMapping: {
-        "it": "italy",
-        "uk": "uk",
-        "fr": "france",
-        "sp": "spain"
     },
 
     collectUsers: function (country) {
@@ -68,7 +62,7 @@ var collector = {
             var url = collector.options.resourceTemplate
                 .replace(/\{secret\}/g, collector.options.secrets)
                 .replace('{range}', range)
-                .replace('{country}', collector.locationMapping[country]);
+                .replace('{country}', countryMapping.location[country]);
             return ghHttp.getWithLimit(url, true)
                 .then(function (resp) {
                     console.info(resp.body.total_count + ' users found in range ' + range);
@@ -390,6 +384,47 @@ var collector = {
         }
     },
 
+    collectDistricts: function(country) {
+        var result = {
+            districts: []
+        };
+
+        return locationDs.findDistricts(country)
+            .then(function(districts) {
+                var promises = [];
+                districts.forEach(function(district) {
+                    var deferredLoop = Q.defer();
+                    geolocator.locate(district + ', ' + countryMapping.location[country])
+                        .then(function(resp) {
+                            result.districts.push({
+                                district: district,
+                                details: resp.body
+                            });
+                            deferredLoop.resolve();
+                        })
+                        .catch(deferredLoop.reject);
+                    promises.push(deferredLoop.promise);
+                });
+                return Q.all(promises);
+            })
+            .then(function() {
+                var deferred = Q.defer();
+                fs.writeFile(collector.data.folder + country + collector.data.districts, JSON.stringify(result), function (err) {
+                    if (err) {
+                        console.error(err);
+                        deferred.reject(err);
+                    }
+
+                    console.log(country + collector.data.districts + ' saved');
+                    deferred.resolve(result);
+                });
+                return deferred.promise;
+            })
+            .catch(function(err) {
+                console.error(err);
+            });
+    },
+
     collectItalianRegions: function() {
         var result = {
             regions: []
@@ -414,13 +449,13 @@ var collector = {
             })
             .then(function() {
                 var deferred = Q.defer();
-                fs.writeFile(collector.data.folder + collector.data.regions, JSON.stringify(result), function (err) {
+                fs.writeFile(collector.data.folder + collector.data.districts, JSON.stringify(result), function (err) {
                     if (err) {
                         console.error(err);
                         deferred.reject(err);
                     }
 
-                    console.log(collector.data.regions + ' saved');
+                    console.log(collector.data.districts + ' saved');
                     deferred.resolve(result);
                 });
                 return deferred.promise;

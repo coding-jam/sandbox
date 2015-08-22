@@ -1,6 +1,7 @@
 var request = require("request");
 var Q = require("q");
 var _ = require("underscore");
+var countryMapping = require('./country-mappings');
 
 var geolocator = {
 
@@ -33,11 +34,6 @@ var geolocator = {
         json: true
     },
 
-    languageMapping: {
-        it: 'it',
-        uk: 'en'
-    },
-
     locate: function(query, country) {
 
         if (geolocator.rateLimit.activeRequests < geolocator.rateLimit.day.limit) {
@@ -65,7 +61,7 @@ var geolocator = {
 
         function executeRequest(query, country) {
             var options = _.clone(geolocator.options);
-            options.uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(query) + '&language=' + geolocator.languageMapping[country] + '&region=' + country + '&' + geolocator.secrets;
+            options.uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(query) + '&language=' + countryMapping.language[country] + '&region=' + country + '&' + geolocator.secrets;
             geolocator.rateLimit.activeRequests++
 
             console.log('Start new request. Active requests: ' + geolocator.rateLimit.activeRequests);

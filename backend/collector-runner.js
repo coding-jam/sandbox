@@ -2,14 +2,16 @@
 var _ = require("underscore");
 var collector = require('./services/data-collector');
 var colors = require('colors');
+var countryMapping = require('./services/country-mappings');
 
-var allowedLanguages = _.keys(collector.locationMapping);
+var allowedLanguages = _.keys(countryMapping.location);
 
 var allowedActions = {
 
     "users": collector.collectUsers,
     "details": collector.collectUserDetails,
-    "locations": collector.collectLocations
+    "locations": collector.collectLocations,
+    "districts": collector.collectDistricts
 };
 
 function logError() {
