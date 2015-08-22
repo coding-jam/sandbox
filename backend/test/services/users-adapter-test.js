@@ -45,6 +45,9 @@ describe('Users Adapter Test suite', function () {
                     expect(users.usersInLocations).to.have.deep.property('[19].regionName');
                     expect(users.usersInLocations).to.have.deep.property('[19].usersDetails');
                     expect(users.usersInLocations).to.have.deep.property('[19].usersCount');
+
+                    expect(users.usersInLocations[10].regionName).equal('Molise');
+                    expect(users.usersInLocations[10].usersCount).to.be.below(10);
                 })
                 .done(done);
         });
