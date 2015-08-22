@@ -21,16 +21,17 @@ var locationsDs = {
     findBy: function (areaLevel, shortName) {
         return Q.fcall(function () {
             var locationsFound = {};
-            _.keys(locationData).forEach(function (key) {
+            var countryData = locationData['it'];
+            _.keys(countryData).forEach(function (key) {
 
-                if (locationData[key].length > 0) {
-                    var found = _.find(locationData[key][0].address_components, function (address) {
+                if (countryData[key].length > 0) {
+                    var found = _.find(countryData[key][0].address_components, function (address) {
                         return _.contains(address.types, areaLevel)
                             && address.short_name && address.short_name.toLowerCase() == shortName.toLowerCase();
                     });
 
                     if (found) {
-                        locationsFound[key] = locationData[key];
+                        locationsFound[key] = countryData[key];
                     }
                 }
             });
@@ -69,8 +70,8 @@ var locationsDs = {
     findDistricts: function(country) {
         return Q.fcall(function () {
             var regions = [];
-            _.keys(locationData[country]).forEach(function (key) {
-                var countryData = locationData[country];
+            var countryData = locationData[country];
+            _.keys(countryData).forEach(function (key) {
                 if (countryData[key].length > 0 && isCountry(countryData[key][0].address_components, country)) {
                     var found = _.find(countryData[key][0].address_components, function (address) {
                         return _.contains(address.types, countryMapping.districtLevel[country]);
@@ -91,7 +92,7 @@ var locationsDs = {
     getRegioni: function () {
         return Q.fcall(function () {
             return _.map(districtsData.districts, function (region) {
-                return region.region;
+                return region.district;
             });
         });
     }
