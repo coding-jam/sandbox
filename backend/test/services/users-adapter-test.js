@@ -1,4 +1,4 @@
-var userAdapter = require('../services/users-adapter');
+var userAdapter = require('../../services/users-adapter');
 var expect = require('chai').expect;
 
 describe('Users Adapter Test suite', function () {

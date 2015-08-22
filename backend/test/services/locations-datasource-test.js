@@ -1,4 +1,4 @@
-var locationDs = require('../services/locations-datasource');
+var locationDs = require('../../services/locations-datasource');
 var expect = require('chai').expect;
 
 describe('Locations Datasource Test suite', function () {
