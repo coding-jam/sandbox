@@ -11,7 +11,7 @@ var usersDs = {
 
     data: {
         folder: __dirname + '/../data/',
-        usersFolder: 'users'
+        usersFolder: 'it_users'
     },
 
     getUsers: function () {
