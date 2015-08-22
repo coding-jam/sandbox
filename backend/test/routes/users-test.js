@@ -8,7 +8,7 @@ var Q = require('q');
 describe('Users Routes Test suite', function () {
 
     this.timeout(100000);
-    //this.slow(250000);
+    this.slow(1000000);
 
     var options = {
         method: "GET",
@@ -30,17 +30,19 @@ describe('Users Routes Test suite', function () {
         require('../../server');
     });
 
-    describe('getRankedLanguages', function () {
+    describe('/users', function () {
 
-        it('should return all languages used in Italy order by most used', function (done) {
+        it('should return all italian region url', function (done) {
 
             getUri('/users')
                 .then(function(resp) {
                     expect(resp.body).to.have.property('usersInLocations');
                     expect(resp.body).to.have.property('links');
 
-                    expect(resp.body.usersInLocations[10].regionName).equal('Molise');
-                    expect(resp.body.usersInLocations[10].usersCount).to.be.below(10);
+                    var molise = _.find(resp.body.usersInLocations, function(location) {
+                        return location.regionName == 'Molise';
+                    });
+                    expect(molise.usersCount).to.be.below(10);
                 })
                 .done(done);
         });

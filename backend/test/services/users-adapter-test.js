@@ -1,5 +1,6 @@
 var userAdapter = require('../../services/users-adapter');
 var expect = require('chai').expect;
+var _ = require('underscore');
 
 describe('Users Adapter Test suite', function () {
 
@@ -46,8 +47,11 @@ describe('Users Adapter Test suite', function () {
                     expect(users.usersInLocations).to.have.deep.property('[19].usersDetails');
                     expect(users.usersInLocations).to.have.deep.property('[19].usersCount');
 
-                    expect(users.usersInLocations[10].regionName).equal('Molise');
-                    expect(users.usersInLocations[10].usersCount).to.be.below(10);
+                    var molise = _.find(users.usersInLocations, function(location) {
+                        return location.regionName == 'Molise';
+                    });
+
+                    expect(molise.usersCount).to.be.below(10);
                 })
                 .done(done);
         });

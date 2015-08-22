@@ -51,7 +51,7 @@ var ghHttp = {
             } else {
                 return {
                     limit: 20,
-                    interval: 15 * 1000
+                    interval: 8 * 1000
                 }
             }
         }
