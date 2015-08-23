@@ -107,8 +107,8 @@ var locationsDs = {
         });
     },
 
-    getRegioniWithDetails: function () {
-        return Q.when(districtsData['it']);
+    getDistrictsWithDetails: function (country) {
+        return Q.when(districtsData[country]);
     },
 
     /**

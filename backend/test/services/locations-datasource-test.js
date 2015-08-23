@@ -127,4 +127,34 @@ describe('Locations Datasource Test suite', function () {
         });
     });
 
+    describe('getDistrictsWithDetails', function () {
+
+        it('should return italian regions from it_districts.js', function (done) {
+
+            locationDs.getDistrictsWithDetails('it')
+                .then(function (districts) {
+                    expect(districts).to.be.not.null;
+                    expect(districts).to.have.property('districts');
+                    expect(districts.districts).is.a('array');
+                    expect(districts.districts).to.have.length(20);
+                })
+                .done(done);
+
+        });
+
+        it('should return uk districts from uk_districts.js', function (done) {
+
+            locationDs.getDistrictsWithDetails('uk')
+                .then(function (districts) {
+                    expect(districts).to.be.not.null;
+                    expect(districts).to.have.property('districts');
+                    expect(districts.districts).is.a('array');
+                    expect(districts.districts).to.have.length(147);
+                })
+                .done(done);
+
+        });
+
+    });
+
 });
