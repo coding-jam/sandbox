@@ -54,11 +54,11 @@ var SandboxApp = function() {
 
         //return dataCollector.collectUsers().catch(function(err) {throw err});
         //return dataCollector.collectUserDetails().catch(function(err) {throw err});
-        return dataCollector.collectLocations()
-            .then(function(locations) {
-                console.log(locations.length + ' locations known');
-                //dataCollector.collectItalianRegions();
-            });
+        //return dataCollector.collectLocations()
+        //    .then(function(locations) {
+        //        console.log(locations.length + ' locations known');
+        //        //dataCollector.collectItalianRegions();
+        //    });
     };
 
 
@@ -149,11 +149,10 @@ var SandboxApp = function() {
     self.initialize = function() {
         self.setupVariables();
         self.populateCache()
-            .then(self.createRoutes);
         self.setupTerminationHandlers();
-
         // Create the express server and routes.
         self.initializeServer();
+        self.createRoutes();
     };
 
 

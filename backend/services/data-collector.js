@@ -5,28 +5,37 @@ var ghHttp = require(__dirname + '/gh-http');
 var geolocator = require(__dirname + '/geolocator');
 var usersDs = require(__dirname + '/users-datasource');
 var locationDs = require(__dirname + "/locations-datasource");
+var countryMapping = require('./country-mappings');
 
 var collector = {
 
     data: {
         folder: usersDs.data.folder,
-        users: 'it_users.json',
-        locations: 'it_locations.json',
-        regions: 'it_regions.json'
+        //users: 'it_users.json',
+        locations: '_locations.json',
+        districts: '_districts.json'
     },
 
     options: {
         secrets: ghHttp.secrets,
-        resourceTemplate: 'https://api.github.com/search/users?q=created:%22{range}%22%20location:italy%20type:user&sort=joined&per_page=100&{secret}',
+        resourceTemplate: 'https://api.github.com/search/users?q=created:%22{range}%22%20location:{country}%20type:user&sort=joined&per_page=100&{secret}',
         rangeTemplate: [
-            '{year}-01-01%20..%20{year}-03-31',
-            '{year}-04-01%20..%20{year}-06-30',
-            '{year}-07-01%20..%20{year}-09-30',
-            '{year}-10-01%20..%20{year}-12-31'
+            '{year}-01-01%20..%20{year}-01-31',
+            '{year}-02-01%20..%20{year}-02-27',
+            '{year}-02-28%20..%20{year}-03-31',
+            '{year}-04-01%20..%20{year}-04-30',
+            '{year}-05-01%20..%20{year}-05-31',
+            '{year}-06-01%20..%20{year}-06-30',
+            '{year}-07-01%20..%20{year}-07-31',
+            '{year}-08-01%20..%20{year}-08-31',
+            '{year}-09-01%20..%20{year}-09-30',
+            '{year}-10-01%20..%20{year}-10-31',
+            '{year}-11-01%20..%20{year}-11-30',
+            '{year}-12-01%20..%20{year}-12-31'
         ]
     },
 
-    collectUsers: function () {
+    collectUsers: function (country) {
 
         var deferred = Q.defer();
         var year = 2008;
@@ -34,13 +43,13 @@ var collector = {
         var allPromises = [];
         while (year <= new Date().getFullYear()) {
             collector.options.rangeTemplate.forEach(function (rangeTemplate) {
-                allPromises.push(executeRequest(rangeTemplate));
+                allPromises.push(executeRequest(rangeTemplate, country));
             });
             year++;
         }
 
         Q.all(allPromises).then(function (data) {
-            saveUsers(data, deferred);
+            saveUsers(data, deferred, country);
         }, function (error) {
             console.error('ERROR!! ' + error.message);
             deferred.reject(error);
@@ -48,13 +57,24 @@ var collector = {
 
         return deferred.promise;
 
-        function executeRequest(rangeTemplate) {
+        function executeRequest(rangeTemplate, country) {
             var range = createRange(year, rangeTemplate);
-            var url = collector.options.resourceTemplate.replace(/\{secret\}/g, collector.options.secrets).replace('{range}', range);
+            var url = collector.options.resourceTemplate
+                .replace(/\{secret\}/g, collector.options.secrets)
+                .replace('{range}', range)
+                .replace('{country}', countryMapping.location[country]);
             return ghHttp.getWithLimit(url, true)
                 .then(function (resp) {
                     console.info(resp.body.total_count + ' users found in range ' + range);
-                    if (resp.body.total_count > 100) {
+                    if (resp.body.total_count == undefined) {
+                        var message = "Total count not found!! Found: " + resp.body;
+                        console.error(message);
+                        return Q.reject(message);
+                    } else if (resp.body.total_count > 1000) {
+                        var message = "Range too big!!";
+                        console.error(message);
+                        return Q.reject(message);
+                    } else if (resp.body.total_count > 100) {
                         return handlePagination(resp.body, url);
                     } else {
                         return resp.body;
@@ -74,7 +94,7 @@ var collector = {
                         var pagedDeferred = Q.defer();
                         ghHttp.getWithLimit(url + '&page=' + i, true)
                             .then(function (resp) {
-                                if (resp.body.total_count) {
+                                if (resp.body.total_count != undefined) {
                                     pagedDeferred.resolve(resp.body);
                                 } else {
                                     pagedDeferred.reject(resp.body);
@@ -87,25 +107,26 @@ var collector = {
                         promises.push(pagedDeferred.promise);
                     })();
                 }
-                return Q.all(promises).then(function (usersPages) {
-                    var result = {
-                        total_count: users.total_count,
-                        items: users.items
-                    };
+                return Q.all(promises)
+                    .then(function (usersPages) {
+                        var result = {
+                            total_count: users.total_count,
+                            items: users.items
+                        };
 
-                    usersPages.forEach(function (usersPage) {
-                        result.items = result.items.concat(usersPage.items);
+                        usersPages.forEach(function (usersPage) {
+                            result.items = result.items.concat(usersPage.items);
+                        });
+                        checkConsistency(result, 'handlePagination');
+                        return result;
+                    }).catch(function (err) {
+                        console.error(err);
+                        throw err;
                     });
-                    checkConsistency(result, 'handlePagination');
-                    return result;
-                }, function (err) {
-                    console.error(err);
-                    return err;
-                });
             }
         }
 
-        function saveUsers(data, deferred) {
+        function saveUsers(data, deferred, country) {
             var result = {
                 total_count: 0,
                 items: []
@@ -119,32 +140,37 @@ var collector = {
                     console.error('Found json: ' + JSON.stringify(jsonObj));
                 }
             });
-            checkConsistency(result, 'saveUsers');
+            try {
 
-            var promises = [];
-            data.forEach(function (jsonObj, i) {
-                var loopDeferred = Q.defer();
-                fs.writeFile(collector.data.folder + 'users/users_' + i + '.json', JSON.stringify(jsonObj), function (err) {
-                    if (err) {
-                        console.error(err);
-                        loopDeferred.reject(err);
-                    }
+                checkConsistency(result, 'saveUsers');
 
-                    console.log('users_' + i + '.json saved');
-                    loopDeferred.resolve(result);
-                });
-                promises.push(loopDeferred.promise);
-            });
+                var promises = [];
+                data.forEach(function (jsonObj, i) {
+                    var loopDeferred = Q.defer();
+                    fs.writeFile(collector.data.folder + country + '_users/users_' + i + '.json', JSON.stringify(jsonObj), function (err) {
+                        if (err) {
+                            console.error(err);
+                            loopDeferred.reject(err);
+                        }
 
-            Q.all(promises)
-                .then(function () {
-                    deferred.resolve();
-                })
-                .catch(function (err) {
-                    deferred.reject(err);
+                        console.log('users_' + i + '.json saved');
+                        loopDeferred.resolve(result);
+                    });
+                    promises.push(loopDeferred.promise);
                 });
 
-            console.log('Total users found ' + result.total_count);
+                Q.all(promises)
+                    .then(function () {
+                        deferred.resolve();
+                    })
+                    .catch(function (err) {
+                        deferred.reject(err);
+                    });
+
+                console.log('Total users found ' + result.total_count);
+            } catch(e) {
+                deferred.reject(e.message);
+            }
         }
 
         function checkConsistency(users, log) {
@@ -154,12 +180,12 @@ var collector = {
         }
     },
 
-    collectUserDetails: function () {
+    collectUserDetails: function (country) {
 
         var deferred = Q.defer();
-        fs.readdir(collector.data.folder + 'users', function (err, files) {
+        fs.readdir(collector.data.folder + country + '_users', function (err, files) {
             if (err) {
-                collector.collectUsers()
+                collector.collectUsers(country)
                     .then(function (users) {
                         addDetails(users, deferred);
                     })
@@ -167,50 +193,44 @@ var collector = {
                         deferred.reject(err);
                     });
             } else {
-                addDetailsFromFiles(files)
-                    .then(function () {
-                        deferred.resolve();
-                    })
-                    .catch(function () {
-                        deferred.reject();
-                    });
+                addDetailsFromFiles(files, country, 0, deferred);
             }
         });
 
         return deferred.promise;
 
-        function addDetailsFromFiles(files) {
-            var promises = [];
+        function addDetailsFromFiles(files, country, i, deferred) {
 
-            files.forEach(function (file) {
-                if (file.match('\.json$')) {
-                    var loopDeferred = Q.defer();
-                    var filePath = collector.data.folder + 'users/' + file;
-                    fs.readFile(filePath, 'utf8', function (err, data) {
-                        if (err) {
-                            loopDeferred.reject(err);
-                        }
+            if (i >= files.length) {
+                return deferred.resolve();
+
+            } else if (files[i].match('\.json$')) {
+                var file = files[i];
+                var filePath = collector.data.folder + country + '_users/' + file;
+                console.log('Processing file ' + file);
+                Q.nfcall(fs.readFile, filePath, 'utf8')
+                    .then(function (data) {
                         var users = JSON.parse(data);
-                        addDetails(users)
-                            .then(function () {
-                                fs.writeFile(filePath, JSON.stringify(users), function (err) {
-                                    if (err) {
-                                        console.error(err);
-                                        loopDeferred.reject(err);
-                                    }
-
-                                    console.log(file + ' updated');
-                                    loopDeferred.resolve();
-                                });
-                            }).catch(function (err) {
-                                loopDeferred.reject(err);
+                        return addDetails(users)
+                            .then(function() {
+                                return users;
                             });
-                        ;
+                    })
+                    .then(function (users) {
+                        fs.writeFile(filePath, JSON.stringify(users), function (err) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            console.log(file + ' updated');
+                            return addDetailsFromFiles(files, country, ++i, deferred);
+                        });
+                    })
+                    .catch(function(err) {
+                        return deferred.reject(err);
                     });
-                    promises.push(loopDeferred.promise);
-                }
-            });
-            return Q.all(promises);
+            } else {
+                return addDetailsFromFiles(files, country, ++i, deferred);
+            }
         }
 
 
@@ -271,16 +291,16 @@ var collector = {
         }
     },
 
-    collectLocations: function () {
+    collectLocations: function (country) {
         var deferred = Q.defer();
-        usersDs.getUsers()
+        usersDs.getUsers(country)
             .then(function(users) {
-                getLocations(users, deferred);
+                getLocations(country, users, deferred);
             })
             .catch(function() {
-                collector.collectUserDetails()
+                collector.collectUserDetails(country)
                     .then(function (users) {
-                        getLocations(users, deferred);
+                        getLocations(country, users, deferred);
                     }, function (err) {
                         deferred.reject(err);
                     });
@@ -288,31 +308,48 @@ var collector = {
 
         return deferred.promise;
 
-        function getLocations(users, deferred) {
-            fs.exists(collector.data.folder + collector.data.locations, function (exists) {
+        function getLocations(country, users, deferred) {
+            fs.exists(collector.data.folder + country + collector.data.locations, function (exists) {
                 if (!exists) {
-                    cacheLocations(users, deferred);
+                    createBasicFileStructure(country, users)
+                        .then(function(locationCache) {
+                            cacheLocations(country, locationCache, deferred);
+                        });
                 } else {
-                    fs.readFile(collector.data.folder + collector.data.locations, 'utf8', function (err, data) {
-                        if (err) {
-                            deferred.reject(err);
-                        }
-                        deferred.resolve(_.keys(JSON.parse(data)));
-                    });
+                    Q.nfcall(fs.readFile, collector.data.folder + country + collector.data.locations, 'utf8')
+                        .then(function(data) {
+                            cacheLocations(country, JSON.parse(data), deferred);
+                        });
                 }
             });
         };
 
-        function cacheLocations(users, deferred) {
-            var distinctLocations = _.chain(users.items).map(function (item) {
-                return item.location ? item.location.toLowerCase() : item.location
-            }).unique().value();
-            var promises = [];
+        function createBasicFileStructure(country, users) {
+            var distinctLocations = _.chain(users.items)
+                .map(function (item) {
+                    return item.location ? item.location.toLowerCase() : item.location
+                })
+                .unique()
+                .value();
             var locationCache = {};
             distinctLocations.forEach(function (location) {
                 if (location) {
+                    locationCache[location] = [];
+                }
+            });
+
+            return Q.nfcall(fs.writeFile, collector.data.folder + country + collector.data.locations, JSON.stringify(locationCache))
+                .then(function() {
+                    return locationCache;
+                });
+        }
+
+        function cacheLocations(country, locationCache, deferred) {
+            var promises = [];
+            _.keys(locationCache).forEach(function (location, i) {
+                if (locationCache[location].length == 0) {
                     var deferredLoop = Q.defer();
-                    geolocator.locate(location)
+                    geolocator.locate(location, country)
                         .then(function (resp) {
                             locationCache[location] = resp.body.results;
                             deferredLoop.resolve(location);
@@ -321,27 +358,71 @@ var collector = {
                             deferredLoop.reject(err);
                         });
                     promises.push(deferredLoop.promise);
+                } else {
+                    console.log('Location already acquaired for ' + location + ' in position ' + i);
                 }
             });
 
             Q.all(promises)
-                .then(function () {
-                    fs.writeFile(collector.data.folder + collector.data.locations, JSON.stringify(locationCache), function (err) {
-                        if (err) {
-                            console.error(err);
-                            deferred.reject(err);
-                        }
-
-                        console.log(collector.data.locations + ' saved');
-                        deferred.resolve(distinctLocations);
-                    });
-                })
+                .then(writeLocationCache)
+                .then(deferred.resolve)
                 .catch(function (err) {
                     console.info('Ops! Some promises are not resolved...');
                     console.error(err);
-                    deferred.reject(err);
+                    writeLocationCache()
+                        .then(function() {
+                            deferred.reject(err);
+                        });
+                })
+                .finally(function() {
+                    console.log(country + collector.data.locations + ' saved');
                 });
+
+            function writeLocationCache() {
+                return Q.nfcall(fs.writeFile, collector.data.folder + country + collector.data.locations, JSON.stringify(locationCache))
+            }
         }
+    },
+
+    collectDistricts: function(country) {
+        var result = {
+            districts: []
+        };
+
+        return locationDs.findDistricts(country)
+            .then(function(districts) {
+                var promises = [];
+                districts.forEach(function(district) {
+                    var deferredLoop = Q.defer();
+                    geolocator.locate(district + ', ' + countryMapping.location[country])
+                        .then(function(resp) {
+                            result.districts.push({
+                                district: district,
+                                details: resp.body
+                            });
+                            deferredLoop.resolve();
+                        })
+                        .catch(deferredLoop.reject);
+                    promises.push(deferredLoop.promise);
+                });
+                return Q.all(promises);
+            })
+            .then(function() {
+                var deferred = Q.defer();
+                fs.writeFile(collector.data.folder + country + collector.data.districts, JSON.stringify(result), function (err) {
+                    if (err) {
+                        console.error(err);
+                        deferred.reject(err);
+                    }
+
+                    console.log(country + collector.data.districts + ' saved');
+                    deferred.resolve(result);
+                });
+                return deferred.promise;
+            })
+            .catch(function(err) {
+                console.error(err);
+            });
     },
 
     collectItalianRegions: function() {
@@ -368,13 +449,13 @@ var collector = {
             })
             .then(function() {
                 var deferred = Q.defer();
-                fs.writeFile(collector.data.folder + collector.data.regions, JSON.stringify(result), function (err) {
+                fs.writeFile(collector.data.folder + collector.data.districts, JSON.stringify(result), function (err) {
                     if (err) {
                         console.error(err);
                         deferred.reject(err);
                     }
 
-                    console.log(collector.data.regions + ' saved');
+                    console.log(collector.data.districts + ' saved');
                     deferred.resolve(result);
                 });
                 return deferred.promise;

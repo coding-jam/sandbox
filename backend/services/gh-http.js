@@ -51,7 +51,7 @@ var ghHttp = {
             } else {
                 return {
                     limit: 20,
-                    interval: 15 * 1000
+                    interval: 8 * 1000
                 }
             }
         }
@@ -61,7 +61,7 @@ var ghHttp = {
                 console.info('Execute request now: limit set to ' + limitParams.limit);
                 return executeRequest(limitParams);
             } else {
-                var interval = limitParams.resetTime * 1000 - Date.now() + (queueRateLimit.interval * 3);
+                var interval = Math.abs((limitParams.resetTime * 1000) - Date.now()) + (queueRateLimit.interval * 3);
                 console.log('Apply request delay of ' + (interval / 1000) + ' seconds');
                 return delayRequest(interval, url, isSearch);
             }
@@ -98,8 +98,14 @@ var ghHttp = {
     },
 
     updateLimits: function (response, limitParams) {
-        limitParams.limit = response.headers['x-ratelimit-remaining'];
-        limitParams.resetTime = response.headers['x-ratelimit-reset'];
+        var newResetTime = response.headers['x-ratelimit-reset'];
+        var newLimit = response.headers['x-ratelimit-remaining'];
+        if (limitParams.resetTime == newResetTime) {
+            limitParams.limit = Math.min(newLimit, limitParams.limit);
+        } else {
+            limitParams.limit = newLimit;
+            limitParams.resetTime = newResetTime;
+        }
     },
 
     setupApiLimits: function() {
