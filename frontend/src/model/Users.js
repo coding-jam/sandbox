@@ -4,7 +4,7 @@ import locations from "src/model/Locations";
 
 var listUsersByLanguage = function(searchQuery) {
 	if (!searchQuery) {
-		return jQuery.get('/api/v1/users').then(function(response) {
+		return jQuery.get('/api/v1/users/it').then(function(response) {
 			var usersInLocations = response.usersInLocations;
 
 			return locations.listRegions().then(function(locations) {
@@ -22,8 +22,8 @@ var listUsersByLanguage = function(searchQuery) {
 			});
 		});
 	}else{
-		return jQuery.get('/api/v1/languages/per-locations').then(function(response) {
-			var languagesPerRegions = response.languagesPerRegions;
+		return jQuery.get('/api/v1/languages/it/per-district').then(function(response) {
+			var languagesPerRegions = response.languagesPerDistricts;
 
 			return locations.listRegions().then(function(locations) {
 
@@ -57,7 +57,7 @@ var listUsersByLanguage = function(searchQuery) {
 };
 
 var listUserByLocation = function(params){
-	return jQuery.get('/api/v1/users/' + params.location.toLowerCase()).then(function(response) {
+	return jQuery.get('/api/v1/users/it/' + params.location.toLowerCase()).then(function(response) {
 			var users = response.items;
 
 			if(params.language){
