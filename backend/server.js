@@ -124,6 +124,21 @@ var SandboxApp = function() {
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);
         self.app.use(api.getApiPath() + api.locationsPath, locations);
+
+        // catch 404 and forward to error handler
+        self.app.use(function(req, res, next) {
+            var err = new Error('Not Found');
+            err.status = 404;
+            next(err);
+        });
+
+        self.app.use(function(err, req, res, next) {
+            res.status(err.status || 500);
+            res.json({
+                message: err.message,
+                error: {}
+            });
+        });
     };
 
 
