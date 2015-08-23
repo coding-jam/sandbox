@@ -29,19 +29,22 @@ gulp.task('serve', function () {
     serve(false);
 });
 
-gulp.task('build', function () {
+gulp.task('clear', function() {
     del(['./../build/**/*'], {force: true});
+});
 
-    gulp.src('./index_prod.html')
-        .pipe(rename("index.html"))
-        .pipe(shell(['jspm bundle-sfx src/main ../build/app.js']))
-        .pipe(gulp.dest('./../build'));
+gulp.task('build', ['clear'], function () {
 
     gulp.src('./images/**')
         .pipe(gulp.dest('./../build/images'));
 
     gulp.src('./css/**')
         .pipe(gulp.dest('./../build/css'));
+
+    gulp.src('./index_prod.html')
+        .pipe(rename("index.html"))
+        .pipe(shell(['jspm bundle-sfx src/main ../build/app.js']))
+        .pipe(gulp.dest('./../build'));
 });
 
 gulp.task('serve-build', ['build'], function () {

@@ -5,31 +5,32 @@ var api = require(__dirname + '/../services/api-params');
 
 var router = express.Router();
 
-router.get('/', function (req, res) {
+router.get('/:country', function (req, res, next) {
 
-    languagesAdapter.getRankedLanguages()
+    languagesAdapter.getRankedLanguages(req.params.country)
         .then(function(languages) {
             res.json({
                 languages: languages,
                 links: {
-                    languagesPerLocations: api.getApiPath() + api.languagesPath + '/per-locations',
-                    singleLocation: api.getApiPath() + api.languagesPath + '/{:regionName}'
+                    languagesPerDistrict: api.getApiPath() + api.languagesPath + '/' + req.params.country + '/per-district',
+                    singleDistrict: api.getApiPath() + api.languagesPath + '/' + req.params.country + '/{:districtName}'
                 }
             });
-        });
+        })
+        .catch(next);
 });
 
-router.get('/per-locations', function (req, res) {
+router.get('/:country/per-district', function (req, res) {
 
-    languagesAdapter.getLanguagesPerLocations()
+    languagesAdapter.getLanguagesPerDistrict(req.params.country)
         .then(function(languages) {
             res.json(languages);
         });
 });
 
-router.get('/:regione', function (req, res) {
+router.get('/:country/:district', function (req, res) {
 
-    languagesAdapter.getRankedLanguages(req.params.regione)
+    languagesAdapter.getRankedLanguages(req.params.country, req.params.district)
         .then(function(languages) {
             res.json(languages);
         });

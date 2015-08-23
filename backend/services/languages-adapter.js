@@ -37,32 +37,32 @@ function adaptLanguages(languages) {
 
 var languagesAdapter = {
 
-    getRankedLanguages: function (regione) {
+    getRankedLanguages: function (country, district) {
 
-        if (regione) {
-            return locationDs.findRegioneBy(regione)
+        if (district) {
+            return locationDs.findLocationsBy(country, district)
                 .then(function (locations) {
-                    return userDs.findBy(_.keys(locations));
+                    return userDs.findBy(country, _.keys(locations));
                 })
                 .then(findLanguages)
                 .then(adaptLanguages)
         } else {
-            return userDs.getUsers()
+            return userDs.getUsers(country)
                 .then(findLanguages)
                 .then(adaptLanguages);
         }
     },
 
-    getLanguagesPerLocations: function () {
-        return locationDs.getRegioni()
-            .then(function (regioni) {
+    getLanguagesPerDistrict: function (country) {
+        return locationDs.getDistricts(country)
+            .then(function (districts) {
                 var promises = [];
-                regioni.forEach(function(regione) {
+                districts.forEach(function(district) {
                     var deferredLoop = Q.defer();
-                    languagesAdapter.getRankedLanguages(regione.toLowerCase())
+                    languagesAdapter.getRankedLanguages(country, district.toLowerCase())
                         .then(function(languages) {
                             deferredLoop.resolve({
-                                regionName: regione,
+                                districtName: district,
                                 languages: languages
                             });
                         })
@@ -73,9 +73,9 @@ var languagesAdapter = {
                 });
                 return Q.all(promises);
             })
-            .then(function(languagesPerRegions) {
+            .then(function(languagesPerDistricts) {
                 return {
-                    languagesPerRegions: languagesPerRegions
+                    languagesPerDistricts: languagesPerDistricts
                 }
             });
     }

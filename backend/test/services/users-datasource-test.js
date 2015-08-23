@@ -10,7 +10,7 @@ describe('Users Datasource Test suite', function () {
 
         it('should return italian users from it_users folder', function (done) {
 
-            usersDs.getUsers()
+            usersDs.getUsers('it')
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users.total_count).to.be.above(8000);
@@ -25,7 +25,7 @@ describe('Users Datasource Test suite', function () {
 
         it('should return users in molise', function (done) {
 
-            usersDs.findBy(['florence, italy'])
+            usersDs.findBy('it', ['florence, italy'])
                 .then(function(users) {
                     expect(users).has.property('total_count');
                     expect(users.total_count).to.be.least(89);

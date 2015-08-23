@@ -5,10 +5,10 @@ var api = require(__dirname + '/../services/api-params');
 
 var router = express.Router();
 
-router.get('/', function (req, res) {
-    locationsDs.getRegioniWithDetails()
-        .then(function(regions) {
-            res.json(regions);
+router.get('/:country', function (req, res) {
+    locationsDs.getDistrictsWithDetails(req.params.country)
+        .then(function(districts) {
+            res.json(districts);
         });
 });
 

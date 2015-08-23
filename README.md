@@ -40,13 +40,13 @@ API entrypoint provides a *links* object for accessing further more APIs:
     Provides all programming languages ranked by users in Italy.
     This service provides two more links:
     
-    * *languagesPerLocations*: provides languages grouped by italian regions
+    * *languagesPerDistrict*: provides languages grouped by italian regions
     
         ```
-        http://git-map.com/api/v1/languages/per-locations
+        http://git-map.com/api/v1/languages/per-district
         ```
 
-    * *singleLocation*: provides languages in a single italian region (same endpoint as *languages* in *usersInLocations* seen above)
+    * *singleDistrict*: provides languages in a single italian region (same endpoint as *languages* in *usersInLocations* seen above)
     
 * *locationsDetails*:
 
