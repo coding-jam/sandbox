@@ -3,7 +3,6 @@
 var express = require('express');
 var fs = require('fs');
 
-var dataCollector  = require(__dirname + '/services/data-collector');
 var users = require(__dirname + '/routes/users');
 var languages = require(__dirname + '/routes/languages');
 var locations = require(__dirname + '/routes/locations');
@@ -150,6 +149,7 @@ var SandboxApp = function() {
         self.setupVariables();
         self.populateCache()
         self.setupTerminationHandlers();
+
         // Create the express server and routes.
         self.initializeServer();
         self.createRoutes();

@@ -11,7 +11,7 @@ var listUsersByLanguage = function(searchQuery) {
 
 				_.each(locations, function(location) {
 					var currentUserLocation = _.find(usersInLocations, function(userLocation) {
-						return userLocation.regionName === location.name;
+						return userLocation.districtName === location.name;
 					});
 
 					location.usersCount = currentUserLocation.usersCount
@@ -32,7 +32,7 @@ var listUsersByLanguage = function(searchQuery) {
 					location.usersCount = 0;
 
 					var currentLanguagesPerRegions = _.find(languagesPerRegions, function(languagePerRegions) {
-						return languagePerRegions.regionName === location.name;
+						return languagePerRegions.districtName === location.name;
 					});
 
 					if(currentLanguagesPerRegions){

@@ -5,30 +5,30 @@ var api = require(__dirname + '/../services/api-params');
 
 var router = express.Router();
 
-router.get('/', function (req, res) {
-    userAdapter.getUsersPerRegione(api.getApiPath() + api.usersPath)
+router.get('/:country', function (req, res) {
+    userAdapter.getUsersPerDistrict(req.params.country, api.getApiPath() + api.usersPath + '/' + req.params.country)
         .then(function(users) {
             var resBody = _.extend({}, users);
             resBody.links = {};
-            addLanguagesInfo(resBody);
-            addLocationsInfo(resBody);
+            addLanguagesInfo(resBody, req.params.country);
+            addLocationsInfo(resBody, req.params.country);
             res.json(resBody);
         });
 
-    function addLanguagesInfo(resBody) {
-        resBody.links.languages = api.getApiPath() + api.languagesPath;
+    function addLanguagesInfo(resBody, country) {
+        resBody.links.languages = api.getApiPath() + api.languagesPath + '/' + country;
         resBody.usersInLocations.forEach(function(location) {
             location.languages = location.usersDetails.replace(api.usersPath, api.languagesPath);
         });
     }
 
-    function addLocationsInfo(resBody) {
-        resBody.links.locationsDetails = api.getApiPath() + api.locationsPath;
+    function addLocationsInfo(resBody, country) {
+        resBody.links.locationsDetails = api.getApiPath() + api.locationsPath + '/' + country;
     }
 });
 
-router.get('/:regione', function (req, res) {
-    userAdapter.getByRegione(req.params.regione)
+router.get('/:country/:district', function (req, res) {
+    userAdapter.getByDistrict(req.params.country, req.params.district)
         .then(function(users) {
             res.json(users);
         });

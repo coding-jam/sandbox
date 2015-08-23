@@ -9,15 +9,15 @@ var usersDs = {
         usersFolder: '_users'
     },
 
-    getUsers: function () {
-        return users;
+    getUsers: function (country) {
+        return users[country];
     },
 
-    findBy: function (locations) {
-        return usersDs.getUsers('it')
+    findBy: function (country, locations) {
+        return usersDs.getUsers(country)
             .then(function (users) {
                 return _.filter(users.items, function (user) {
-                    return _.contains(locations, user.location.toLowerCase());
+                    return user.location && _.contains(locations, user.location.toLowerCase());
                 });
             })
             .then(function(filtered) {
@@ -29,7 +29,9 @@ var usersDs = {
     }
 };
 
-var users = loadUsers('it');
+var users = [];
+users['it'] = loadUsers('it');
+users['uk'] = loadUsers('uk');
 
 function loadUsers(country) {
     var users = {
@@ -61,6 +63,7 @@ function loadUsers(country) {
             });
             Q.all(promises)
                 .then(function () {
+                    console.log(country.toUpperCase() + ' users loaded');
                     deferred.resolve(users);
                 })
                 .catch(function (err) {
