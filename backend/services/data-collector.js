@@ -13,7 +13,8 @@ var collector = {
         folder: usersDs.data.folder,
         //users: 'it_users.json',
         locations: '_locations.json',
-        districts: '_districts.json'
+        districts: '_districts.json',
+        countries: 'countries.json'
     },
 
     options: {
@@ -394,7 +395,7 @@ var collector = {
                 var promises = [];
                 districts.forEach(function(district) {
                     var deferredLoop = Q.defer();
-                    geolocator.locate(district + ', ' + countryMapping.location[country])
+                    geolocator.locate(district + ', ' + countryMapping.location[country], country)
                         .then(function(resp) {
                             result.districts.push({
                                 district: district,
@@ -425,6 +426,34 @@ var collector = {
             });
     },
 
+    collectCountriesLocations: function() {
+        var promises = [];
+        var result = {};
+        _.keys(countryMapping.location).forEach(function(country) {
+            var deferredLoop = Q.defer();
+            geolocator.locate(countryMapping.location[country], country)
+                .then(function(resp) {
+                    result[country] = resp.body;
+                    deferredLoop.resolve();
+                })
+                .catch(deferredLoop.reject);
+            promises.push(deferredLoop.promise);
+        });
+
+        return Q.all(promises)
+            .then(function() {
+                return Q.nfcall(fs.writeFile, collector.data.folder + collector.data.countries, JSON.stringify(result))
+            })
+            .then(function() {
+                console.log(collector.data.countries + ' saved');
+            });
+    },
+
+    /**
+     * @deprecated
+     *
+     * @returns {Promise}
+     */
     collectItalianRegions: function() {
         var result = {
             regions: []
