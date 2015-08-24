@@ -2,7 +2,9 @@ module.exports = {
 
     language: {
         it: 'it',
-        uk: 'en'
+        uk: 'en',
+        sp: 'es',
+        fr: 'fr'
     },
 
     location: {
@@ -19,6 +21,8 @@ module.exports = {
 
     countryShortName: {
         it: 'IT',
-        uk: 'GB'
+        uk: 'GB',
+        sp: 'ES',
+        fr: 'FR'
     }
 }
