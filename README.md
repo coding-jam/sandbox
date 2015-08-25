@@ -1,6 +1,62 @@
 # sandbox
 CNJ Sandbox
 
+# Pre-requirements #
+This project is based on [Node.js](https://nodejs.org/), [Gulp](http://gulpjs.com/) for building and [jspm.io](http://jspm.io/) for frontend dependencies. 
+
+So you need to:
+
+* [download](https://nodejs.org/download/) and install Node.js
+* install global dependencies:
+```
+npm install jspm -g
+```
+```
+npm install gulp -g
+```
+
+# How to build #
+
+This project is composed by tow parts:
+
+* **frontend**
+* **backend**
+
+## Frontend: dependencies and build ##
+
+From root folder, type:
+```
+cd frontend
+```
+```
+npm install
+```
+```
+jspm install
+```
+```
+gulp build
+```
+
+
+## Backend: dependencies and run ##
+
+From root folder, type:
+```
+cd backend
+```
+```
+npm install
+```
+```
+sudo chmod u+x server.js
+```
+```
+node server.js
+```
+
+Enjoy on http://localhost:8080
+
 # API details #
 
 API entrypoint is 
