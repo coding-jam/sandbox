@@ -2,11 +2,13 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs = require('fs');
+var _ = require('underscore');
 
 var users = require(__dirname + '/routes/users');
 var languages = require(__dirname + '/routes/languages');
 var locations = require(__dirname + '/routes/locations');
 var countries = require(__dirname + '/routes/countries');
+var countryMapping = require(__dirname + '/services/country-mappings');
 var api = require(__dirname + '/services/api-params');
 
 /**
@@ -121,6 +123,23 @@ var SandboxApp = function() {
         //};
 
         self.app.use(express.static(__dirname + '/../build'));
+
+        self.app.use(function(req, res, next) {
+            var matchCountry = _.chain(countryMapping.location)
+                .keys()
+                .map(function(val) {
+                    return '/' + val + '$|/' + val + '/';
+                })
+                .value()
+                .join('|');
+            if (req.originalUrl.match(matchCountry + '|/countries$')) {
+                next();
+            } else {
+                var err = new Error('Country unknown!');
+                err.status = 400;
+                next(err);
+            }
+        });
 
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);
