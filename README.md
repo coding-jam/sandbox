@@ -58,57 +58,85 @@ node server.js
 Enjoy on http://localhost:8080
 
 # API details #
-
-API entrypoint is 
+## Entry-point ##
+API entry-point is 
 
 ```
-http://git-map.com/api/v1/users
+/api/v1/countries
 ```
 
-that contains links to furthers APIs' endpoints.
-The main information provided by this service is "*usersInLocations*": represents the number of users per Italian region. 
+contains links to furthers APIs' endpoints.
+This endpoint provides countries geolocation info with geometric boundaries. " *links* " section contains country details with specific endpoints, i.e.
+
+```
+/api/v1/countries/it
+```
+
+witch provides API endpoints for **users**, **locations** and **languages** of current country.
+
+Available country short-name are:
+
+* **it**: Italy
+* **uk**: United Kingdom
+* **sp**: Spain
+* **fr**: France
+
+Let's assume to choose Italy, each following endpoint is country-based.
+
+## Users endpoint ##
+
+```
+/api/v1/users/it
+```
+
+The main information provided by this service is " *usersInLocations* ": represents the number of users per **District** (Regions in Italy). 
 Each entry provides two extra navigable links:
  
-* *usersDetails*: users details per region, i.e.
+* *usersDetails*: users details per district, i.e.
     
     ```
-    http://git-map.com/api/v1/users/toscana
+    /api/v1/users/it/toscana
     ```
     
-    This endpoint provides detailed information on github users, including location details and coordinates.
+    This endpoint provides detailed information on GitHub users, including *location details and coordinates*.
 
-* *languages*: languages details per region, i.e.
-
-    ```
-    http://git-map.com/api/v1/languages/toscana
-    ```
-    
-    This endpoint provides information on programming languages, ranked by users who know that languages in that region.
-    
-API entrypoint provides a *links* object for accessing further more APIs:
-
-* *languages*: 
-    
-    ```
-    http://git-map.com/api/v1/languages
-    ```
-    
-    Provides all programming languages ranked by users in Italy.
-    This service provides two more links:
-    
-    * *languagesPerDistrict*: provides languages grouped by italian regions
-    
-        ```
-        http://git-map.com/api/v1/languages/per-district
-        ```
-
-    * *singleDistrict*: provides languages in a single italian region (same endpoint as *languages* in *usersInLocations* seen above)
-    
-* *locationsDetails*:
+* *languages*: languages details per district, i.e.
 
     ```
-    http://git-map.com/api/v1/locations
+    /api/v1/languages/it/toscana
     ```
     
-    Provides all Italian regions with geolocation details. This service can be useful to point clustered markers on each Italian region.
-    Geolocation information delimits a region area by providing two opposites corner coordinates (i.e. 'northeast', 'southwest').
+    This endpoint provides information on programming languages, *ranked by users who know that languages* in that district.
+    
+This API endpoint provides a *links* object for accessing further more APIs for current country (same as country level):
+
+## Languages endpoint ##
+    
+```
+/api/v1/languages/it
+```
+
+Provides all programming languages ranked by users in Italy.
+This service provides two more links:
+
+* *languagesPerDistrict*: provides languages grouped by italian districts
+
+    ```
+    /api/v1/languages/it/per-district
+    ```
+
+* *singleDistrict*: provides languages in a single italian district (same endpoint as *languages* in *usersInLocations* seen above)
+    
+    ```
+    /api/v1/languages/it/toscana
+    ```    
+
+
+## Languages endpoint ##
+
+```
+/api/v1/locations/it
+```
+
+Provides all Italian districts with geolocation details. This service can be useful to point clustered markers on each country district.
+Geolocation information delimits a region area by providing two opposites corner coordinates (i.e. 'northeast', 'southwest').
