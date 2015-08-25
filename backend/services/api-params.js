@@ -7,6 +7,7 @@ var api = {
     usersPath: '/users',
     languagesPath: '/languages',
     locationsPath: '/locations',
+    countriesPath: '/countries',
 
     getBaseUrl: function() {
         return api.domain + api.basePath + api.version

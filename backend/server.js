@@ -6,6 +6,7 @@ var fs = require('fs');
 var users = require(__dirname + '/routes/users');
 var languages = require(__dirname + '/routes/languages');
 var locations = require(__dirname + '/routes/locations');
+var countries = require(__dirname + '/routes/countries');
 var api = require(__dirname + '/services/api-params');
 
 /**
@@ -124,6 +125,7 @@ var SandboxApp = function() {
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);
         self.app.use(api.getApiPath() + api.locationsPath, locations);
+        self.app.use(api.getApiPath() + api.countriesPath, countries);
 
         // catch 404 and forward to error handler
         self.app.use(function(req, res, next) {
