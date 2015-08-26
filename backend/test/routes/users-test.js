@@ -51,7 +51,7 @@ describe('Users Routes Test suite', function () {
                     var molise = _.find(resp.body.usersInLocations, function(location) {
                         return location.districtName == 'Windsor and Maidenhead';
                     });
-                    expect(molise.usersCount).to.be.least(35);
+                    expect(molise.usersCount).to.be.least(22);
                     expect(molise.usersDetails).to.be.equal('/api/v1/users/uk/windsor%20and%20maidenhead');
                 })
                 .done(done);
@@ -81,7 +81,7 @@ describe('Users Routes Test suite', function () {
                     expect(resp.body).to.have.property('total_count');
                     expect(resp.body).to.have.property('items');
                     expect(resp.body.items).is.a('array');
-                    expect(resp.body.items).has.length.least(6);
+                    expect(resp.body.items).has.length.least(5);
                 })
                 .done(done);
         });
@@ -93,7 +93,7 @@ describe('Users Routes Test suite', function () {
                     expect(resp.body).to.have.property('total_count');
                     expect(resp.body).to.have.property('items');
                     expect(resp.body.items).is.a('array');
-                    expect(resp.body.items).has.length.least(35);
+                    expect(resp.body.items).has.length.least(22);
                 })
                 .done(done);
         });

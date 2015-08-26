@@ -6,11 +6,11 @@ var _ = require("underscore");
 
 var fixer = {
 
-    runFixUsers: function(country) {
+    runFixUsers: function (country) {
 
         var deferred = Q.defer();
         Q.nfcall(fs.readdir, usersDs.data.folder + country + '_users')
-            .then(function(files) {
+            .then(function (files) {
                 fixFile(files, country, 0, deferred);
             })
 
@@ -28,16 +28,16 @@ var fixer = {
                 Q.nfcall(fs.readFile, filePath, 'utf8')
                     .then(function (data) {
                         var users = JSON.parse(data);
-                        return doFix(users)
+                        return fixer.fixUserDetails(users)
                     })
                     .then(function (users) {
                         return Q.nfcall(fs.writeFile, filePath, JSON.stringify(users))
                     })
-                    .then(function() {
+                    .then(function () {
                         console.log(file + ' updated');
                         return fixFile(files, country, ++i, deferred);
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         return deferred.reject(err);
                     });
             } else {
@@ -47,25 +47,19 @@ var fixer = {
     },
 
     fixUserDetails: function (users) {
-        for (var i = users.items.length - 1; i >= 0; i--) {
-            var user = users.items[i];
-
-            //Remove if no languages
-            if (!user.languages || user.languages.length == 0) {
-                console.log(user.login + ' non ha linguaggi, lo elimino');
-                users.items.splice(i, 1);
-                continue;
-            }
+        users.forEach(function (user) {
 
             // Sort languages
-            user.languages = user.languages.sort();
+            if (user.languages && user.languages.length > 0) {
+                user.languages = user.languages.sort();
+            }
 
             //Blog fix
             if (user.blog && !user.blog.toLowerCase().match('^http(s)?://')) {
                 console.log('Correggo ' + user.blog + ' in http://' + user.blog);
                 user.blog = 'http://' + user.blog;
             }
-        }
+        });
 
         users.total_count = users.items.length;
 
