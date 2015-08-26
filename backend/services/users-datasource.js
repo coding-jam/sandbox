@@ -63,8 +63,14 @@ function loadUsers(country) {
             });
             Q.all(promises)
                 .then(function () {
-                    console.log(users.total_count + ' ' + country.toUpperCase() + ' users loaded');
-                    deferred.resolve(users);
+                    var usersWithLanguage = _.filter(users.items, function(user) {
+                        return user.languages && user.languages.length > 0;
+                    });
+                    console.log(users.total_count + ' ' + country.toUpperCase() + ' users loaded, ' + usersWithLanguage.length + ' with languages');
+                    deferred.resolve({
+                        total_count: usersWithLanguage.length,
+                        items: usersWithLanguage
+                    });
                 })
                 .catch(function (err) {
                     deferred.reject(err);

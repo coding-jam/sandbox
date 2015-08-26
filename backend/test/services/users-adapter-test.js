@@ -15,7 +15,7 @@ describe('Users Adapter Test suite', function () {
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users).has.property('items');
-                    expect(users.total_count).to.be.above(350);
+                    expect(users.total_count).to.be.above(270);
                 })
                 .done(done);
         });
@@ -26,7 +26,7 @@ describe('Users Adapter Test suite', function () {
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users).has.property('items');
-                    expect(users.total_count).to.be.least(6);
+                    expect(users.total_count).to.be.least(5);
                 })
                 .done(done);
         });
@@ -98,7 +98,7 @@ describe('Users Adapter Test suite', function () {
                         return location.districtName == 'Windsor and Maidenhead';
                     });
 
-                    expect(molise.usersCount).to.be.least(35);
+                    expect(molise.usersCount).to.be.least(22);
                 })
                 .done(done);
         });
@@ -112,7 +112,7 @@ describe('Users Adapter Test suite', function () {
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users).has.property('items');
-                    expect(users.total_count).to.be.above(350);
+                    expect(users.total_count).to.be.above(270);
                 })
                 .done(done);
         });
@@ -123,7 +123,7 @@ describe('Users Adapter Test suite', function () {
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users).has.property('items');
-                    expect(users.total_count).to.be.least(6);
+                    expect(users.total_count).to.be.least(5);
                 })
                 .done(done);
         });
@@ -134,7 +134,7 @@ describe('Users Adapter Test suite', function () {
                 .then(function (users) {
                     expect(users).has.property('total_count');
                     expect(users).has.property('items');
-                    expect(users.total_count).to.be.least(35);
+                    expect(users.total_count).to.be.least(22);
                 })
                 .done(done);
         });

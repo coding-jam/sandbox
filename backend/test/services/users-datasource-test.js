@@ -13,7 +13,7 @@ describe('Users Datasource Test suite', function () {
             usersDs.getUsers('it')
                 .then(function (users) {
                     expect(users).has.property('total_count');
-                    expect(users.total_count).to.be.above(8000);
+                    expect(users.total_count).to.be.above(5800);
                     expect(users).has.property('items');
                     expect(users.total_count).to.be.equal(users.items.length);
                 })
@@ -28,7 +28,7 @@ describe('Users Datasource Test suite', function () {
             usersDs.findBy('it', ['florence, italy'])
                 .then(function(users) {
                     expect(users).has.property('total_count');
-                    expect(users.total_count).to.be.least(89);
+                    expect(users.total_count).to.be.least(64);
                 })
                 .done(done);
         });
