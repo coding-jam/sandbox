@@ -6,6 +6,7 @@ var geolocator = require(__dirname + '/geolocator');
 var usersDs = require(__dirname + '/users-datasource');
 var locationDs = require(__dirname + "/locations-datasource");
 var countryMapping = require('./country-mappings');
+var dataFixer = require('./data-fixer');
 
 var collector = {
 
@@ -218,7 +219,8 @@ var collector = {
                             });
                     })
                     .then(function (users) {
-                        fs.writeFile(filePath, JSON.stringify(users), function (err) {
+                        var fixedUsers = dataFixer.fixUserDetails(users);
+                        fs.writeFile(filePath, JSON.stringify(fixedUsers), function (err) {
                             if (err) {
                                 console.error(err);
                             }

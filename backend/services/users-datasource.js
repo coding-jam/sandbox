@@ -63,7 +63,7 @@ function loadUsers(country) {
             });
             Q.all(promises)
                 .then(function () {
-                    console.log(country.toUpperCase() + ' users loaded');
+                    console.log(users.total_count + ' ' + country.toUpperCase() + ' users loaded');
                     deferred.resolve(users);
                 })
                 .catch(function (err) {
