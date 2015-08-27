@@ -71,15 +71,28 @@ export default class Map extends React.Component {
 		var myLatlng = new google.maps.LatLng(43.5, 12.583761);
 
 		var mapOptions = {
-			disableDefaultUI: true,
 			center: myLatlng,
 			draggable: true,
-			minZoom:6,
-			maxZoom:6,
-			zoom: 6
+			zoom: 6,
+			minZoom:4,
+			maxZoom:7,
+			disableDefaultUI: false,
+			panControl:false,
+			scaleControl:false,
+			rotateControl:false,
+			streetViewControl:false,
+			zoomControl:true,
+			zoomControlOptions:{
+				position:google.maps.ControlPosition.RIGHT_BOTTOM,
+				style:google.maps.ZoomControlStyle.LARGE
+			}
 		};
 
 		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
+
+		google.maps.event.addListener(map, 'zoom_changed', function() {
+			Actions.changeZoom(map.getZoom());
+		});
 	}
 
 	componentWillUnmount() {
@@ -90,10 +103,11 @@ export default class Map extends React.Component {
 
 		draw(this.state.locations);
 
-		return ( < div >
-			< div className = "Map"
-			ref = "chart" >
-			< /div> < /div>
+		return (
+			<div>
+				<div className="Map" ref = "chart">
+				</div>
+			</div>
 		);
 	}
 }

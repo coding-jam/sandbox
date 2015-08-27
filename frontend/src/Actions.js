@@ -59,8 +59,16 @@ var listUserByLocation = function(params){
 	});
 };
 
+var changeZoom = function(zoomValue){
+	Dispatcher.dispatch({
+		actionType: "zoomChange",
+		zoom:zoomValue
+	});
+}
+
 export default {
 	loadRegionList: loadRegionList,
 	loadUserByLanguage: loadUserByLanguage,
-	listUserByLocation: listUserByLocation
+	listUserByLocation: listUserByLocation,
+	changeZoom:changeZoom
 };
