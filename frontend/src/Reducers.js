@@ -1,45 +1,39 @@
-import _ from "lodash";
+import INITIAL_STATE from "src/model/INITIAL_STATE";
 
-const initialState = {
-	loadingCount:0,
-	lastQuery:null,
-	markers:[],
-	usersData:{},
-	showUserModal:false,
-	zoom:6
-};
-
-function startLoading(state){
+var loadingStart= (state) => {
 	return Object.assign({},state,{
 		loadingCount:state.loadingCount + 1
 	});
 };
 
-function endLoading(state){
+var loadingEnd = (state) => {
 	return Object.assign({},state,{
 		loadingCount:state.loadingCount > 0 ? state.loadingCount - 1 : 0
 	});
 };
 
-function userByLocationLoaded(state,action){
+var userByLocationLoaded = (state,action) => {
 	var toReturn = Object.assign({},state,{
-		usersData:Object.assign({},_.omit(action,'actionType')),
+		userList:[...action.users],
+		currentLocation:action.location,
 		showUserModal:true
 	});
 
-	return endLoading(toReturn);
+	return loadingEnd(toReturn);
 };
 
-function changeZoom(state,action){
+var zoomChange = (state,action) => {
 	return Object.assign({},state,{
 		zoom:action.zoom
 	});
 };
 
-function closeUserDialog(state){
+var closeUserDialog = (state) => {
 	return Object.assign({},state,{
-		showUserModal:false
-	});	
+		showUserModal:false,
+		userList:[],
+		currentLocation:"",
+	});
 }
 
 var markersLoaded = (state,action) => {
@@ -48,24 +42,21 @@ var markersLoaded = (state,action) => {
 		markers:[...action.markers]
 	});
 
-	return endLoading(toReturn);
+	return loadingEnd(toReturn);
 };
 
-export default function(state = initialState, action) {
-	switch (action.actionType) {
-		case "loadingStart":
-			return startLoading(state);
-		case "loadingEnd":
-			return endLoading(state);
-		case "userByLocationLoaded":
-			return userByLocationLoaded(state,action);
-		case "zoomChange":
-			return changeZoom(state,action);
-		case "closeUserDialog":
-			return closeUserDialog(state,action);
-		case "markersLoaded":
-			return markersLoaded(state,action);
-		default:
-			return state;
-	};
+var reducers = {
+	loadingStart:loadingStart,
+	loadingEnd:loadingEnd,
+	userByLocationLoaded:userByLocationLoaded,
+	zoomChange:zoomChange,
+	closeUserDialog:closeUserDialog,
+	markersLoaded:markersLoaded
+}
+
+export default function(state = INITIAL_STATE, action) {
+
+	var reducer = reducers[action.actionType] || ((state) => {return state});
+
+	return reducer(state,action);
 }

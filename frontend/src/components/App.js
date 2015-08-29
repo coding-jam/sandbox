@@ -17,7 +17,7 @@ class App extends React.Component{
 	}
 
 	_search(value){
-		return this.props.dispatch(Actions.loadUserByLanguage(value));
+		return this.props.dispatch(Actions.loadMarkers(value));
 	}
 
 	_changeZoom(value){
@@ -51,8 +51,8 @@ class App extends React.Component{
 				<UserList 
 					closeModal={this.closeModal}
 					showModal={this.props.showUserModal}
-					users={this.props.usersData.users}
-					location={this.props.usersData.location}/>
+					users={this.props.userList}
+					location={this.props.currentLocation}/>
 			</div>
 	    );
 	}

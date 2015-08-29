@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import MAP_OPTIONS from "src/MAP_OPTIONS";
+import MAP_OPTIONS from "src/model/MAP_OPTIONS";
 
 var clearMarkers = (markerObjects) => {
 	_.each(markerObjects, function(m) {
