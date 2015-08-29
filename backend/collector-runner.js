@@ -35,7 +35,7 @@ if (process.argv.length > 1) {
                 console.log("Done");
             })
             .catch(function(e) {
-                console.error(e);
+                console.error(e.stack);
             });
     } else {
         logError();

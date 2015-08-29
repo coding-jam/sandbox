@@ -47,7 +47,7 @@ var fixer = {
     },
 
     fixUserDetails: function (users) {
-        users.forEach(function (user) {
+        users.items.forEach(function (user) {
 
             // Sort languages
             if (user.languages && user.languages.length > 0) {
