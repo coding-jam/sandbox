@@ -32,6 +32,10 @@ class App extends React.Component{
 		this.props.dispatch(Actions.closeUserDialog());
 	}
 
+	componentDidMount(){
+		this.props.dispatch(Actions.loadMarkers());
+	}
+
 	render() {
 	    return (
 	    	<div>
@@ -43,7 +47,7 @@ class App extends React.Component{
 					markerClick={this.markerClick} 
 					changeZoom={this.changeZoom}
 					zoom={this.props.zoom} 
-					locations={this.props.locations}/>
+					markers={this.props.markers}/>
 				<UserList 
 					closeModal={this.closeModal}
 					showModal={this.props.showUserModal}

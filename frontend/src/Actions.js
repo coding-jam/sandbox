@@ -26,14 +26,6 @@ var regionsLoaded = function(regions){
 	};
 };
 
-var userByLanguageLoaded = function(regions,query){
-	return {
-		actionType: "userByLanguageLoaded",
-		regions:regions,
-		query:query
-	};
-};
-
 var userByLocationLoaded = function(users,params){
 	return Object.assign({},params,{
 		actionType: "userByLocationLoaded",
@@ -51,16 +43,6 @@ var loadRegionList = function() {
 	};
 };
 
-var loadUserByLanguage = function(query) {
-	return function(dispatch){
-		dispatch(startLoading());
-		return users.listUsersByLanguage(query).then(function(regions){
-			dispatch(userByLanguageLoaded(regions,query));
-			return regions;
-		});
-	};
-};
-
 var listUserByLocation = function(params){
 	return function(dispatch){
 		dispatch(startLoading());
@@ -71,6 +53,24 @@ var listUserByLocation = function(params){
 	};
 };
 
+var loadMarkers = (query) => {
+	return function(dispatch){
+		dispatch(startLoading());
+		return users.listUsersByLanguage(query).then(function(regions){
+			dispatch(markersLoaded(regions,query));
+			return regions;
+		});
+	};
+};
+
+var markersLoaded = function(markers,query){
+	return {
+		actionType: "markersLoaded",
+		markers:markers,
+		query:query
+	};
+};
+
 var changeZoom = function(zoomValue){
 	return {
 		actionType: "zoomChange",
@@ -78,14 +78,16 @@ var changeZoom = function(zoomValue){
 	};
 }
 
-var closeUserDialog = () => {return {
-	actionType:'closeUserDialog'
-}};
+var closeUserDialog = () => {
+	return {
+		actionType:'closeUserDialog'
+	}
+};
 
 export default {
 	loadRegionList: loadRegionList,
-	loadUserByLanguage: loadUserByLanguage,
 	listUserByLocation: listUserByLocation,
+	loadMarkers:loadMarkers,
 	changeZoom:changeZoom,
 	closeUserDialog:closeUserDialog
 };

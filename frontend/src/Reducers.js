@@ -3,7 +3,7 @@ import _ from "lodash";
 const initialState = {
 	loadingCount:0,
 	lastQuery:null,
-	locations:[],
+	markers:[],
 	usersData:{},
 	showUserModal:false,
 	zoom:6
@@ -19,15 +19,6 @@ function endLoading(state){
 	return Object.assign({},state,{
 		loadingCount:state.loadingCount > 0 ? state.loadingCount - 1 : 0
 	});
-};
-
-function userByLanguageLoaded(state,action){
-	var toReturn = Object.assign({},state,{
-		lastQuery:action.query,
-		locations:[...action.regions]
-	});
-
-	return endLoading(toReturn);
 };
 
 function userByLocationLoaded(state,action){
@@ -51,20 +42,29 @@ function closeUserDialog(state){
 	});	
 }
 
+var markersLoaded = (state,action) => {
+	var toReturn = Object.assign({},state,{
+		lastQuery:action.query,
+		markers:[...action.markers]
+	});
+
+	return endLoading(toReturn);
+};
+
 export default function(state = initialState, action) {
 	switch (action.actionType) {
 		case "loadingStart":
 			return startLoading(state);
 		case "loadingEnd":
 			return endLoading(state);
-		case "userByLanguageLoaded":
-			return userByLanguageLoaded(state,action);
 		case "userByLocationLoaded":
 			return userByLocationLoaded(state,action);
 		case "zoomChange":
 			return changeZoom(state,action);
 		case "closeUserDialog":
 			return closeUserDialog(state,action);
+		case "markersLoaded":
+			return markersLoaded(state,action);
 		default:
 			return state;
 	};

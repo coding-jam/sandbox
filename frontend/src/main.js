@@ -22,8 +22,6 @@ window.swal = swal;
 
 export default (function(){
 
-	store.dispatch(Actions.loadUserByLanguage());
-
 	React.render(
 		<Provider store={store}>{() => <App/>}</Provider>
 	,document.getElementById('wrapper'));
