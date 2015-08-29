@@ -1,13 +1,12 @@
 import React from "react";
 import _ from "lodash";
+import MAP_OPTIONS from "src/MAP_OPTIONS";
 
 var map;
 var markers = [];
 
 var draw = function(locations,onMarkerClick) {
 	if (map) {
-
-		console.log("Draw ",new Date());
 
 		_.each(markers, function(marker) {
 			marker.setMap(null);
@@ -27,8 +26,7 @@ var draw = function(locations,onMarkerClick) {
 
 				google.maps.event.addListener(marker, 'click', function() {
 					onMarkerClick({
-						location:location.name,
-						language:Store.getLastQuery()
+						location:location.name
 					});
 				});
 
@@ -39,29 +37,15 @@ var draw = function(locations,onMarkerClick) {
 };
 
 export default class Map extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.lastRenderedLocations = null;
+	}
+
 	componentDidMount() {
 
-		var myLatlng = new google.maps.LatLng(43.5, 12.583761);
-
-		var mapOptions = {
-			center: myLatlng,
-			draggable: true,
-			zoom: this.props.zoom,
-			minZoom:4,
-			maxZoom:7,
-			disableDefaultUI: false,
-			panControl:false,
-			scaleControl:false,
-			rotateControl:false,
-			streetViewControl:false,
-			zoomControl:true,
-			zoomControlOptions:{
-				position:google.maps.ControlPosition.RIGHT_BOTTOM,
-				style:google.maps.ZoomControlStyle.LARGE
-			}
-		};
-
-		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
+		map = new google.maps.Map(React.findDOMNode(this.refs.chart), Object.assign({},MAP_OPTIONS,{zoom:this.props.zoom}));
 
 		var changeZoom = () => this.props.changeZoom(map.getZoom());
 
@@ -70,7 +54,10 @@ export default class Map extends React.Component {
 
 	render() {
 
-		draw(this.props.locations,this.props.onMarkerClick);
+		if(this.props.locations !== this.lastRenderedLocations){
+			draw(this.props.locations,this.props.onMarkerClick);
+			this.lastRenderedLocations = this.props.locations;	
+		}
 
 		return (
 			<div>
