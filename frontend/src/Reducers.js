@@ -5,18 +5,13 @@ const initialState = {
 	lastQuery:null,
 	locations:[],
 	usersData:{},
+	showUserModal:false,
 	zoom:6
 };
 
 function startLoading(state){
 	return Object.assign({},state,{
 		loadingCount:state.loadingCount + 1
-	});
-};
-
-function startSearching(state){
-	return Object.assign({},state,startLoading(state),{
-		locations:[]
 	});
 };
 
@@ -27,16 +22,21 @@ function endLoading(state){
 };
 
 function userByLanguageLoaded(state,action){
-	return Object.assign({},state,{
+	var toReturn = Object.assign({},state,{
 		lastQuery:action.query,
 		locations:[...action.regions]
 	});
+
+	return endLoading(toReturn);
 };
 
 function userByLocationLoaded(state,action){
-	return Object.assign({},state,{
-		usersData:Object.assign({},_.omit(action,'actionType'))
+	var toReturn = Object.assign({},state,{
+		usersData:Object.assign({},_.omit(action,'actionType')),
+		showUserModal:true
 	});
+
+	return endLoading(toReturn);
 };
 
 function changeZoom(state,action){
@@ -45,12 +45,16 @@ function changeZoom(state,action){
 	});
 };
 
+function closeUserDialog(state){
+	return Object.assign({},state,{
+		showUserModal:false
+	});	
+}
+
 export default function(state = initialState, action) {
 	switch (action.actionType) {
 		case "loadingStart":
 			return startLoading(state);
-		case "startSearching":
-			return startSearching(state);
 		case "loadingEnd":
 			return endLoading(state);
 		case "userByLanguageLoaded":
@@ -59,6 +63,8 @@ export default function(state = initialState, action) {
 			return userByLocationLoaded(state,action);
 		case "zoomChange":
 			return changeZoom(state,action);
+		case "closeUserDialog":
+			return closeUserDialog(state,action);
 		default:
 			return state;
 	};

@@ -15,7 +15,9 @@ var draw = function(locations,onMarkerClick) {
 		markers = [];
 
 		_.each(locations, function(location) {
+			
 			var marker;
+
 			if (location.usersCount > 0) {
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
@@ -55,7 +57,7 @@ export default class Map extends React.Component {
 	render() {
 
 		if(this.props.locations !== this.lastRenderedLocations){
-			draw(this.props.locations,this.props.onMarkerClick);
+			draw(this.props.locations,this.props.markerClick);
 			this.lastRenderedLocations = this.props.locations;	
 		}
 

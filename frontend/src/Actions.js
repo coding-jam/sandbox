@@ -43,10 +43,9 @@ var userByLocationLoaded = function(users,params){
 
 var loadRegionList = function() {
 	return function(dispatch){
-		dispatch(startSearching());
+		dispatch(startLoading());
 		return Locations.listRegions().then(function(regions){
 			dispatch(regionsLoaded(regions));
-			dispatch(endLoading());
 			return regions;
 		});
 	};
@@ -54,10 +53,9 @@ var loadRegionList = function() {
 
 var loadUserByLanguage = function(query) {
 	return function(dispatch){
-		dispatch(startSearching());
+		dispatch(startLoading());
 		return users.listUsersByLanguage(query).then(function(regions){
 			dispatch(userByLanguageLoaded(regions,query));
-			dispatch(endLoading());
 			return regions;
 		});
 	};
@@ -65,10 +63,9 @@ var loadUserByLanguage = function(query) {
 
 var listUserByLocation = function(params){
 	return function(dispatch){
-		dispatch(startSearching());
+		dispatch(startLoading());
 		return users.listUserByLocation(params).then(function(users){
 			dispatch(userByLocationLoaded(users,params));
-			dispatch(endLoading());
 			return users;
 		});
 	};
@@ -81,9 +78,14 @@ var changeZoom = function(zoomValue){
 	};
 }
 
+var closeUserDialog = () => {return {
+	actionType:'closeUserDialog'
+}};
+
 export default {
 	loadRegionList: loadRegionList,
 	loadUserByLanguage: loadUserByLanguage,
 	listUserByLocation: listUserByLocation,
-	changeZoom:changeZoom
+	changeZoom:changeZoom,
+	closeUserDialog:closeUserDialog
 };
