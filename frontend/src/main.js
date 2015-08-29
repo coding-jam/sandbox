@@ -1,28 +1,28 @@
 import 'bootstrap/css/bootstrap.css!';
 import 'sweetalert/dist/sweetalert.css!';
-import React from "react";
-import Dispatcher from "src/Dispatcher";
-import Map from "src/components/Map";
-import UserList from "src/components/UserList";
-import SearchForm from "src/components/SearchForm";
-import Loader from "src/components/Loader";
-import swal from "sweetalert";
 
-Dispatcher.register(function(action) {
-	if(window.ENV != 'PROD'){
-		console.log(action);	
-	}
-});
+import swal from "sweetalert";
+import React from "react";
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
+import loggerMiddleware from 'redux-logger';
+import Reducers from 'src/Reducers';
+import App from 'src/components/App';
+import Actions from 'src/Actions';
+
+const createStoreWithMiddleware = applyMiddleware(
+  thunkMiddleware, // lets us dispatch() functions
+  loggerMiddleware // neat middleware that logs actions
+)(createStore);
+
+let store = createStoreWithMiddleware(Reducers);
 
 window.swal = swal;
 
 export default (function(){
+
 	React.render(
-		<div>
-			<SearchForm/>
-			<Map/>
-			<UserList/>
-			<Loader/>
-		</div>,
-	document.getElementById('wrapper'));
+		<Provider store={store}>{() => <App/>}</Provider>
+	,document.getElementById('wrapper'));
 })();

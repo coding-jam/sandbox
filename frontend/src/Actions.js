@@ -1,74 +1,93 @@
-import Dispatcher from "src/Dispatcher";
 import Locations from "src/model/Locations";
 import users from "src/model/Users";
-import _ from "lodash";
 
-var loadRegionList = function() {
-	Dispatcher.dispatch({
+var startLoading = function(){
+	return {
 		actionType: "loadingStart"
-	});
-
-	Locations.listRegions().then(function(regions){
-		Dispatcher.dispatch({
-			actionType: "regionsLoaded",
-			regions:regions
-		});
-
-		Dispatcher.dispatch({
-			actionType: "loadingEnd"
-		});
-
-	})
+	};
 };
 
-var loadUserByLanguage = function(query) {
-	Dispatcher.dispatch({
-		actionType: "loadingStart"
+var endLoading = function(){
+	return {
+		actionType: "loadingEnd"
+	};
+};
+
+var startSearching = function(){
+	return {
+		actionType: "startSearching"
+	};	
+};
+
+var regionsLoaded = function(regions){
+	return {
+		actionType: "regionsLoaded",
+		regions:regions
+	};
+};
+
+var userByLocationLoaded = function(users,params){
+	return Object.assign({},params,{
+		actionType: "userByLocationLoaded",
+		users:users
 	});
+};
 
-	users.listUsersByLanguage(query).then(function(regions){
-		Dispatcher.dispatch({
-			actionType: "userByLanguageLoaded",
-			regions:regions,
-			query:query
+var loadRegionList = function() {
+	return function(dispatch){
+		dispatch(startLoading());
+		return Locations.listRegions().then(function(regions){
+			dispatch(regionsLoaded(regions));
+			return regions;
 		});
-
-		Dispatcher.dispatch({
-			actionType: "loadingEnd"
-		});
-
-	});
+	};
 };
 
 var listUserByLocation = function(params){
-	Dispatcher.dispatch({
-		actionType: "loadingStart"
-	});
-
-	users.listUserByLocation(params).then(function(users){
-		Dispatcher.dispatch({
-			actionType: "loadingEnd"
+	return function(dispatch){
+		dispatch(startLoading());
+		return users.listUserByLocation(params).then(function(users){
+			dispatch(userByLocationLoaded(users,params));
+			return users;
 		});
+	};
+};
 
-		var action = _.extend(params,{
-			actionType: "userByLocationLoaded",
-			users:users
+var loadMarkers = (query) => {
+	return function(dispatch){
+		dispatch(startLoading());
+		return users.listUsersByLanguage(query).then(function(regions){
+			dispatch(markersLoaded(regions,query));
+			return regions;
 		});
+	};
+};
 
-		Dispatcher.dispatch(action);
-	});
+var markersLoaded = function(markers,query){
+	return {
+		actionType: "markersLoaded",
+		markers:markers,
+		query:query
+	};
 };
 
 var changeZoom = function(zoomValue){
-	Dispatcher.dispatch({
+	return {
 		actionType: "zoomChange",
 		zoom:zoomValue
-	});
+	};
 }
+
+var closeUserDialog = () => {
+	return {
+		actionType:'closeUserDialog'
+	}
+};
 
 export default {
 	loadRegionList: loadRegionList,
-	loadUserByLanguage: loadUserByLanguage,
 	listUserByLocation: listUserByLocation,
-	changeZoom:changeZoom
+	loadMarkers:loadMarkers,
+	changeZoom:changeZoom,
+	closeUserDialog:closeUserDialog
 };

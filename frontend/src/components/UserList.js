@@ -1,6 +1,5 @@
 import React from "react";
 import * as bootstrap from "react-bootstrap";
-import Store from "src/store/UserListStore";
 import _ from "lodash";
 import UserListRow from "src/components/UserListRow";
 
@@ -9,22 +8,11 @@ var Modal = bootstrap.Modal;
 export default class UserList extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			showModal: false
-		};
-
+		
 		this.close = this._close.bind(this);
 		this.listener = this._listener.bind(this);
 		this.extendState = this._extendState.bind(this);
 		this.renderRows = this._renderRows.bind(this);
-	}
-
-	componentDidMount() {
-		Store.addChangeListener(this.listener);
-	}
-
-	componentWillUnmount() {
-		Store.removeChangeListener(this.listener);
 	}
 
 	_extendState(data){
@@ -42,11 +30,11 @@ export default class UserList extends React.Component {
 
 	_renderRows(){
 
-		if(!this.state.users){
+		if(!this.props.users){
 			return null;
 		}
 
-		var splittedUsers = _.chunk(this.state.users, 2);
+		var splittedUsers = _.chunk(this.props.users, 2);
 
 		return splittedUsers.map(function(userPair,i){
 			return (<UserListRow userPair={userPair} key={i} even={i % 2 === 0}></UserListRow>);
@@ -59,9 +47,9 @@ export default class UserList extends React.Component {
 
 		return ( 
 			<div>
-				<Modal bsSize='large' show={this.state.showModal} onHide={this.close}>
+				<Modal bsSize='large' show={this.props.showModal} onHide={this.props.closeModal}>
 		          <Modal.Header closeButton>
-		            	<Modal.Title>{this.state.location}</Modal.Title>
+		            	<Modal.Title>{this.props.location}</Modal.Title>
 		          </Modal.Header>
 		          <Modal.Body>
 		          		<div className="container-fluid NoPadding">
