@@ -1,4 +1,5 @@
 import React from "react";
+import UserImage from "src/components/UserImage";
 
 export default class UserListRow extends React.Component {
 	constructor(props) {
@@ -22,8 +23,7 @@ export default class UserListRow extends React.Component {
 			<div>
 				<div className="col-md-1 col-xs-3">
 					<a href={user.html_url} target="_blank">
-						<img className="img-responsive" src={user.avatar_url}>
-						</img>
+						<UserImage url={user.avatar_url}/>
 					</a>
 				</div>
 				<div className="col-md-5 col-xs-9">
