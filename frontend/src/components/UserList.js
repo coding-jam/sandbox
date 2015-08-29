@@ -1,6 +1,5 @@
 import React from "react";
 import * as bootstrap from "react-bootstrap";
-import Store from "src/store/UserListStore";
 import _ from "lodash";
 import UserListRow from "src/components/UserListRow";
 

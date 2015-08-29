@@ -1,13 +1,13 @@
 import React from "react";
-import Actions from "src/Actions";
-import Store from "src/store/MapStore";
 import _ from "lodash";
 
 var map;
 var markers = [];
 
-var draw = function(locations) {
+var draw = function(locations,onMarkerClick) {
 	if (map) {
+
+		console.log("Draw ",new Date());
 
 		_.each(markers, function(marker) {
 			marker.setMap(null);
@@ -26,7 +26,7 @@ var draw = function(locations) {
 				});
 
 				google.maps.event.addListener(marker, 'click', function() {
-					Actions.listUserByLocation({
+					onMarkerClick({
 						location:location.name,
 						language:Store.getLastQuery()
 					});
@@ -38,42 +38,15 @@ var draw = function(locations) {
 	}
 };
 
-var checkUsers = function(locations){
-	var totalUsers = _.reduce(locations, function(memo, location){ return memo + location.usersCount; }, 0);
-	return totalUsers > 0;
-};
-
 export default class Map extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			locations: Store.getLocations()
-		};
-
-		this.listener = this._listener.bind(this);
-	}
-
-	_listener() {
-		this.setState({
-			locations: Store.getLocations()
-		});
-
-		if(this.state.locations.length > 0 && !checkUsers(this.state.locations)){
-			swal("Nessun utente corrisponde alla ricerca!");
-		}
-	}
-
 	componentDidMount() {
-
-		Actions.loadUserByLanguage();
-		Store.addChangeListener(this.listener);
 
 		var myLatlng = new google.maps.LatLng(43.5, 12.583761);
 
 		var mapOptions = {
 			center: myLatlng,
 			draggable: true,
-			zoom: 6,
+			zoom: this.props.zoom,
 			minZoom:4,
 			maxZoom:7,
 			disableDefaultUI: false,
@@ -90,18 +63,14 @@ export default class Map extends React.Component {
 
 		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
 
-		google.maps.event.addListener(map, 'zoom_changed', function() {
-			Actions.changeZoom(map.getZoom());
-		});
-	}
+		var changeZoom = () => this.props.changeZoom(map.getZoom());
 
-	componentWillUnmount() {
-		Store.removeChangeListener(this.listener);
+		google.maps.event.addListener(map, 'zoom_changed', changeZoom);
 	}
 
 	render() {
 
-		draw(this.state.locations);
+		draw(this.props.locations,this.props.onMarkerClick);
 
 		return (
 			<div>

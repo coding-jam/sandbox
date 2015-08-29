@@ -1,5 +1,11 @@
 import React from "react";
 import Actions from "src/Actions";
+import _ from "lodash";
+
+var checkUsers = function(locations){
+	var totalUsers = _.reduce(locations, function(memo, location){ return memo + location.usersCount; }, 0);
+	return totalUsers > 0;
+};
 
 export default class SearchForm extends React.Component {
 	constructor(props) {
@@ -9,7 +15,11 @@ export default class SearchForm extends React.Component {
 	}
 
 	_search(){
-		Actions.loadUserByLanguage(React.findDOMNode(this.refs.querySearch).value);
+		this.props.search(React.findDOMNode(this.refs.querySearch).value).then(data => {
+			if(data.length > 0 && !checkUsers(data)){
+				swal("Nessun utente corrisponde alla ricerca!");
+			};
+		});
 	};
 
 	_onKeypress(e){
@@ -33,12 +43,12 @@ export default class SearchForm extends React.Component {
 			          	type="text" 
 			          	className="form-control" 
 			          	onKeyPress={this.onKeypress}
-			          	placeholder="Cerca per linguaggio..."></input>
+			          	placeholder="Search by language..."></input>
 			        </div>
 			        <button 
 			        	type="button"
 			        	onClick={this.search}
-			        	className="btn btn-default">Cerca</button>
+			        	className="btn btn-default">Search</button>
 		      	</form>
 		      </div>
 		    </nav>
