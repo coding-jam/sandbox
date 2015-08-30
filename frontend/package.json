@@ -13,7 +13,11 @@
       "lodash": "npm:lodash@^3.10.0",
       "react": "npm:react@0.13.3",
       "react-bootstrap": "npm:react-bootstrap@^0.25.0-alpha.0",
+      "react-redux": "npm:react-redux@^1.0.1",
       "react-router": "npm:react-router@0.13.3",
+      "redux": "npm:redux@^1.0.1",
+      "redux-logger": "npm:redux-logger@^1.0.6",
+      "redux-thunk": "npm:redux-thunk@^0.1.0",
       "sweetalert": "npm:sweetalert@^1.1.0",
       "url": "github:jspm/nodelibs-url@^0.1.0"
     },

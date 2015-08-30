@@ -16,7 +16,10 @@ router.get('/', function (req, res) {
 
             });
             var resBody = {
-                countries: countries
+                countries: countries,
+                links: {
+                    allUsers: api.getApiPath() + api.usersPath
+                }
             };
             res.json(resBody);
         });

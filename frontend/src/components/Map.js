@@ -1,99 +1,78 @@
 import React from "react";
-import Actions from "src/Actions";
-import Store from "src/store/MapStore";
 import _ from "lodash";
+import MAP_OPTIONS from "src/model/MAP_OPTIONS";
 
-var map;
-var markers = [];
-
-var draw = function(locations) {
-	if (map) {
-
-		_.each(markers, function(marker) {
-			marker.setMap(null);
-		});
-
-		markers = [];
-
-		_.each(locations, function(location) {
-			var marker;
-			if (location.usersCount > 0) {
-				marker = new google.maps.Marker({
-					position: new google.maps.LatLng(location.coordinates.lat, location.coordinates.lng),
-					map: map,
-					animation: google.maps.Animation.DROP,
-					icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + location.usersCount
-				});
-
-				google.maps.event.addListener(marker, 'click', function() {
-					Actions.listUserByLocation({
-						location:location.name,
-						language:Store.getLastQuery()
-					});
-				});
-
-				markers.push(marker);
-			}
-		});
-	}
-};
-
-var checkUsers = function(locations){
-	var totalUsers = _.reduce(locations, function(memo, location){ return memo + location.usersCount; }, 0);
-	return totalUsers > 0;
-};
+var clearMarkers = (markerObjects) => {
+	_.each(markerObjects, function(m) {
+		m.setMap(null);
+	});
+}
 
 export default class Map extends React.Component {
+
 	constructor(props) {
 		super(props);
-		this.state = {
-			locations: Store.getLocations()
-		};
+		
+		this.lastRenderedMarkers = [];
+		this.markerObjects = [];
+		this.map = null;
 
-		this.listener = this._listener.bind(this);
-	}
-
-	_listener() {
-		this.setState({
-			locations: Store.getLocations()
-		});
-
-		if(this.state.locations.length > 0 && !checkUsers(this.state.locations)){
-			swal("Nessun utente corrisponde alla ricerca!");
-		}
+		this.renderMap = this._renderMap.bind(this);
 	}
 
 	componentDidMount() {
 
-		Actions.loadUserByLanguage();
-		Store.addChangeListener(this.listener);
+		this.map = new google.maps.Map(React.findDOMNode(this.refs.chart), Object.assign({},MAP_OPTIONS,{zoom:this.props.zoom}));
 
-		var myLatlng = new google.maps.LatLng(43.5, 12.583761);
+		var changeZoom = () => this.props.changeZoom(map.getZoom());
 
-		var mapOptions = {
-			disableDefaultUI: true,
-			center: myLatlng,
-			draggable: true,
-			minZoom:6,
-			maxZoom:6,
-			zoom: 6
-		};
-
-		map = new google.maps.Map(React.findDOMNode(this.refs.chart), mapOptions);
+		google.maps.event.addListener(this.map, 'zoom_changed', changeZoom);
 	}
 
-	componentWillUnmount() {
-		Store.removeChangeListener(this.listener);
-	}
+	_renderMap(){
+		if(this.map && this.props.markers !== this.lastRenderedMarkers){
+
+			var that = this;
+
+			clearMarkers(this.markerObjects);
+
+			this.markerObjects = [];
+
+			_.each(this.props.markers, function(m) {
+			
+				var markerObject;
+
+				if (m.usersCount > 0) {
+					markerObject = new google.maps.Marker({
+						position: new google.maps.LatLng(m.coordinates.lat, m.coordinates.lng),
+						map: that.map,
+						animation: google.maps.Animation.DROP,
+						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount
+					});
+
+					google.maps.event.addListener(markerObject, 'click', function() {
+						that.props.markerClick({
+							location:m.name
+						});
+					});
+
+					that.markerObjects.push(markerObject);
+				}
+			});
+			
+			this.lastRenderedMarkers = this.props.markers;	
+		}
+	};
 
 	render() {
 
-		draw(this.state.locations);
+		this.renderMap();
 
-		return ( < div >
-			< div className = "Map"
-			ref = "chart" >
-			< /div> < /div>
+		return (
+			<div>
+				<div className="Map" ref = "chart">
+				</div>
+			</div>
 		);
 	}
 }

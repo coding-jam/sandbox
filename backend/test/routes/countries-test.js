@@ -28,6 +28,9 @@ describe('Countries Routes Test suite', function () {
                     expect(resp.body.countries.sp).to.have.deep.property('links.details', '/api/v1/countries/sp');
                     expect(resp.body.countries).to.have.property('fr');
                     expect(resp.body.countries.fr).to.have.deep.property('links.details', '/api/v1/countries/fr');
+
+                    expect(resp.body).to.have.property('links');
+                    expect(resp.body).to.have.deep.property('links.allUsers', '/api/v1/users');
                 })
                 .done(done);
         });
