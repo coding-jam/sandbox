@@ -149,6 +149,10 @@ describe('Users Adapter Test suite', function () {
                     expect(result).has.property('usersInCounties');
                     expect(result.usersInCounties).to.be.a('array');
                     expect(result.usersInCounties).has.length(2);
+                    expect(result.usersInCounties).has.deep.property('[0].countryName');
+                    expect(result.usersInCounties).has.deep.property('[0].countryKey');
+                    expect(result.usersInCounties).has.deep.property('[0].countryDetails');
+                    expect(result.usersInCounties).has.deep.property('[0].usersCount');
                 })
                 .done(done);
         });
