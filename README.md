@@ -71,8 +71,11 @@ This endpoint provides countries geolocation info with geometric boundaries. " *
 ```
 /api/v1/countries/it
 ```
+witch provides API endpoints for **users**, **locations** and **languages** of current country, or aggregated users' info per Country:
 
-witch provides API endpoints for **users**, **locations** and **languages** of current country.
+```
+/api/v1/users
+```
 
 Available country short-name are:
 
