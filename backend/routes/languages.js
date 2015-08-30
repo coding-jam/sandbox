@@ -5,6 +5,19 @@ var api = require(__dirname + '/../services/api-params');
 
 var router = express.Router();
 
+router.get('/', function (req, res) {
+
+    languagesAdapter.getLanguagesPerCountry()
+        .then(function(languages) {
+            languages.languagesPerCountries.forEach(function(country) {
+                country.links = {
+                    details: api.getApiPath() + api.languagesPath + '/' + country.countryKey
+                }
+            });
+            res.json(languages);
+        });
+});
+
 router.get('/:country', function (req, res, next) {
 
     languagesAdapter.getRankedLanguages(req.params.country)
