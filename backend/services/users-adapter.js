@@ -3,11 +3,7 @@ var Q = require('q');
 var userDs = require(__dirname + "/users-datasource");
 var locationDs = require(__dirname + "/locations-datasource");
 var countryMappings = require(__dirname + "/country-mappings");
-
-
-String.prototype.capitalize = function(){
-    return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
-};
+require('./utils');
 
 var userAdapter = {
 
@@ -152,11 +148,12 @@ var userAdapter = {
                 .then(function(users) {
                     result.usersInCounties.push({
                         countryName: countryMappings.location[country].capitalize(),
+                        countryKey: country,
                         countryDetails: baseUrl + '/' + country,
                         usersCount: users.total_count
                     });
                     deferredLoop.resolve();
-                }).catch(deferredLoop.resolve);
+                }).catch(deferredLoop.resolve); //FIXME quando ci sono tutti i paesi
             promises.push(deferredLoop.promise);
         });
         return Q.all(promises).then(function() {

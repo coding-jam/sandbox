@@ -77,4 +77,23 @@ describe('Languages Adapter Test suite', function () {
         });
 
     });
+
+    describe('getLanguagesPerCountry', function () {
+
+        it('should return languages per countries', function(done) {
+
+            languagesAdapter.getLanguagesPerCountry()
+                .then(function(languages) {
+                    expect(languages).to.be.not.null;
+                    expect(languages).to.have.property('languagesPerCountries');
+                    expect(languages.languagesPerCountries).to.be.a('array');
+                    expect(languages.languagesPerCountries).to.have.length(2);
+                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryName', 'Italy');
+                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryKey', 'it');
+                    expect(languages.languagesPerCountries).to.have.deep.property('[0].languages');
+                })
+                .done(done);
+        });
+
+    });
 });

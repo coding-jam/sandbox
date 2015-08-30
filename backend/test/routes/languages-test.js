@@ -11,6 +11,20 @@ describe('Languages Routes Test suite', function () {
         require('../../server');
     });
 
+    describe('/languages', function () {
+
+        it('should return all languages per countries', function (done) {
+
+            httpUtils.getUri('/languages')
+                .then(function (resp) {
+                    expect(resp.body).to.have.property('languagesPerCountries');
+                    expect(resp.body.languagesPerCountries).to.be.a('array');
+                    expect(resp.body.languagesPerCountries).to.have.deep.property('[0].links.details', '/api/v1/languages/it');
+                })
+                .done(done);
+        });
+    });
+
     describe('/languages/:country', function () {
 
         it('should return all italian languages', function (done) {
