@@ -16,7 +16,8 @@ module.exports = {
 
     districtLevel: {
         it: 'administrative_area_level_1',
-        uk: 'administrative_area_level_2'
+        uk: 'administrative_area_level_2',
+        sp: 'administrative_area_level_1'
     },
 
     countryShortName: {
