@@ -17,7 +17,7 @@ npm install gulp -g
 
 # How to build #
 
-This project is composed by tow parts:
+This project is composed by two parts:
 
 * **frontend**
 * **backend**
