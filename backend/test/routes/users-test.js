@@ -11,6 +11,29 @@ describe('Users Routes Test suite', function () {
         require('../../server');
     });
 
+    describe('/users', function () {
+
+        it('should return all users count grouped by countries', function (done) {
+
+            function getEntry(resp, countryDetails, countryName) {
+                var italianUsers = _.find(resp.body.usersInCounties, function (details) {
+                    return details.countryDetails == countryDetails && details.countryName == countryName;
+                });
+                return italianUsers;
+            }
+
+            httpUtils.getUri('/users')
+                .then(function (resp) {
+                    expect(resp.body).to.have.property('usersInCounties');
+                    var italianUsers = getEntry(resp, '/api/v1/users/it', 'Italy');
+                    var ukUsers = getEntry(resp, '/api/v1/users/uk', 'Uk');
+                    expect(!!italianUsers).to.be.true;
+                    expect(!!ukUsers).to.be.true;
+                })
+                .done(done);
+        });
+    });
+
     describe('/users/:country', function () {
 
         it('should return all italian region url', function (done) {

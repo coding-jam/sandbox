@@ -5,6 +5,13 @@ var api = require(__dirname + '/../services/api-params');
 
 var router = express.Router();
 
+router.get('/', function (req, res) {
+    userAdapter.getUsersPerCountry(api.getApiPath() + api.usersPath)
+        .then(function(users) {
+            res.json(users);
+        });
+});
+
 router.get('/:country', function (req, res) {
     userAdapter.getUsersPerDistrict(req.params.country, api.getApiPath() + api.usersPath + '/' + req.params.country)
         .then(function(users) {

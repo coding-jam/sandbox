@@ -2,6 +2,12 @@ var _ = require("underscore");
 var Q = require('q');
 var userDs = require(__dirname + "/users-datasource");
 var locationDs = require(__dirname + "/locations-datasource");
+var countryMappings = require(__dirname + "/country-mappings");
+
+
+String.prototype.capitalize = function(){
+    return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
+};
 
 var userAdapter = {
 
@@ -132,6 +138,30 @@ var userAdapter = {
                 return result;
             });
 
+    },
+
+    getUsersPerCountry: function(baseUrl) {
+        var result = {
+            usersInCounties: []
+        };
+
+        var promises = [];
+        _.keys(countryMappings.language).forEach(function(country) {
+            var deferredLoop = Q.defer();
+            userDs.getUsers(country)
+                .then(function(users) {
+                    result.usersInCounties.push({
+                        countryName: countryMappings.location[country].capitalize(),
+                        countryDetails: baseUrl + '/' + country,
+                        usersCount: users.total_count
+                    });
+                    deferredLoop.resolve();
+                }).catch(deferredLoop.resolve);
+            promises.push(deferredLoop.promise);
+        });
+        return Q.all(promises).then(function() {
+            return result;
+        });
     }
 
 };

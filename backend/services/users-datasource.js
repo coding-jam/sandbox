@@ -10,7 +10,11 @@ var usersDs = {
     },
 
     getUsers: function (country) {
-        return users[country];
+        if (users[country]) {
+            return users[country];
+        } else {
+            return Q.reject('Country unknown!');
+        }
     },
 
     findBy: function (country, locations) {

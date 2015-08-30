@@ -132,7 +132,7 @@ var SandboxApp = function() {
                 })
                 .value()
                 .join('|');
-            if (req.originalUrl.match(matchCountry + '|/countries$')) {
+            if (req.originalUrl.match(matchCountry + '|' + api.countriesPath + '$' + '|' + api.usersPath + '$')) {
                 next();
             } else {
                 var err = new Error('Country unknown!');

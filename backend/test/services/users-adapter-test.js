@@ -32,12 +32,12 @@ describe('Users Adapter Test suite', function () {
         });
     });
 
-    describe('getUsersPerRegione', function() {
+    describe('getUsersPerRegione', function () {
 
-        it('should return italian users grouped by regions', function(done) {
+        it('should return italian users grouped by regions', function (done) {
 
             userAdapter.getUsersPerRegione('http://mock.url')
-                .then(function(users) {
+                .then(function (users) {
                     expect(users).has.property('usersInLocations');
                     expect(users.usersInLocations).to.have.length(20);
                     expect(users.usersInLocations).to.have.deep.property('[0].districtName');
@@ -47,7 +47,7 @@ describe('Users Adapter Test suite', function () {
                     expect(users.usersInLocations).to.have.deep.property('[19].usersDetails');
                     expect(users.usersInLocations).to.have.deep.property('[19].usersCount');
 
-                    var molise = _.find(users.usersInLocations, function(location) {
+                    var molise = _.find(users.usersInLocations, function (location) {
                         return location.districtName == 'Molise';
                     });
 
@@ -57,12 +57,12 @@ describe('Users Adapter Test suite', function () {
         });
     });
 
-    describe('getUsersPerDistrict', function() {
+    describe('getUsersPerDistrict', function () {
 
-        it('should return italian users grouped by regions', function(done) {
+        it('should return italian users grouped by regions', function (done) {
 
-            userAdapter.getUsersPerDistrict('it','http://mock.url')
-                .then(function(users) {
+            userAdapter.getUsersPerDistrict('it', 'http://mock.url')
+                .then(function (users) {
                     expect(users).has.property('usersInLocations');
                     expect(users.usersInLocations).to.have.length(20);
                     expect(users.usersInLocations).to.have.deep.property('[0].districtName');
@@ -72,7 +72,7 @@ describe('Users Adapter Test suite', function () {
                     expect(users.usersInLocations).to.have.deep.property('[19].usersDetails');
                     expect(users.usersInLocations).to.have.deep.property('[19].usersCount');
 
-                    var molise = _.find(users.usersInLocations, function(location) {
+                    var molise = _.find(users.usersInLocations, function (location) {
                         return location.districtName == 'Molise';
                     });
 
@@ -81,10 +81,10 @@ describe('Users Adapter Test suite', function () {
                 .done(done);
         });
 
-        it('should return uk users grouped by districts', function(done) {
+        it('should return uk users grouped by districts', function (done) {
 
             userAdapter.getUsersPerDistrict('uk', 'http://mock.url')
-                .then(function(users) {
+                .then(function (users) {
                     expect(users).has.property('usersInLocations');
                     expect(users.usersInLocations).to.have.length(147);
                     expect(users.usersInLocations).to.have.deep.property('[0].districtName');
@@ -94,7 +94,7 @@ describe('Users Adapter Test suite', function () {
                     expect(users.usersInLocations).to.have.deep.property('[146].usersDetails');
                     expect(users.usersInLocations).to.have.deep.property('[146].usersCount');
 
-                    var molise = _.find(users.usersInLocations, function(location) {
+                    var molise = _.find(users.usersInLocations, function (location) {
                         return location.districtName == 'Windsor and Maidenhead';
                     });
 
@@ -139,4 +139,19 @@ describe('Users Adapter Test suite', function () {
                 .done(done);
         });
     });
+
+    describe('getUsersPerCountry', function () {
+
+        it('should return all users count per country', function (done) {
+
+            userAdapter.getUsersPerCountry('http://mock.url')
+                .then(function (result) {
+                    expect(result).has.property('usersInCounties');
+                    expect(result.usersInCounties).to.be.a('array');
+                    expect(result.usersInCounties).has.length(2);
+                })
+                .done(done);
+        });
+    });
+
 });
