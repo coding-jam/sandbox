@@ -22,7 +22,7 @@ var getCountries = function(){
 			toReturn[key] = {
 				name:country.name,
 				coordinates: country.geometry.location,
-				bounds:country.geometry.bounds
+				bounds:country.geometry.viewport
 			};
 		});
 

@@ -2,6 +2,7 @@ import React from "react";
 import _ from "lodash";
 import MAP_OPTIONS from "src/model/MAP_OPTIONS";
 import GMaps from "gmaps";
+import locations from "src/model/Locations";
 
 var clearMarkers = (markerObjects) => {
 	_.each(markerObjects, function(m) {
@@ -54,9 +55,18 @@ export default class Map extends React.Component {
 						lat:m.coordinates.lat,
 						lng:m.coordinates.lng,
 						animation: google.maps.Animation.DROP,
+						details:m,
 						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount,
 						click:(() => {
 							console.log("Click");
+							locations.getCountries().then(countries => {
+								let country = countries[m.countryKey];
+								that.map.fitLatLngBounds([
+									new google.maps.LatLng(country.bounds.northeast.lat,country.bounds.northeast.lng),
+									new google.maps.LatLng(country.bounds.southwest.lat,country.bounds.southwest.lng)
+								])
+								console.log(country.bounds);
+							});
 							/*
 							that.props.markerClick({
 								location:m.name
