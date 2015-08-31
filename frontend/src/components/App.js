@@ -49,6 +49,7 @@ class App extends React.Component{
 					zoom={this.props.zoom} 
 					markers={this.props.markers}/>
 				<UserList 
+					initialQuery={this.props.lastQuery}
 					closeModal={this.closeModal}
 					showModal={this.props.showUserModal}
 					users={this.props.userList}
