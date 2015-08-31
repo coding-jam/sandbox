@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import MAP_OPTIONS from "src/model/MAP_OPTIONS";
+import GMaps from "gmaps";
 
 var clearMarkers = (markerObjects) => {
 	_.each(markerObjects, function(m) {
@@ -22,16 +23,16 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		this.map = new google.maps.Map(React.findDOMNode(this.refs.chart), Object.assign({},MAP_OPTIONS,{zoom:this.props.zoom}));
+		var options = Object.assign(
+			{
+				zoom:this.props.zoom,
+				el:React.findDOMNode(this.refs.chart),
+				zoom_changed:() => this.props.changeZoom(this.map.getZoom())
+			},
+			MAP_OPTIONS
+		);
 
-		var changeZoom = () => this.props.changeZoom(this.map.getZoom());
-
-		google.maps.event.addListener(this.map, 'zoom_changed', changeZoom);
-		
-		/*
-		google.maps.event.addListener(this.map, 'center_changed', () => {
-			console.log(this.map.getCenter());
-		});*/
+		this.map = new GMaps(options);
 
 	}
 
@@ -49,17 +50,18 @@ export default class Map extends React.Component {
 				var markerObject;
 
 				if (m.usersCount > 0) {
-					markerObject = new google.maps.Marker({
-						position: new google.maps.LatLng(m.coordinates.lat, m.coordinates.lng),
-						map: that.map,
+					markerObject = that.map.addMarker({
+						lat:m.coordinates.lat,
+						lng:m.coordinates.lng,
 						animation: google.maps.Animation.DROP,
-						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount
-					});
-
-					google.maps.event.addListener(markerObject, 'click', function() {
-						that.props.markerClick({
-							location:m.name
-						});
+						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount,
+						click:(() => {
+							console.log("Click");
+							/*
+							that.props.markerClick({
+								location:m.name
+							});*/
+						})
 					});
 
 					that.markerObjects.push(markerObject);

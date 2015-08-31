@@ -5,7 +5,8 @@ const INITIAL_STATE = {
 	userList:[],
 	currentLocation:null,
 	showUserModal:false,
-	zoom:4
+	zoom:4,
+	currentState:null
 };
 
 export default INITIAL_STATE;

@@ -21,7 +21,8 @@ var getCountries = function(){
 			var country = response.countries[key];
 			toReturn[key] = {
 				name:country.name,
-				coordinates: country.geometry.location
+				coordinates: country.geometry.location,
+				bounds:country.geometry.bounds
 			};
 		});
 
