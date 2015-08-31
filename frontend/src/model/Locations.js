@@ -12,6 +12,24 @@ var listRegions = function() {
 	});
 };
 
+var getCountries = function(){
+	return jQuery.get('/api/v1/countries').then(function(response){
+
+		var toReturn = {};
+
+		_.each(_.keys(response.countries),function(key){
+			var country = response.countries[key];
+			toReturn[key] = {
+				name:country.name,
+				coordinates: country.geometry.location
+			};
+		});
+
+		return toReturn;
+	});
+};
+
 export default {
-	listRegions: listRegions
+	listRegions: listRegions,
+	getCountries:getCountries
 };

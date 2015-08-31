@@ -56,9 +56,9 @@ var listUserByLocation = function(params){
 var loadMarkers = (query) => {
 	return function(dispatch){
 		dispatch(startLoading());
-		return users.listUsersByLanguage(query).then(function(regions){
-			dispatch(markersLoaded(regions,query));
-			return regions;
+		return users.countByCountry(query).then(function(markers){
+			dispatch(markersLoaded(markers,query));
+			return markers;
 		});
 	};
 };

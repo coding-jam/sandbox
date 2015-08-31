@@ -24,9 +24,15 @@ export default class Map extends React.Component {
 
 		this.map = new google.maps.Map(React.findDOMNode(this.refs.chart), Object.assign({},MAP_OPTIONS,{zoom:this.props.zoom}));
 
-		var changeZoom = () => this.props.changeZoom(map.getZoom());
+		var changeZoom = () => this.props.changeZoom(this.map.getZoom());
 
 		google.maps.event.addListener(this.map, 'zoom_changed', changeZoom);
+		
+		/*
+		google.maps.event.addListener(this.map, 'center_changed', () => {
+			console.log(this.map.getCenter());
+		});*/
+
 	}
 
 	_renderMap(){

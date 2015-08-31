@@ -1,6 +1,9 @@
 import jQuery from "jquery";
 import _ from "lodash";
 import locations from "src/model/Locations";
+import languages from "src/model/Languages";
+
+import q from "q";
 
 var listUsersByLanguage = function(searchQuery) {
 	if (!searchQuery) {
@@ -73,7 +76,42 @@ var listUserByLocation = function(params){
 		});
 };
 
+var countByCountry = function(query){
+
+	let currentUserPromise;
+	if (query) {
+		currentUserPromise = languages.getLanguagesPerCountries().then((languagesPerCountries) => {
+			return _.map(languagesPerCountries, function(countryData) {
+				let toReturn = _.pick(countryData, 'countryName', 'countryKey');
+				
+				let language = _.find(countryData.languages, function(languageInfo) {
+					return languageInfo.language.toUpperCase() === query.toUpperCase();
+				});
+
+				toReturn.usersCount = language ? language.usersPerLanguage : 0;
+
+				return toReturn;
+			});
+		});
+	} else {
+		currentUserPromise = jQuery.get('api/v1/users').then(function(response) {
+			return response.usersInCounties;
+		});
+	}
+
+	return q.all([currentUserPromise,locations.getCountries()]).then((results) => {
+		var [users,countries] = results;
+
+		_.each(users,function(user){
+			user.coordinates = countries[user.countryKey].coordinates;
+		});
+
+		return users;
+	});
+};
+
 export default {
 	listUsersByLanguage: listUsersByLanguage,
-	listUserByLocation: listUserByLocation
+	listUserByLocation: listUserByLocation,
+	countByCountry:countByCountry
 };

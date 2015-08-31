@@ -11,6 +11,7 @@
       "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@^1.1.7",
       "jquery": "github:components/jquery@^2.1.4",
       "lodash": "npm:lodash@^3.10.0",
+      "q": "npm:q@^2.0.3",
       "react": "npm:react@0.13.3",
       "react-bootstrap": "npm:react-bootstrap@^0.25.0-alpha.0",
       "react-redux": "npm:react-redux@^1.0.1",

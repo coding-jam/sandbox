@@ -29,6 +29,7 @@ System.config({
     "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.7",
     "jquery": "github:components/jquery@2.1.4",
     "lodash": "npm:lodash@3.10.0",
+    "q": "npm:q@2.0.3",
     "react": "npm:react@0.13.3",
     "react-bootstrap": "npm:react-bootstrap@0.25.0-alpha.0",
     "react-redux": "npm:react-redux@1.0.1",
@@ -43,6 +44,9 @@ System.config({
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
       "buffer": "npm:buffer@3.4.3"
+    },
+    "github:jspm/nodelibs-domain@0.1.0": {
+      "domain-browser": "npm:domain-browser@1.1.4"
     },
     "github:jspm/nodelibs-events@0.1.1": {
       "events": "npm:events@1.0.2"
@@ -83,6 +87,10 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:asap@2.0.3": {
+      "domain": "github:jspm/nodelibs-domain@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:assert@1.3.0": {
@@ -135,6 +143,9 @@ System.config({
     "npm:core-util-is@1.0.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
+    "npm:domain-browser@1.1.4": {
+      "events": "github:jspm/nodelibs-events@0.1.1"
+    },
     "npm:envify@3.4.0": {
       "jstransform": "npm:jstransform@10.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1",
@@ -176,6 +187,12 @@ System.config({
     },
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:q@2.0.3": {
+      "asap": "npm:asap@2.0.3",
+      "pop-iterate": "npm:pop-iterate@1.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "weak-map": "npm:weak-map@1.0.5"
     },
     "npm:react-bootstrap@0.25.0-alpha.0": {
       "babel-runtime": "npm:babel-runtime@5.8.20",

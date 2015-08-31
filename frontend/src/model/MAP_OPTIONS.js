@@ -1,5 +1,5 @@
 const MAP_OPTIONS = {
-	center: new google.maps.LatLng(43.5, 12.583761),
+	center: new google.maps.LatLng(48.79170682091098, 14.517354749999996),
 	draggable: true,
 	minZoom: 4,
 	maxZoom: 7,
