@@ -48,12 +48,12 @@ var userAdapter = {
      * @param district
      * @returns {Promise}
      */
-    getByDistrict: function (country, district) {
+    getByDistrict: function (country, district, languages) {
         var locationsFound;
         return locationDs.findLocationsBy(country, district)
             .then(function (locations) {
                 locationsFound = locations;
-                return userDs.findBy(country, _.keys(locations));
+                return userDs.findBy(country, _.keys(locations), languages);
             })
             .then(function (users) {
                 return _.chain(users.items)

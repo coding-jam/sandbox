@@ -13,7 +13,20 @@ export default class UserList extends React.Component {
 		this.listener = this._listener.bind(this);
 		this.extendState = this._extendState.bind(this);
 		this.renderRows = this._renderRows.bind(this);
+		this.search = this._search.bind(this);
+		this.onKeypress = this._onKeypress.bind(this);
 	}
+
+	_search(){
+		console.log('Search');
+	};
+
+	_onKeypress(e){
+		if (e.charCode === 13) {
+			this.search();
+        	return false;
+    	}
+	};
 
 	_extendState(data){
 		this.setState(_.extend(this.state, data));
@@ -52,6 +65,25 @@ export default class UserList extends React.Component {
 		            	<Modal.Title>{this.props.location}</Modal.Title>
 		          </Modal.Header>
 		          <Modal.Body>
+		          		<div className="container-fluid">
+			          		<div className="row">
+			          			<div className="col-xs-11">
+		          					<input 
+					          			className="form-control" 
+					          			type="text" 
+					          			ref="search"
+					          			onKeyPress={this.onKeypress}
+					          			placeholder="Search by language..."
+					          			defaultValue={this.props.initialQuery}></input>
+			          			</div>
+			          			<div className="col-xs-1">
+			          				<button 
+							        	type="button"
+							        	onClick={this.search}
+							        	className="btn btn-default">Search</button>
+			          			</div>
+			          		</div>
+		          		</div>
 		          		<div className="container-fluid NoPadding">
 			            	{rows}
 						</div>

@@ -23,12 +23,32 @@ describe('Users Datasource Test suite', function () {
 
     describe('findBy', function () {
 
-        it('should return users in molise', function (done) {
+        it('should return users in Florence area', function (done) {
 
             usersDs.findBy('it', ['florence, italy'])
                 .then(function(users) {
                     expect(users).has.property('total_count');
                     expect(users.total_count).to.be.least(64);
+                })
+                .done(done);
+        });
+
+        it('should return users in Florence area programming Java', function (done) {
+
+            usersDs.findBy('it', ['florence, italy'], ['Java'])
+                .then(function(users) {
+                    expect(users).has.property('total_count');
+                    expect(users.total_count).to.be.least(14);
+                })
+                .done(done);
+        });
+
+        it('should return users in Florence area programming Java and Python', function (done) {
+
+            usersDs.findBy('it', ['florence, italy'], ['Java', 'Python'])
+                .then(function(users) {
+                    expect(users).has.property('total_count');
+                    expect(users.total_count).to.be.least(7);
                 })
                 .done(done);
         });
