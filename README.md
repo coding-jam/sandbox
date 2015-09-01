@@ -111,6 +111,13 @@ Each entry provides two extra navigable links:
     
     This endpoint provides information on programming languages, *ranked by users who know that languages* in that district.
     
+    It also accept a query param " *languages* " witch enables a filter based on a comma list of programming languages (case insensitive):
+    
+    ```
+    /api/v1/languages/it/toscana?languages=Java,python
+    ```
+    
+    
 This API endpoint provides a *links* object for accessing further more APIs for current country (same as country level):
 
 ## Languages endpoint ##
@@ -132,9 +139,8 @@ This service provides two more links:
     
     ```
     /api/v1/languages/it/toscana
-    ```    
-
-
+    ```
+    
 ## Languages endpoint ##
 
 ```

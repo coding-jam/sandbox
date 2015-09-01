@@ -17,19 +17,49 @@ var usersDs = {
         }
     },
 
-    findBy: function (country, locations) {
+    findBy: function (country, locations, languages) {
+        var normalizedLanguages = toLowerCase(languages);
         return usersDs.getUsers(country)
             .then(function (users) {
-                return _.filter(users.items, function (user) {
-                    return user.location && _.contains(locations, user.location.toLowerCase());
-                });
+                return _.chain(users.items)
+                    .filter(function (user) {
+                        return user.location && _.contains(locations, user.location.toLowerCase());
+                    })
+                    .filter(function (user) {
+                        if (normalizedLanguages) {
+                            return hasLanguages(user, normalizedLanguages);
+                        } else {
+                            return true;
+                        }
+                    })
+                    .value();
             })
-            .then(function(filtered) {
+            .then(function (filtered) {
                 return {
                     total_count: filtered.length,
                     items: filtered
                 }
             });
+
+        function toLowerCase(array) {
+            if (array && array.length) {
+                return _.chain(array)
+                    .map(function (value) {
+                        return value.toLowerCase().trim();
+                    })
+                    .filter(function (value) {
+                        return !!value;
+                    })
+                    .value();
+            } else {
+                return array;
+            }
+        }
+
+        function hasLanguages(user, languages) {
+            // Se l'intersezione delle liste ha la stessa lunghezza di languages, languages è contenuta in user.languages
+            return _.intersection(languages, toLowerCase(user.languages)).length == languages.length;
+        }
     }
 };
 
@@ -67,7 +97,7 @@ function loadUsers(country) {
             });
             Q.all(promises)
                 .then(function () {
-                    var usersWithLanguage = _.filter(users.items, function(user) {
+                    var usersWithLanguage = _.filter(users.items, function (user) {
                         return user.languages && user.languages.length > 0;
                     });
                     console.log(users.total_count + ' ' + country.toUpperCase() + ' users loaded, ' + usersWithLanguage.length + ' with languages');
