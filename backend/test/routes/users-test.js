@@ -121,6 +121,27 @@ describe('Users Routes Test suite', function () {
                 .done(done);
         });
 
+        it('should return users in Windsor and Maidenhead, UK programming JavaScript', function(done) {
+
+            httpUtils.getUri('/users/uk/windsor%20and%20maidenhead?languages=javascript')
+                .then(function(resp) {
+                    expect(resp.body).to.have.property('total_count');
+                    expect(resp.body).to.have.property('items');
+                    expect(resp.body.items).is.a('array');
+                    expect(resp.body.items).has.length.least(13);
+                })
+                .done(done);
+        });
+
+        it('should return users in Windsor and Maidenhead, UK programming JavaScript, ending url with "comma"', function(done) {
+
+            httpUtils.getUri('/users/uk/windsor%20and%20maidenhead?languages=javascript,')
+                .then(function(resp) {
+                    expect(resp.body.items).has.length.least(13);
+                })
+                .done(done);
+        });
+
     });
 
 });
