@@ -12,6 +12,37 @@ var listRegions = function() {
 	});
 };
 
+var getDistricts = (country) => {
+	return jQuery.get('/api/v1/locations/' + country).then(function(response){
+		return _.map(response.districts,function(district){
+			return {
+				name:district.district,
+				coordinates: district.details.results[0].geometry.location
+			};
+		})
+	});
+};
+
+var getCountries = function(){
+	return jQuery.get('/api/v1/countries').then(function(response){
+
+		var toReturn = {};
+
+		_.each(_.keys(response.countries),function(key){
+			var country = response.countries[key];
+			toReturn[key] = {
+				name:country.name,
+				coordinates: country.geometry.location,
+				bounds:country.geometry.viewport
+			};
+		});
+
+		return toReturn;
+	});
+};
+
 export default {
-	listRegions: listRegions
+	listRegions: listRegions,
+	getCountries:getCountries,
+	getDistricts:getDistricts
 };

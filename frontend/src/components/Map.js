@@ -1,6 +1,8 @@
 import React from "react";
 import _ from "lodash";
 import MAP_OPTIONS from "src/model/MAP_OPTIONS";
+import GMaps from "gmaps";
+import locations from "src/model/Locations";
 
 var clearMarkers = (markerObjects) => {
 	_.each(markerObjects, function(m) {
@@ -22,11 +24,17 @@ export default class Map extends React.Component {
 
 	componentDidMount() {
 
-		this.map = new google.maps.Map(React.findDOMNode(this.refs.chart), Object.assign({},MAP_OPTIONS,{zoom:this.props.zoom}));
+		var options = Object.assign(
+			{
+				zoom:this.props.zoom,
+				el:React.findDOMNode(this.refs.chart),
+				zoom_changed:() => this.props.changeZoom(this.map.getZoom())
+			},
+			MAP_OPTIONS
+		);
 
-		var changeZoom = () => this.props.changeZoom(map.getZoom());
+		this.map = new GMaps(options);
 
-		google.maps.event.addListener(this.map, 'zoom_changed', changeZoom);
 	}
 
 	_renderMap(){
@@ -43,17 +51,27 @@ export default class Map extends React.Component {
 				var markerObject;
 
 				if (m.usersCount > 0) {
-					markerObject = new google.maps.Marker({
-						position: new google.maps.LatLng(m.coordinates.lat, m.coordinates.lng),
-						map: that.map,
+					markerObject = that.map.addMarker({
+						lat:m.coordinates.lat,
+						lng:m.coordinates.lng,
 						animation: google.maps.Animation.DROP,
-						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount
-					});
+						details:m,
+						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount,
+						click:(() => {
+							if(m.countryKey){
+								locations.getCountries().then(countries => {
+									let country = countries[m.countryKey];
+									that.map.fitLatLngBounds([
+										new google.maps.LatLng(country.bounds.northeast.lat,country.bounds.northeast.lng),
+										new google.maps.LatLng(country.bounds.southwest.lat,country.bounds.southwest.lng)
+									])
 
-					google.maps.event.addListener(markerObject, 'click', function() {
-						that.props.markerClick({
-							location:m.name
-						});
+									that.props.markerClick(m.countryKey);
+								});	
+							}else{
+								that.props.markerClick(m.name);
+							}
+						})
 					});
 
 					that.markerObjects.push(markerObject);

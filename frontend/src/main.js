@@ -6,14 +6,19 @@ import React from "react";
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import loggerMiddleware from 'redux-logger';
 import Reducers from 'src/Reducers';
 import App from 'src/components/App';
 import Actions from 'src/Actions';
 
+import createLogger from 'redux-logger';
+
+const logger = createLogger({
+  level: 'debug'
+});
+
 const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware, // lets us dispatch() functions
-  loggerMiddleware // neat middleware that logs actions
+  thunkMiddleware,
+  logger
 )(createStore);
 
 let store = createStoreWithMiddleware(Reducers);

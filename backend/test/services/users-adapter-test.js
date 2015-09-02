@@ -138,6 +138,17 @@ describe('Users Adapter Test suite', function () {
                 })
                 .done(done);
         });
+
+        it('should return uk users in Windsor and Maidenhead who have repos in JavaScript', function (done) {
+
+            userAdapter.getByDistrict('uk', 'windsor and maidenhead', ['JavaScript'])
+                .then(function (users) {
+                    expect(users).has.property('total_count');
+                    expect(users).has.property('items');
+                    expect(users.total_count).to.be.least(13);
+                })
+                .done(done);
+        });
     });
 
     describe('getUsersPerCountry', function () {

@@ -35,7 +35,7 @@ router.get('/:country', function (req, res) {
 });
 
 router.get('/:country/:district', function (req, res) {
-    userAdapter.getByDistrict(req.params.country, req.params.district)
+    userAdapter.getByDistrict(req.params.country, req.params.district, req.query.languages ? req.query.languages.split(',') : null)
         .then(function(users) {
             res.json(users);
         });

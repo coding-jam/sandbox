@@ -15,7 +15,7 @@ var loadingEnd = (state) => {
 var userByLocationLoaded = (state,action) => {
 	var toReturn = Object.assign({},state,{
 		userList:[...action.users],
-		currentLocation:action.location,
+		selectedDistrict:action.district,
 		showUserModal:true
 	});
 
@@ -32,14 +32,15 @@ var closeUserDialog = (state) => {
 	return Object.assign({},state,{
 		showUserModal:false,
 		userList:[],
-		currentLocation:"",
+		selectedDistrict:"",
 	});
 }
 
 var markersLoaded = (state,action) => {
 	var toReturn = Object.assign({},state,{
 		lastQuery:action.query,
-		markers:[...action.markers]
+		markers:[...action.markers],
+		selectedCountry:action.country
 	});
 
 	return loadingEnd(toReturn);
@@ -52,7 +53,7 @@ var reducers = {
 	zoomChange:zoomChange,
 	closeUserDialog:closeUserDialog,
 	markersLoaded:markersLoaded
-}
+};
 
 export default function(state = INITIAL_STATE, action) {
 

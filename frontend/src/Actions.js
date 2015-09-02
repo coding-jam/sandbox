@@ -1,3 +1,4 @@
+import _ from "lodash";
 import Locations from "src/model/Locations";
 import users from "src/model/Users";
 
@@ -13,19 +14,6 @@ var endLoading = function(){
 	};
 };
 
-var startSearching = function(){
-	return {
-		actionType: "startSearching"
-	};	
-};
-
-var regionsLoaded = function(regions){
-	return {
-		actionType: "regionsLoaded",
-		regions:regions
-	};
-};
-
 var userByLocationLoaded = function(users,params){
 	return Object.assign({},params,{
 		actionType: "userByLocationLoaded",
@@ -33,39 +21,36 @@ var userByLocationLoaded = function(users,params){
 	});
 };
 
-var loadRegionList = function() {
+var getUsersByDistrict = function(params){
 	return function(dispatch){
 		dispatch(startLoading());
-		return Locations.listRegions().then(function(regions){
-			dispatch(regionsLoaded(regions));
-			return regions;
-		});
-	};
-};
-
-var listUserByLocation = function(params){
-	return function(dispatch){
-		dispatch(startLoading());
-		return users.listUserByLocation(params).then(function(users){
+		return users.getUsersByDistrict(params).then(function(users){
 			dispatch(userByLocationLoaded(users,params));
 			return users;
 		});
 	};
 };
 
-var loadMarkers = (query) => {
+var loadMarkers = (country,query) => {
+
+	var params = {
+		country:country,
+		query:query
+	};
+
 	return function(dispatch){
 		dispatch(startLoading());
-		return users.listUsersByLanguage(query).then(function(regions){
-			dispatch(markersLoaded(regions,query));
-			return regions;
+		return users.count(params).then(function(markers){
+			dispatch(markersLoaded(markers,query,country));
+			return markers;
 		});
 	};
 };
 
-var markersLoaded = function(markers,query){
+var markersLoaded = function(markers,query,country){
 	return {
 		actionType: "markersLoaded",
+		country:country,
 		markers:markers,
 		query:query
 	};
@@ -84,9 +69,9 @@ var closeUserDialog = () => {
 	}
 };
 
+
 export default {
-	loadRegionList: loadRegionList,
-	listUserByLocation: listUserByLocation,
+	getUsersByDistrict: getUsersByDistrict,
 	loadMarkers:loadMarkers,
 	changeZoom:changeZoom,
 	closeUserDialog:closeUserDialog

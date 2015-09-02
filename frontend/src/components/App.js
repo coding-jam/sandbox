@@ -17,15 +17,27 @@ class App extends React.Component{
 	}
 
 	_search(value){
-		return this.props.dispatch(Actions.loadMarkers(value));
+		return this.props.dispatch(Actions.loadMarkers(this.props.selectedCountry,value));
 	}
 
-	_changeZoom(value){
-		this.props.dispatch(Actions.changeZoom(value));
+	_changeZoom(newZoom){
+		if(this.props.zoom > newZoom){
+			this.props.dispatch(Actions.loadMarkers(null,this.props.lastQuery));
+		}
+
+		this.props.dispatch(Actions.changeZoom(newZoom));
 	}
 
 	_markerClick(location){
-		this.props.dispatch(Actions.listUserByLocation(location));
+		if(this.props.selectedCountry){
+			this.props.dispatch(Actions.getUsersByDistrict({
+				country:this.props.selectedCountry,
+				district:location,
+				language:this.props.lastQuery
+			}));
+		}else{
+			return this.props.dispatch(Actions.loadMarkers(location,this.props.lastQuery));	
+		}
 	}
 
 	_closeModal(){
@@ -53,7 +65,7 @@ class App extends React.Component{
 					closeModal={this.closeModal}
 					showModal={this.props.showUserModal}
 					users={this.props.userList}
-					location={this.props.currentLocation}/>
+					location={this.props.selectedDistrict}/>
 			</div>
 	    );
 	}
