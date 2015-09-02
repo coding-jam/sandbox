@@ -20,23 +20,23 @@ System.config({
     "babel": "npm:babel-core@5.5.8",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
-    "clean-css": "npm:clean-css@3.3.7",
+    "clean-css": "npm:clean-css@3.4.1",
     "core-js": "npm:core-js@0.9.18",
-    "css": "github:systemjs/plugin-css@0.1.13",
+    "css": "github:systemjs/plugin-css@0.1.15",
     "events": "github:jspm/nodelibs-events@0.1.1",
     "flux": "npm:flux@2.0.1",
     "gmaps": "npm:gmaps@0.4.18",
-    "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@4.1.7",
-    "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.7",
+    "highslide-software/highcharts-release": "github:highslide-software/highcharts-release@4.1.8",
+    "highslide-software/highmaps-release": "github:highslide-software/highmaps-release@1.1.8",
     "jquery": "github:components/jquery@2.1.4",
-    "lodash": "npm:lodash@3.10.0",
+    "lodash": "npm:lodash@3.10.1",
     "q": "npm:q@2.0.3",
     "react": "npm:react@0.13.3",
-    "react-bootstrap": "npm:react-bootstrap@0.25.0-alpha.0",
+    "react-bootstrap": "npm:react-bootstrap@0.25.1",
     "react-redux": "npm:react-redux@1.0.1",
     "react-router": "npm:react-router@0.13.3",
-    "redux": "npm:redux@1.0.1",
-    "redux-logger": "npm:redux-logger@1.0.6",
+    "redux": "npm:redux@2.0.0",
+    "redux-logger": "npm:redux-logger@1.0.0",
     "redux-thunk": "npm:redux-thunk@0.1.0",
     "sweetalert": "npm:sweetalert@1.1.0",
     "url": "github:jspm/nodelibs-url@0.1.0",
@@ -100,11 +100,6 @@ System.config({
     "npm:babel-runtime@5.8.20": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:buffer@3.3.1": {
-      "base64-js": "npm:base64-js@0.0.8",
-      "ieee754": "npm:ieee754@1.1.6",
-      "is-array": "npm:is-array@1.0.1"
-    },
     "npm:buffer@3.4.3": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.6",
@@ -115,7 +110,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:clean-css@3.3.7": {
+    "npm:clean-css@3.4.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "commander": "npm:commander@2.8.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -141,6 +136,11 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
+    "npm:core-js@1.1.3": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+    },
     "npm:core-util-is@1.0.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
@@ -155,6 +155,14 @@ System.config({
     "npm:esprima-fb@13001.1001.0-dev-harmony-fb": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:fbjs@0.1.0-alpha.4": {
+      "core-js": "npm:core-js@1.1.3",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "promise": "npm:promise@7.0.4",
+      "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
     },
     "npm:graceful-readlink@1.0.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2"
@@ -177,7 +185,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "source-map": "npm:source-map@0.1.31"
     },
-    "npm:lodash@3.10.0": {
+    "npm:lodash@3.10.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:os-browserify@0.1.2": {
@@ -185,6 +193,10 @@ System.config({
     },
     "npm:path-browserify@0.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:promise@7.0.4": {
+      "asap": "npm:asap@2.0.3",
+      "fs": "github:jspm/nodelibs-fs@0.1.2"
     },
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.1"
@@ -195,12 +207,26 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "weak-map": "npm:weak-map@1.0.5"
     },
-    "npm:react-bootstrap@0.25.0-alpha.0": {
+    "npm:react-bootstrap@0.25.1": {
       "babel-runtime": "npm:babel-runtime@5.8.20",
       "classnames": "npm:classnames@2.1.3",
-      "lodash": "npm:lodash@3.10.0",
+      "dom-helpers": "npm:dom-helpers@2.4.0",
+      "keycode": "npm:keycode@2.1.0",
+      "lodash": "npm:lodash@3.10.1",
       "process": "github:jspm/nodelibs-process@0.1.1",
-      "react": "npm:react@0.13.3"
+      "react": "npm:react@0.13.3",
+      "react-overlays": "npm:react-overlays@0.4.4",
+      "uncontrollable": "npm:uncontrollable@3.1.0"
+    },
+    "npm:react-overlays@0.4.4": {
+      "classnames": "npm:classnames@2.1.3",
+      "dom-helpers": "npm:dom-helpers@2.4.0",
+      "react": "npm:react@0.13.3",
+      "react-prop-types": "npm:react-prop-types@0.2.2",
+      "warning": "npm:warning@2.0.0"
+    },
+    "npm:react-prop-types@0.2.2": {
+      "warning": "npm:warning@2.0.0"
     },
     "npm:react-redux@1.0.1": {
       "invariant": "npm:invariant@2.1.0",
@@ -216,6 +242,12 @@ System.config({
     "npm:react@0.13.3": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "envify": "npm:envify@3.4.0",
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:react@0.14.0-beta3": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "envify": "npm:envify@3.4.0",
+      "fbjs": "npm:fbjs@0.1.0-alpha.4",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:readable-stream@1.1.13": {
@@ -234,7 +266,7 @@ System.config({
       "invariant": "npm:invariant@2.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:redux@1.0.1": {
+    "npm:redux@2.0.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:source-map@0.1.31": {
@@ -262,6 +294,11 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.1",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
+    "npm:uncontrollable@3.1.0": {
+      "invariant": "npm:invariant@2.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "react": "npm:react@0.14.0-beta3"
+    },
     "npm:url@0.10.3": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "punycode": "npm:punycode@1.3.2",
@@ -270,6 +307,10 @@ System.config({
     },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.1"
+    },
+    "npm:warning@2.0.0": {
+      "envify": "npm:envify@3.4.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     }
   }
