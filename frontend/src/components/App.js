@@ -20,8 +20,12 @@ class App extends React.Component{
 		return this.props.dispatch(Actions.loadMarkers(this.props.selectedCountry,value));
 	}
 
-	_changeZoom(value){
-		this.props.dispatch(Actions.changeZoom(value));
+	_changeZoom(newZoom){
+		if(this.props.zoom > newZoom){
+			this.props.dispatch(Actions.loadMarkers(null,this.props.lastQuery));
+		}
+
+		this.props.dispatch(Actions.changeZoom(newZoom));
 	}
 
 	_markerClick(location){

@@ -14,34 +14,11 @@ var endLoading = function(){
 	};
 };
 
-var startSearching = function(){
-	return {
-		actionType: "startSearching"
-	};	
-};
-
-var regionsLoaded = function(regions){
-	return {
-		actionType: "regionsLoaded",
-		regions:regions
-	};
-};
-
 var userByLocationLoaded = function(users,params){
 	return Object.assign({},params,{
 		actionType: "userByLocationLoaded",
 		users:users
 	});
-};
-
-var loadRegionList = function() {
-	return function(dispatch){
-		dispatch(startLoading());
-		return Locations.listRegions().then(function(regions){
-			dispatch(regionsLoaded(regions));
-			return regions;
-		});
-	};
 };
 
 var listUserByLocation = function(params){
@@ -94,7 +71,6 @@ var closeUserDialog = () => {
 
 
 export default {
-	loadRegionList: loadRegionList,
 	listUserByLocation: listUserByLocation,
 	loadMarkers:loadMarkers,
 	changeZoom:changeZoom,
