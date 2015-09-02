@@ -6,7 +6,8 @@ const INITIAL_STATE = {
 	currentLocation:null,
 	showUserModal:false,
 	zoom:4,
-	currentState:null
+	currentState:null,
+	selectedCountry:null,
 };
 
 export default INITIAL_STATE;

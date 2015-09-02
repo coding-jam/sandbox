@@ -12,6 +12,17 @@ var listRegions = function() {
 	});
 };
 
+var getDistricts = (country) => {
+	return jQuery.get('/api/v1/locations/' + country).then(function(response){
+		return _.map(response.districts,function(district){
+			return {
+				name:district.district,
+				coordinates: district.details.results[0].geometry.location
+			};
+		})
+	});
+};
+
 var getCountries = function(){
 	return jQuery.get('/api/v1/countries').then(function(response){
 
@@ -32,5 +43,6 @@ var getCountries = function(){
 
 export default {
 	listRegions: listRegions,
-	getCountries:getCountries
+	getCountries:getCountries,
+	getDistricts:getDistricts
 };

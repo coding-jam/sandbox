@@ -5,12 +5,12 @@ import languages from "src/model/Languages";
 
 import q from "q";
 
-var listUsersByLanguage = function(searchQuery) {
+var countByCountry = function(country,searchQuery) {
 	if (!searchQuery) {
-		return jQuery.get('/api/v1/users/it').then(function(response) {
+		return jQuery.get('/api/v1/users/' + country).then(function(response) {
 			var usersInLocations = response.usersInLocations;
 
-			return locations.listRegions().then(function(locations) {
+			return locations.getDistricts(country).then(function(locations) {
 
 				_.each(locations, function(location) {
 					var currentUserLocation = _.find(usersInLocations, function(userLocation) {
@@ -25,10 +25,10 @@ var listUsersByLanguage = function(searchQuery) {
 			});
 		});
 	}else{
-		return jQuery.get('/api/v1/languages/it/per-district').then(function(response) {
+		return jQuery.get('/api/v1/languages/' + country + '/per-district').then(function(response) {
 			var languagesPerRegions = response.languagesPerDistricts;
 
-			return locations.listRegions().then(function(locations) {
+			return locations.getDistricts(country).then(function(locations) {
 
 				_.each(locations, function(location) {
 
@@ -76,8 +76,7 @@ var listUserByLocation = function(params){
 		});
 };
 
-var countByCountry = function(query){
-
+var countEurope = function(query){
 	let currentUserPromise;
 	if (query) {
 		currentUserPromise = languages.getLanguagesPerCountries().then((languagesPerCountries) => {
@@ -108,10 +107,13 @@ var countByCountry = function(query){
 
 		return users;
 	});
+}
+
+var count = function(params){
+	return params.country ? countByCountry(params.country,params.query) : countEurope(params.query);
 };
 
 export default {
-	listUsersByLanguage: listUsersByLanguage,
 	listUserByLocation: listUserByLocation,
-	countByCountry:countByCountry
+	count:count
 };

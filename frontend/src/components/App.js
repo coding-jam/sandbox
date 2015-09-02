@@ -17,7 +17,7 @@ class App extends React.Component{
 	}
 
 	_search(value){
-		return this.props.dispatch(Actions.loadMarkers(value));
+		return this.props.dispatch(Actions.loadMarkers(this.props.selectedCountry,value));
 	}
 
 	_changeZoom(value){
@@ -25,7 +25,7 @@ class App extends React.Component{
 	}
 
 	_markerClick(location){
-		this.props.dispatch(Actions.listUserByLocation(location));
+		return this.props.dispatch(Actions.loadMarkers(location,this.props.lastQuery));
 	}
 
 	_closeModal(){

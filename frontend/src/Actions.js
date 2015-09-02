@@ -1,3 +1,4 @@
+import _ from "lodash";
 import Locations from "src/model/Locations";
 import users from "src/model/Users";
 
@@ -53,19 +54,26 @@ var listUserByLocation = function(params){
 	};
 };
 
-var loadMarkers = (query) => {
+var loadMarkers = (country,query) => {
+
+	var params = {
+		country:country,
+		query:query
+	};
+
 	return function(dispatch){
 		dispatch(startLoading());
-		return users.countByCountry(query).then(function(markers){
-			dispatch(markersLoaded(markers,query));
+		return users.count(params).then(function(markers){
+			dispatch(markersLoaded(markers,query,country));
 			return markers;
 		});
 	};
 };
 
-var markersLoaded = function(markers,query){
+var markersLoaded = function(markers,query,country){
 	return {
 		actionType: "markersLoaded",
+		country:country,
 		markers:markers,
 		query:query
 	};
@@ -83,6 +91,7 @@ var closeUserDialog = () => {
 		actionType:'closeUserDialog'
 	}
 };
+
 
 export default {
 	loadRegionList: loadRegionList,
