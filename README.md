@@ -71,7 +71,7 @@ This endpoint provides countries geolocation info with geometric boundaries. " *
 ```
 /api/v1/countries/it
 ```
-witch provides API endpoints for **users**, **locations** and **languages** of current country, or aggregated users' info per Country:
+which provides API endpoints for **users**, **locations** and **languages** of current country, or aggregated users' info per Country:
 
 ```
 /api/v1/users
@@ -111,7 +111,7 @@ Each entry provides two extra navigable links:
     
     This endpoint provides information on programming languages, *ranked by users who know that languages* in that district.
     
-    It also accept a query param " *languages* " witch enables a filter based on a comma list of programming languages (case insensitive):
+    It also accept a query param " *languages* " which enables a filter based on a comma list of programming languages (case insensitive):
     
     ```
     /api/v1/languages/it/toscana?languages=Java,python
