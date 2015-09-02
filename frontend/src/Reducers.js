@@ -15,7 +15,7 @@ var loadingEnd = (state) => {
 var userByLocationLoaded = (state,action) => {
 	var toReturn = Object.assign({},state,{
 		userList:[...action.users],
-		currentLocation:action.location,
+		selectedDistrict:action.district,
 		showUserModal:true
 	});
 
@@ -32,7 +32,7 @@ var closeUserDialog = (state) => {
 	return Object.assign({},state,{
 		showUserModal:false,
 		userList:[],
-		currentLocation:"",
+		selectedDistrict:"",
 	});
 }
 

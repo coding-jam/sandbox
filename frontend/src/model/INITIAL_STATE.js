@@ -3,11 +3,11 @@ const INITIAL_STATE = {
 	lastQuery:null,
 	markers:[],
 	userList:[],
-	currentLocation:null,
+	selectedCountry:null,
+	selectedDistrict:null,
 	showUserModal:false,
 	zoom:4,
-	currentState:null,
-	selectedCountry:null,
+	currentState:null
 };
 
 export default INITIAL_STATE;

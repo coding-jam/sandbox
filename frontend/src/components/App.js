@@ -65,7 +65,7 @@ class App extends React.Component{
 					closeModal={this.closeModal}
 					showModal={this.props.showUserModal}
 					users={this.props.userList}
-					location={this.props.currentLocation}/>
+					location={this.props.selectedDistrict}/>
 			</div>
 	    );
 	}
