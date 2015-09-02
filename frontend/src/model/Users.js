@@ -59,8 +59,8 @@ var countByCountry = function(country,searchQuery) {
 
 };
 
-var listUserByLocation = function(params){
-	return jQuery.get('/api/v1/users/it/' + params.location.toLowerCase()).then(function(response) {
+var getUsersByDistrict = function(params){
+	return jQuery.get('/api/v1/users/' + params.country + '/' + params.district.toLowerCase()).then(function(response) {
 			var users = response.items;
 
 			if(params.language){
@@ -114,6 +114,6 @@ var count = function(params){
 };
 
 export default {
-	listUserByLocation: listUserByLocation,
+	getUsersByDistrict: getUsersByDistrict,
 	count:count
 };

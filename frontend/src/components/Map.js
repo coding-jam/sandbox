@@ -58,15 +58,19 @@ export default class Map extends React.Component {
 						details:m,
 						icon: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=1|0|FF0000|12|_|" + m.usersCount,
 						click:(() => {
-							locations.getCountries().then(countries => {
-								let country = countries[m.countryKey];
-								that.map.fitLatLngBounds([
-									new google.maps.LatLng(country.bounds.northeast.lat,country.bounds.northeast.lng),
-									new google.maps.LatLng(country.bounds.southwest.lat,country.bounds.southwest.lng)
-								])
+							if(m.countryKey){
+								locations.getCountries().then(countries => {
+									let country = countries[m.countryKey];
+									that.map.fitLatLngBounds([
+										new google.maps.LatLng(country.bounds.northeast.lat,country.bounds.northeast.lng),
+										new google.maps.LatLng(country.bounds.southwest.lat,country.bounds.southwest.lng)
+									])
 
-								that.props.markerClick(m.countryKey);
-							});
+									that.props.markerClick(m.countryKey);
+								});	
+							}else{
+								that.props.markerClick(m.name);
+							}
 						})
 					});
 

@@ -29,7 +29,15 @@ class App extends React.Component{
 	}
 
 	_markerClick(location){
-		return this.props.dispatch(Actions.loadMarkers(location,this.props.lastQuery));
+		if(this.props.selectedCountry){
+			this.props.dispatch(Actions.getUsersByDistrict({
+				country:this.props.selectedCountry,
+				district:location,
+				language:this.props.lastQuery
+			}));
+		}else{
+			return this.props.dispatch(Actions.loadMarkers(location,this.props.lastQuery));	
+		}
 	}
 
 	_closeModal(){

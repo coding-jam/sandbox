@@ -21,10 +21,10 @@ var userByLocationLoaded = function(users,params){
 	});
 };
 
-var listUserByLocation = function(params){
+var getUsersByDistrict = function(params){
 	return function(dispatch){
 		dispatch(startLoading());
-		return users.listUserByLocation(params).then(function(users){
+		return users.getUsersByDistrict(params).then(function(users){
 			dispatch(userByLocationLoaded(users,params));
 			return users;
 		});
@@ -71,7 +71,7 @@ var closeUserDialog = () => {
 
 
 export default {
-	listUserByLocation: listUserByLocation,
+	getUsersByDistrict: getUsersByDistrict,
 	loadMarkers:loadMarkers,
 	changeZoom:changeZoom,
 	closeUserDialog:closeUserDialog
