@@ -1,16 +1,9 @@
 import jQuery from "jquery";
 import _ from "lodash";
+import q from "q";
 
-var listRegions = function() {
-	return jQuery.get('/api/v1/locations/it').then(function(response){
-		return _.map(response.districts,function(region){
-			return {
-				name:region.district,
-				coordinates: region.details.results[0].geometry.location
-			};
-		})
-	});
-};
+var countries = null;
+var districts = {};
 
 var getDistricts = (country) => {
 	return jQuery.get('/api/v1/locations/' + country).then(function(response){
@@ -23,26 +16,33 @@ var getDistricts = (country) => {
 	});
 };
 
-var getCountries = function(){
-	return jQuery.get('/api/v1/countries').then(function(response){
+var getCachedCountries = function(){
+	var deferred = q.defer();
+	deferred.resolve(countries);
+	return deferred.promise;
+};
 
-		var toReturn = {};
+var getCountries = function(){
+	let loadPromise = jQuery.get('/api/v1/countries').then(function(response){
+
+		countries = {};
 
 		_.each(_.keys(response.countries),function(key){
 			var country = response.countries[key];
-			toReturn[key] = {
+			countries[key] = {
 				name:country.name,
 				coordinates: country.geometry.location,
 				bounds:country.geometry.viewport
 			};
 		});
 
-		return toReturn;
+		return countries;
 	});
+
+	return countries ? getCachedCountries() : loadPromise;
 };
 
 export default {
-	listRegions: listRegions,
 	getCountries:getCountries,
 	getDistricts:getDistricts
 };
