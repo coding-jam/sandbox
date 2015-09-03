@@ -17,26 +17,26 @@ class App extends React.Component{
 	}
 
 	_search(value){
-		return this.props.dispatch(Actions.loadMarkers(this.props.selectedCountry,value));
+		return this.props.dispatch(Actions.loadMarkers(this.props.location.country,value));
 	}
 
 	_changeZoom(newZoom){
 		if(this.props.zoom > newZoom){
-			this.props.dispatch(Actions.loadMarkers(null,this.props.lastQuery));
+			this.props.dispatch(Actions.loadMarkers(null,this.props.users.lastQuery));
 		}
 
 		this.props.dispatch(Actions.changeZoom(newZoom));
 	}
 
 	_markerClick(location){
-		if(this.props.selectedCountry){
+		if(this.props.location.country){
 			this.props.dispatch(Actions.getUsersByDistrict({
-				country:this.props.selectedCountry,
+				country:this.props.location.country,
 				district:location,
-				language:this.props.lastQuery
+				language:this.props.users.lastQuery
 			}));
 		}else{
-			return this.props.dispatch(Actions.loadMarkers(location,this.props.lastQuery));	
+			return this.props.dispatch(Actions.loadMarkers(location,this.props.users.lastQuery));	
 		}
 	}
 
