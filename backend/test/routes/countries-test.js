@@ -18,16 +18,17 @@ describe('Countries Routes Test suite', function () {
             httpUtils.getUri('/countries')
                 .then(function(resp) {
                     expect(resp.body).to.be.not.null;
-                    expect(resp.body).to.have.property('countries');
-                    expect(resp.body.countries).is.a('object');
-                    expect(resp.body.countries).to.have.property('it');
-                    expect(resp.body.countries.it).to.have.deep.property('links.details', '/api/v1/countries/it');
-                    expect(resp.body.countries).to.have.property('uk');
-                    expect(resp.body.countries.uk).to.have.deep.property('links.details', '/api/v1/countries/uk');
-                    expect(resp.body.countries).to.have.property('sp');
-                    expect(resp.body.countries.sp).to.have.deep.property('links.details', '/api/v1/countries/sp');
-                    expect(resp.body.countries).to.have.property('fr');
-                    expect(resp.body.countries.fr).to.have.deep.property('links.details', '/api/v1/countries/fr');
+                    expect(resp.body).to.has.property('continents');
+                    expect(resp.body).to.has.deep.property('continents.europe.countries');
+                    expect(resp.body.continents).is.a('object');
+                    expect(resp.body.continents.europe.countries).to.have.property('it');
+                    expect(resp.body.continents.europe.countries.it).to.have.deep.property('links.details', '/api/v1/countries/it');
+                    expect(resp.body.continents.europe.countries).to.have.property('uk');
+                    expect(resp.body.continents.europe.countries.uk).to.have.deep.property('links.details', '/api/v1/countries/uk');
+                    expect(resp.body.continents.europe.countries).to.have.property('sp');
+                    expect(resp.body.continents.europe.countries.sp).to.have.deep.property('links.details', '/api/v1/countries/sp');
+                    expect(resp.body.continents.europe.countries).to.have.property('fr');
+                    expect(resp.body.continents.europe.countries.fr).to.have.deep.property('links.details', '/api/v1/countries/fr');
 
                     expect(resp.body).to.have.property('links');
                     expect(resp.body).to.have.deep.property('links.allUsers', '/api/v1/users');

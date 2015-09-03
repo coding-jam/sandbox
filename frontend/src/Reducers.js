@@ -2,45 +2,90 @@ import INITIAL_STATE from "src/model/INITIAL_STATE";
 
 var loadingStart= (state) => {
 	return Object.assign({},state,{
-		loadingCount:state.loadingCount + 1
+		loading:{
+			count:state.loading.count + 1
+		}
 	});
 };
 
 var loadingEnd = (state) => {
+	var count = state.loadingCount > 0 ? state.loadingCount - 1 : 0;
 	return Object.assign({},state,{
-		loadingCount:state.loadingCount > 0 ? state.loadingCount - 1 : 0
+		loading:{
+			count:count
+		}
 	});
 };
 
 var userByLocationLoaded = (state,action) => {
-	var toReturn = Object.assign({},state,{
-		userList:[...action.users],
-		selectedDistrict:action.district,
+
+	var users = Object.assign({},state.users,{
+		results:[...action.users],
 		showUserModal:true
+	});
+
+	var location = Object.assign({},state.location,{
+		district:action.district
+	});
+
+	var toReturn = Object.assign({},state,{
+		users:users,
+		location:location
 	});
 
 	return loadingEnd(toReturn);
 };
 
 var zoomChange = (state,action) => {
+
+	var map = {...state.map};
+	var viewportData = {...map.viewportData};
+
+	viewportData.zoom = action.zoom;
+
+	map.viewportData = viewportData;
+
 	return Object.assign({},state,{
-		zoom:action.zoom
+		map:map
 	});
 };
 
 var closeUserDialog = (state) => {
+
+	var users = Object.assign({},state.users,{
+		results:[],
+		showUserModal:false
+	});
+
+	var location = Object.assign({},state.location,{
+		district:null
+	});
+
 	return Object.assign({},state,{
-		showUserModal:false,
-		userList:[],
-		selectedDistrict:"",
+		users:users,
+		location:location
 	});
 }
 
 var markersLoaded = (state,action) => {
+
+	var users = Object.assign({},state.users,{
+		lastQuery:action.query
+	});
+
+	var location = Object.assign({},state.location,{
+		country:action.country,
+		district:null
+	});
+
+	var map = {...state.map,...{
+		markers:[...action.markers]
+	}};
+
 	var toReturn = Object.assign({},state,{
-		lastQuery:action.query,
-		markers:[...action.markers],
-		selectedCountry:action.country
+		users:users,
+		location:location,
+		map:map
 	});
 
 	return loadingEnd(toReturn);
