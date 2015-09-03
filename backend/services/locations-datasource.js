@@ -5,10 +5,12 @@ var countryMapping = require('./country-mappings');
 var locationData = [];
 locationData['it'] = require(__dirname + '/../data/it_locations');
 locationData['uk'] = require(__dirname + '/../data/uk_locations');
+locationData['sp'] = require(__dirname + '/../data/sp_locations');
 
 var districtsData = [];
 districtsData['it'] = require(__dirname + '/../data/it_districts');
 districtsData['uk'] = require(__dirname + '/../data/uk_districts');
+districtsData['sp'] = require(__dirname + '/../data/sp_districts');
 
 var countryShortName = countryMapping.countryShortName;
 
@@ -24,7 +26,7 @@ var locationsDs = {
     /**
      * Find locations from area level and name
      *
-     * @param country it, uk
+     * @param country it, uk, sp
      * @param areaLevel Google API area level
      * @param shortName district name
      * @returns {Promise}
