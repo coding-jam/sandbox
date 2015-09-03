@@ -28,8 +28,8 @@ var getCountries = function(){
 
 		var toReturn = {};
 
-		_.each(_.keys(response.countries),function(key){
-			var country = response.countries[key];
+		_.each(_.keys(response.continents.europe.countries),function(key){
+			var country = response.continents.europe.countries[key];
 			toReturn[key] = {
 				name:country.name,
 				coordinates: country.geometry.location,

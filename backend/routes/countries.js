@@ -7,16 +7,16 @@ var router = express.Router();
 
 router.get('/', function (req, res) {
     countriesDs.getCountriesLocations()
-        .then(function (countries) {
-            _.keys(countries).forEach(function(country) {
+        .then(function (continents) {
+            _.keys(continents.europe.countries).forEach(function(country) {
 
-                countries[country].links = {
+                continents.europe.countries[country].links = {
                     details: api.getApiPath() + api.countriesPath + '/' + country,
                 }
 
             });
             var resBody = {
-                countries: countries,
+                continents: continents,
                 links: {
                     allUsers: api.getApiPath() + api.usersPath
                 }

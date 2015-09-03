@@ -1,0 +1,54 @@
+{
+  "europe": {
+    "results": [
+      {
+        "address_components": [
+          {
+            "long_name": "Europa",
+            "short_name": "Europa",
+            "types": [
+              "continent",
+              "natural_feature",
+              "establishment"
+            ]
+          }
+        ],
+        "formatted_address": "Europa",
+        "geometry": {
+          "bounds": {
+            "northeast": {
+              "lat": 60.473465,
+              "lng": 17.490234
+            },
+            "southwest": {
+              "lat": 35.630512,
+              "lng": -11.601563
+            }
+          },
+          "location": {
+            "lat": 48.0519885,
+            "lng": 2.9443355
+          },
+          "location_type": "APPROXIMATE",
+          "viewport": {
+            "northeast": {
+              "lat": 60.473465,
+              "lng": 17.490234
+            },
+            "southwest": {
+              "lat": 35.630512,
+              "lng": -11.601563
+            }
+          }
+        },
+        "place_id": "ChIJhdqtz4aI7UYRefD8s-aZ73I",
+        "types": [
+          "continent",
+          "natural_feature",
+          "establishment"
+        ]
+      }
+    ],
+    "status": "OK"
+  }
+}
