@@ -54,18 +54,18 @@ class App extends React.Component{
 	    		<SearchForm 
 	    			search={this.search}/>
 				<Loader 
-					show={this.props.loadingCount > 0}/>
+					show={this.props.loading.count > 0}/>
 				<Map
 					markerClick={this.markerClick} 
 					changeZoom={this.changeZoom}
-					zoom={this.props.zoom} 
-					markers={this.props.markers}/>
+					zoom={this.props.map.viewportData.zoom} 
+					markers={this.props.map.markers}/>
 				<UserList 
-					initialQuery={this.props.lastQuery}
+					initialQuery={this.props.users.lastQuery}
 					closeModal={this.closeModal}
-					showModal={this.props.showUserModal}
-					users={this.props.userList}
-					location={this.props.selectedDistrict}/>
+					showModal={this.props.users.showUserModal}
+					users={this.props.users.results}
+					location={this.props.location.district}/>
 			</div>
 	    );
 	}
