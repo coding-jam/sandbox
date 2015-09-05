@@ -30,12 +30,6 @@ var getDistricts = (country) => {
 	}).catch(() => []);
 };
 
-var getCachedCountries = function(){
-	var deferred = q.defer();
-	deferred.resolve(countries);
-	return deferred.promise;
-};
-
 var getCountries = function(){
 	let loadPromise = () => {
 		return http.get('/api/v1/countries').then(function(response){
@@ -57,7 +51,7 @@ var getCountries = function(){
 		});
 	};
 
-	return countries ? getCachedCountries() : loadPromise();
+	return countries ? q(countries) : loadPromise();
 };
 
 export default {
