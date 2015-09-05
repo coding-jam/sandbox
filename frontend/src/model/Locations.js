@@ -1,4 +1,4 @@
-import jQuery from "jquery";
+import http from "src/model/Http";
 import _ from "lodash";
 import q from "q";
 
@@ -6,7 +6,7 @@ var countries = null;
 var districts = {};
 
 var getDistricts = (country) => {
-	return jQuery.get('/api/v1/locations/' + country).then(function(response){
+	return http.get('/api/v1/locations/' + country).then(function(response){
 		return _.map(response.districts,function(district){
 			return {
 				name:district.district,
@@ -23,7 +23,7 @@ var getCachedCountries = function(){
 };
 
 var getCountries = function(){
-	let loadPromise = jQuery.get('/api/v1/countries').then(function(response){
+	let loadPromise = http.get('/api/v1/countries').then(function(response){
 
 		countries = {};
 

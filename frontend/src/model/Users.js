@@ -1,4 +1,4 @@
-import jQuery from "jquery";
+import http from "src/model/Http";
 import _ from "lodash";
 import locations from "src/model/Locations";
 import languages from "src/model/Languages";
@@ -7,7 +7,7 @@ import q from "q";
 
 var countByCountry = function(country,searchQuery) {
 	if (!searchQuery) {
-		return jQuery.get('/api/v1/users/' + country).then(function(response) {
+		return http.get('/api/v1/users/' + country).then(function(response) {
 			var usersInLocations = response.usersInLocations;
 
 			return locations.getDistricts(country).then(function(locations) {
@@ -25,7 +25,7 @@ var countByCountry = function(country,searchQuery) {
 			});
 		});
 	}else{
-		return jQuery.get('/api/v1/languages/' + country + '/per-district').then(function(response) {
+		return http.get('/api/v1/languages/' + country + '/per-district').then(function(response) {
 			var languagesPerRegions = response.languagesPerDistricts;
 
 			return locations.getDistricts(country).then(function(locations) {
@@ -60,7 +60,7 @@ var countByCountry = function(country,searchQuery) {
 };
 
 var getUsersByDistrict = function(params){
-	return jQuery.get('/api/v1/users/' + params.country + '/' + params.district.toLowerCase()).then(function(response) {
+	return http.get('/api/v1/users/' + params.country + '/' + params.district.toLowerCase()).then(function(response) {
 			var users = response.items;
 
 			if(params.language){
