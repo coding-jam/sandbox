@@ -16,6 +16,7 @@ class App extends React.Component{
 		this.changeZoom = this._changeZoom.bind(this);
 		this.markerClick = this._markerClick.bind(this);
 		this.closeModal = this._closeModal.bind(this);
+		this.modalSearch = this._modalSearch.bind(this);
 	}
 
 	_search(value){
@@ -39,6 +40,14 @@ class App extends React.Component{
 		}else{
 			this.props.dispatch(Actions.loadMarkers(true,this.props.users.lastQuery));
 		}
+	}
+
+	_modalSearch(language){
+		this.props.dispatch(Actions.getUsersByDistrict({
+			country:this.props.location.country,
+			district:this.props.location.district,
+			language:language
+		}));
 	}
 
 	_closeModal(){
@@ -65,6 +74,7 @@ class App extends React.Component{
 					closeModal={this.closeModal}
 					showModal={this.props.users.showUserModal}
 					users={this.props.users.results}
+					search={this.modalSearch}
 					location={this.props.location.district}/>
 			</div>
 	    );
