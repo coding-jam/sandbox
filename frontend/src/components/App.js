@@ -6,6 +6,8 @@ import Map from 'src/components/Map';
 import { connect } from 'react-redux';
 import Actions from "src/Actions";
 
+const MIN_DISTRICT_MODE_ZOOM = 5;
+
 class App extends React.Component{
 
 	constructor(props) {
@@ -17,26 +19,25 @@ class App extends React.Component{
 	}
 
 	_search(value){
-		return this.props.dispatch(Actions.loadMarkers(this.props.location.country,value));
+		return this.props.dispatch(Actions.loadMarkers(this.props.map.districtMode,value));
 	}
 
 	_changeZoom(newZoom){
-		if(this.props.zoom > newZoom){
-			this.props.dispatch(Actions.loadMarkers(null,this.props.users.lastQuery));
+		var newDistrictMode = newZoom >= MIN_DISTRICT_MODE_ZOOM;
+		if(this.props.map.districtMode !== newDistrictMode){
+			this.props.dispatch(Actions.loadMarkers(newDistrictMode,this.props.users.lastQuery));	
 		}
-
-		this.props.dispatch(Actions.changeZoom(newZoom));
 	}
 
 	_markerClick(location){
-		if(this.props.location.country){
+		if(this.props.map.districtMode){
 			this.props.dispatch(Actions.getUsersByDistrict({
-				country:this.props.location.country,
-				district:location,
+				country:location.country,
+				district:location.name,
 				language:this.props.users.lastQuery
 			}));
 		}else{
-			return this.props.dispatch(Actions.loadMarkers(location,this.props.users.lastQuery));	
+			this.props.dispatch(Actions.loadMarkers(true,this.props.users.lastQuery));
 		}
 	}
 
@@ -45,7 +46,7 @@ class App extends React.Component{
 	}
 
 	componentDidMount(){
-		this.props.dispatch(Actions.loadMarkers());
+		this.props.dispatch(Actions.loadMarkers(false,this.props.users.lastQuery));
 	}
 
 	render() {
@@ -58,7 +59,6 @@ class App extends React.Component{
 				<Map
 					markerClick={this.markerClick} 
 					changeZoom={this.changeZoom}
-					zoom={this.props.map.viewportData.zoom} 
 					markers={this.props.map.markers}/>
 				<UserList 
 					initialQuery={this.props.users.lastQuery}

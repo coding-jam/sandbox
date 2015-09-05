@@ -31,37 +31,30 @@ var getUsersByDistrict = function(params){
 	};
 };
 
-var loadMarkers = (country,query) => {
+var loadMarkers = (districtMode,query) => {
 
 	var params = {
-		country:country,
+		districtMode:districtMode,
 		query:query
 	};
 
 	return function(dispatch){
 		dispatch(startLoading());
 		return users.count(params).then(function(markers){
-			dispatch(markersLoaded(markers,query,country));
+			dispatch(markersLoaded(markers,query,districtMode));
 			return markers;
 		});
 	};
 };
 
-var markersLoaded = function(markers,query,country){
+var markersLoaded = function(markers,query,districtMode){
 	return {
 		actionType: "markersLoaded",
-		country:country,
+		districtMode:districtMode,
 		markers:markers,
 		query:query
 	};
 };
-
-var changeZoom = function(zoomValue){
-	return {
-		actionType: "zoomChange",
-		zoom:zoomValue
-	};
-}
 
 var closeUserDialog = () => {
 	return {
@@ -69,10 +62,8 @@ var closeUserDialog = () => {
 	}
 };
 
-
 export default {
 	getUsersByDistrict: getUsersByDistrict,
 	loadMarkers:loadMarkers,
-	changeZoom:changeZoom,
 	closeUserDialog:closeUserDialog
 };

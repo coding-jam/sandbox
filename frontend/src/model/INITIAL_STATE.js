@@ -1,11 +1,7 @@
 const INITIAL_STATE = {
 	map:{
-		markers:[],
-		viewportData:{
-			zoom:4,
-			bounds:null,
-			center:null
-		}	
+		districtMode:false,
+		markers:[]
 	},
 	location:{
 		country:null,
