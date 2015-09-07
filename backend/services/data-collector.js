@@ -362,7 +362,7 @@ var collector = {
                         });
                     promises.push(deferredLoop.promise);
                 } else {
-                    console.log('Location already acquaired for ' + location + ' in position ' + i);
+                    console.log('Location already acquired for ' + location + ' in position ' + i);
                 }
             });
 
