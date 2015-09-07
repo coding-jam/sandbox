@@ -52,8 +52,6 @@ var getCountries = function(){
 				};
 			});
 
-			delete countries.fr;
-
 			return countries;
 		});
 	};

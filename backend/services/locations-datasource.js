@@ -6,11 +6,13 @@ var locationData = [];
 locationData['it'] = require(__dirname + '/../data/it_locations');
 locationData['uk'] = require(__dirname + '/../data/uk_locations');
 locationData['sp'] = require(__dirname + '/../data/sp_locations');
+locationData['fr'] = require(__dirname + '/../data/fr_locations');
 
 var districtsData = [];
 districtsData['it'] = require(__dirname + '/../data/it_districts');
 districtsData['uk'] = require(__dirname + '/../data/uk_districts');
 districtsData['sp'] = require(__dirname + '/../data/sp_districts');
+districtsData['fr'] = require(__dirname + '/../data/fr_districts');
 
 var countryShortName = countryMapping.countryShortName;
 
