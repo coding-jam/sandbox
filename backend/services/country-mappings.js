@@ -10,14 +10,15 @@ module.exports = {
     location: {
         "it": "italy",
         "uk": "uk",
-        "fr": "france",
-        "sp": "spain"
+        "sp": "spain",
+        "fr": "france"
     },
 
     districtLevel: {
         it: 'administrative_area_level_1',
         uk: 'administrative_area_level_2',
-        sp: 'administrative_area_level_1'
+        sp: 'administrative_area_level_1',
+        fr: 'administrative_area_level_1'
     },
 
     countryShortName: {

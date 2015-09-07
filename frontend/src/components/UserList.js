@@ -18,7 +18,7 @@ export default class UserList extends React.Component {
 	}
 
 	_search(){
-		console.log('Search');
+		this.props.search(React.findDOMNode(this.refs.querySearch).value);
 	};
 
 	_onKeypress(e){
@@ -71,7 +71,7 @@ export default class UserList extends React.Component {
 		          					<input 
 					          			className="form-control" 
 					          			type="text" 
-					          			ref="search"
+					          			ref="querySearch"
 					          			onKeyPress={this.onKeypress}
 					          			placeholder="Search by language..."
 					          			defaultValue={this.props.initialQuery}></input>

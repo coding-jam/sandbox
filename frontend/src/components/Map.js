@@ -26,7 +26,6 @@ export default class Map extends React.Component {
 
 		var options = Object.assign(
 			{
-				zoom:this.props.zoom,
 				el:React.findDOMNode(this.refs.chart),
 				zoom_changed:() => this.props.changeZoom(this.map.getZoom())
 			},
@@ -66,10 +65,10 @@ export default class Map extends React.Component {
 										new google.maps.LatLng(country.bounds.southwest.lat,country.bounds.southwest.lng)
 									])
 
-									that.props.markerClick(m.countryKey);
+									that.props.markerClick(m);
 								});	
 							}else{
-								that.props.markerClick(m.name);
+								that.props.markerClick(m);
 							}
 						})
 					});
