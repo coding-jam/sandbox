@@ -25,6 +25,7 @@ var userByLocationLoaded = (state,action) => {
 	});
 
 	var location = Object.assign({},state.location,{
+		country:action.country,
 		district:action.district
 	});
 
@@ -34,20 +35,6 @@ var userByLocationLoaded = (state,action) => {
 	});
 
 	return loadingEnd(toReturn);
-};
-
-var zoomChange = (state,action) => {
-
-	var map = {...state.map};
-	var viewportData = {...map.viewportData};
-
-	viewportData.zoom = action.zoom;
-
-	map.viewportData = viewportData;
-
-	return Object.assign({},state,{
-		map:map
-	});
 };
 
 var closeUserDialog = (state) => {
@@ -73,18 +60,13 @@ var markersLoaded = (state,action) => {
 		lastQuery:action.query
 	});
 
-	var location = Object.assign({},state.location,{
-		country:action.country,
-		district:null
-	});
-
 	var map = {...state.map,...{
-		markers:[...action.markers]
+		markers:[...action.markers],
+		districtMode:action.districtMode
 	}};
 
 	var toReturn = Object.assign({},state,{
 		users:users,
-		location:location,
 		map:map
 	});
 
@@ -95,7 +77,6 @@ var reducers = {
 	loadingStart:loadingStart,
 	loadingEnd:loadingEnd,
 	userByLocationLoaded:userByLocationLoaded,
-	zoomChange:zoomChange,
 	closeUserDialog:closeUserDialog,
 	markersLoaded:markersLoaded
 };
