@@ -93,7 +93,7 @@ var locationsDs = {
      * @param country it, uk
      * @returns {Promise}
      */
-    findDistricts: function(country) {
+    findDistricts: function (country) {
         return Q.fcall(function () {
             var regions = [];
             var countryData = locationData[country];
@@ -136,6 +136,20 @@ var locationsDs = {
                 return region.district;
             });
         });
+    },
+
+    getLocationsOutOfDistricts: function (country) {
+        return Q.fcall(function () {
+            var countryData = locationData[country];
+            return _.chain(countryData)
+                .keys()
+                .filter(function (key) {
+                    return countryData[key].length == 0 || !_.find(countryData[key][0].address_components, function (address) {
+                            return _.contains(address.types, countryMapping.districtLevel[country])
+                        })
+                })
+                .value();
+        })
     }
 
 }

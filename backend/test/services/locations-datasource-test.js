@@ -157,4 +157,51 @@ describe('Locations Datasource Test suite', function () {
 
     });
 
+    describe('getLocationsOutOfDistricts', function () {
+
+        function expectLeast(locations, count) {
+            expect(locations).to.be.not.null;
+            expect(locations).to.be.a('array');
+            expect(locations).to.be.have.length.least(count);
+        }
+
+        it('should return location non localized in districts in Italy', function (done) {
+
+            locationDs.getLocationsOutOfDistricts('it')
+                .then(function (locations) {
+                    expectLeast(locations, 37);
+                })
+                .done(done);
+        });
+
+        it('should return location non localized in districts in Uk', function (done) {
+
+            locationDs.getLocationsOutOfDistricts('uk')
+                .then(function (locations) {
+                    expectLeast(locations, 319);
+                })
+                .done(done);
+        });
+
+        it('should return location non localized in districts in Spain', function (done) {
+
+            locationDs.getLocationsOutOfDistricts('sp')
+                .then(function (locations) {
+                    console.log(locations) //FIXME: sono troppi quelli non trovati!
+                    expectLeast(locations, 583);
+                })
+                .done(done);
+        });
+
+        it.only('should return location non localized in districts in French', function (done) {
+
+            locationDs.getLocationsOutOfDistricts('fr')
+                .then(function (locations) {
+                    expectLeast(locations, 69);
+                })
+                .done(done);
+        });
+
+    });
+
 });
