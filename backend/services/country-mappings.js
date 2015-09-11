@@ -4,14 +4,16 @@ module.exports = {
         it: 'it',
         uk: 'en',
         sp: 'es',
-        fr: 'fr'
+        fr: 'fr',
+        ge: 'de'
     },
 
     location: {
         "it": "italy",
         "uk": "uk",
         "sp": "spain",
-        "fr": "france"
+        "fr": "france",
+        "ge": "germany"
     },
 
     districtLevel: {
@@ -25,6 +27,7 @@ module.exports = {
         it: 'IT',
         uk: 'GB',
         sp: 'ES',
-        fr: 'FR'
+        fr: 'FR',
+        ge: 'DE'
     }
 }
