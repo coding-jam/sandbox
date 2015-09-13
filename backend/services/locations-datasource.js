@@ -7,12 +7,14 @@ locationData['it'] = require(__dirname + '/../data/it_locations');
 locationData['uk'] = require(__dirname + '/../data/uk_locations');
 locationData['sp'] = require(__dirname + '/../data/sp_locations');
 locationData['fr'] = require(__dirname + '/../data/fr_locations');
+locationData['ge'] = require(__dirname + '/../data/ge_locations');
 
 var districtsData = [];
 districtsData['it'] = require(__dirname + '/../data/it_districts');
 districtsData['uk'] = require(__dirname + '/../data/uk_districts');
 districtsData['sp'] = require(__dirname + '/../data/sp_districts');
 districtsData['fr'] = require(__dirname + '/../data/fr_districts');
+districtsData['ge'] = require(__dirname + '/../data/ge_districts');
 
 var countryShortName = countryMapping.countryShortName;
 
@@ -102,7 +104,7 @@ var locationsDs = {
                     var found = _.find(countryData[key][0].address_components, function (address) {
                         return _.contains(address.types, countryMapping.districtLevel[country]);
                     });
-                    if (found && found.short_name.length > 2) {
+                    if (found && found.short_name.length >= countryMapping.districtMinShortNameLength[country]) {
                         regions.push(found.short_name);
                     }
                 }

@@ -20,7 +20,16 @@ module.exports = {
         it: 'administrative_area_level_1',
         uk: 'administrative_area_level_2',
         sp: 'administrative_area_level_1',
-        fr: 'administrative_area_level_1'
+        fr: 'administrative_area_level_1',
+        ge: 'administrative_area_level_1'
+    },
+
+    districtMinShortNameLength: {
+        it: 3,
+        uk: 3,
+        sp: 3,
+        fr: 3,
+        ge: 2
     },
 
     countryShortName: {

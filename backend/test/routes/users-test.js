@@ -93,6 +93,20 @@ describe('Users Routes Test suite', function () {
                 })
                 .done(done);
         });
+
+        it('should return all germany states url', function (done) {
+
+            httpUtils.getUri('/users/ge')
+                .then(function(resp) {
+                    expect(resp.body).to.have.property('usersInLocations');
+                    var hessen = _.find(resp.body.usersInLocations, function(location) {
+                        return location.districtName == 'HE';
+                    });
+                    expect(hessen.usersCount).to.be.least(819);
+                    expect(hessen.usersDetails).to.be.equal('/api/v1/users/ge/he');
+                })
+                .done(done);
+        });
     });
 
     describe('/:country/:district', function () {
