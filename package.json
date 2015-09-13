@@ -24,6 +24,7 @@
     "chai": "^3.2.0",
     "colors": "^1.1.2",
     "express": "^4.13.2",
+    "node-cache": "^3.0.0",
     "q": "^1.4.1",
     "request": "^2.60.0",
     "sync-request": "^2.0.1",
