@@ -2,6 +2,7 @@ var express = require('express');
 var _ = require("underscore");
 var userAdapter = require(__dirname + "/../services/users-adapter");
 var api = require(__dirname + '/../services/api-params');
+var bus = require('./event-bus');
 
 var router = express.Router();
 
@@ -19,6 +20,9 @@ router.get('/:country', function (req, res) {
             resBody.links = {};
             addLanguagesInfo(resBody, req.params.country);
             addLocationsInfo(resBody, req.params.country);
+
+            bus.emitRespBody(req. originalUrl, resBody);
+
             res.json(resBody);
         });
 

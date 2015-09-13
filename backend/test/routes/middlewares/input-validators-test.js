@@ -1,13 +1,13 @@
-var httpUtils = require('./http-utils');
+var httpUtils = require('./../http-utils');
 var expect = require('chai').expect;
 
-describe('Middleware Test suite', function () {
+describe('Input Validators Test suite', function () {
 
     this.timeout(100000);
     this.slow(1000000);
 
     before(function() {
-        require('../../server');
+        require('../../../server');
     });
 
     describe('/*/:country/*', function () {
