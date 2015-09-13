@@ -2,46 +2,46 @@ var NodeCache = require("node-cache");
 var Q = require('q');
 var _ = require('underscore');
 
-var cache = new CacheAdapter({
-    useClones: false,
-    checkperiod: 0,
-    cacheAll: true
-});
+module.exports = function (options) {
+    var cache = new CacheAdapter(options);
 
-module.exports = function (req, resp, next) {
-    console.log('Requested url: ' + req.originalUrl);
+    return function (req, resp, next) {
+        console.log('Requested url: ' + req.originalUrl);
 
-    cache.addCacheCapabilities(resp, req.originalUrl);
+        cache.addCacheCapabilities(resp, req.originalUrl);
 
-    cache.get(req.originalUrl)
-        .then(function (data) {
-            console.log('Retrieving data from cache');
-            resp.json(data);
-        })
-        .catch(function () {
-            console.log('Processing new request');
-            next();
-        })
+        cache.get(req.originalUrl)
+            .then(function (data) {
+                console.log('Retrieving data from cache');
+                resp.json(data);
+            })
+            .catch(function () {
+                console.log('Processing new request');
+                next();
+            })
+    };
 };
 
 function CacheAdapter(options) {
 
-    this.cache = new NodeCache(options);
+    var self = this;
 
-    this.addCacheCapabilities = function (resp, url) {
+    self.cache = new NodeCache(options);
+
+    self.addCacheCapabilities = function (resp, url) {
 
         var jsonRef = resp.json;
         resp.json = function (data, cacheBody) {
             if (cacheBody || options.cacheAll) {
-                cache.set(url, data);
+                self.cache.set(url, data);
             }
             jsonRef.apply(this, arguments);
         }
     }
 
-    this.get = function (key) {
+    self.get = function (key) {
         var deferred = Q.defer();
-        this.cache.get(key, function (err, value) {
+        self.cache.get(key, function (err, value) {
             if (err) {
                 deferred.reject(err);
             } else if (value == undefined) {
@@ -53,9 +53,9 @@ function CacheAdapter(options) {
         return deferred.promise;
     };
 
-    this.set = function (key, value) {
+    self.set = function (key, value) {
         var deferred = Q.defer();
-        this.cache.set(key, value, function (err, success) {
+        self.cache.set(key, value, function (err, success) {
             if (err || !success) {
                 deferred.reject(err);
             } else {
@@ -65,9 +65,9 @@ function CacheAdapter(options) {
         return deferred.promise;
     };
 
-    this.containsKey = function (key) {
+    self.containsKey = function (key) {
         var deferred = Q.defer();
-        this.cache.keys(function (err, keys) {
+        self.cache.keys(function (err, keys) {
             if (err) {
                 deferred.reject(err);
             } else {

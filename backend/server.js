@@ -124,7 +124,11 @@ var SandboxApp = function() {
         self.app.use(express.static(__dirname + '/../build'));
 
         self.app.use(inputValidators);
-        self.app.use(memoryCache);
+        self.app.use(memoryCache({
+            useClones: false,
+            checkperiod: 0,
+            cacheAll: true
+        }));
 
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);
