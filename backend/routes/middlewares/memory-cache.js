@@ -30,13 +30,15 @@ function CacheAdapter(options) {
 
     self.addCacheCapabilities = function (resp, url) {
 
-        var jsonRef = resp.json;
-        resp.json = function (data, cacheBody) {
-            if (cacheBody || options.cacheAll) {
-                self.cache.set(url, data);
+        resp.json = (function(_super) {
+
+            return function (data, cacheBody) {
+                if (cacheBody || options.cacheAll) {
+                    self.cache.set(url, data);
+                }
+                _super.apply(this, arguments);
             }
-            jsonRef.apply(this, arguments);
-        }
+        })(resp.json);
     }
 
     self.get = function (key) {
