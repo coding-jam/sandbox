@@ -1,19 +1,17 @@
-var bus = require('../event-bus');
 var NodeCache = require("node-cache");
 var Q = require('q');
 var _ = require('underscore');
 
-var cache = new CacheAdapter();
+var cache = new CacheAdapter({
+    useClones: false,
+    checkperiod: 0,
+    cacheAll: true
+});
 
-module.exports = function(req, resp, next) {
+module.exports = function (req, resp, next) {
     console.log('Requested url: ' + req.originalUrl);
 
-    bus.onRespBody(function(data) {
-        cache.set(data.url, data.data)
-            .catch(function (err) {
-                console.error(err);
-            });
-    });
+    cache.addCacheCapabilities(resp, req.originalUrl);
 
     cache.get(req.originalUrl)
         .then(function (data) {
@@ -24,19 +22,27 @@ module.exports = function(req, resp, next) {
             console.log('Processing new request');
             next();
         })
-}
+};
 
-function CacheAdapter() {
+function CacheAdapter(options) {
 
-    this.cache = new NodeCache({
-        useClones: false,
-        checkperiod: 0
-    });
+    this.cache = new NodeCache(options);
 
-    this.get = function(key) {
+    this.addCacheCapabilities = function (resp, url) {
+
+        var jsonRef = resp.json;
+        resp.json = function (data, cacheBody) {
+            if (cacheBody || options.cacheAll) {
+                cache.set(url, data);
+            }
+            jsonRef.apply(this, arguments);
+        }
+    }
+
+    this.get = function (key) {
         var deferred = Q.defer();
         this.cache.get(key, function (err, value) {
-            if(err) {
+            if (err) {
                 deferred.reject(err);
             } else if (value == undefined) {
                 deferred.reject('No value found!');
@@ -47,10 +53,10 @@ function CacheAdapter() {
         return deferred.promise;
     };
 
-    this.set = function(key, value) {
+    this.set = function (key, value) {
         var deferred = Q.defer();
-        this.cache.set(key, value, function(err, success) {
-            if(err || !success) {
+        this.cache.set(key, value, function (err, success) {
+            if (err || !success) {
                 deferred.reject(err);
             } else {
                 deferred.resolve(success);
@@ -59,10 +65,10 @@ function CacheAdapter() {
         return deferred.promise;
     };
 
-    this.containsKey = function(key) {
+    this.containsKey = function (key) {
         var deferred = Q.defer();
         this.cache.keys(function (err, keys) {
-            if(err) {
+            if (err) {
                 deferred.reject(err);
             } else {
                 deferred.resolve(_.contains(keys, key));
