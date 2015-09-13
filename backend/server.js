@@ -10,6 +10,8 @@ var locations = require(__dirname + '/routes/locations');
 var countries = require(__dirname + '/routes/countries');
 var countryMapping = require(__dirname + '/services/country-mappings');
 var api = require(__dirname + '/services/api-params');
+var inputValidators = require(__dirname + '/routes/middlewares/input-validators');
+var memoryCache = require(__dirname + '/routes/middlewares/memory-cache');
 
 /**
  *  Define the sample application.
@@ -18,9 +20,6 @@ var SandboxApp = function() {
 
     //  Scope.
     var self = this;
-
-    self.webForbidden = ['package.json', 'gulpfile.js', 'css', 'node_modules', 'src'];
-
 
     /*  ================================================================  */
     /*  Helper functions.                                                 */
@@ -124,22 +123,12 @@ var SandboxApp = function() {
 
         self.app.use(express.static(__dirname + '/../build'));
 
-        self.app.use(function(req, res, next) {
-            var matchCountry = _.chain(countryMapping.location)
-                .keys()
-                .map(function(val) {
-                    return '/' + val + '$|/' + val + '/';
-                })
-                .value()
-                .join('|');
-            if (req.originalUrl.match(matchCountry + '|' + api.countriesPath + '$' + '|' + api.usersPath + '$' + '|' + api.languagesPath + '$')) {
-                next();
-            } else {
-                var err = new Error('Country unknown!');
-                err.status = 400;
-                next(err);
-            }
-        });
+        self.app.use(inputValidators);
+        self.app.use(memoryCache({
+            useClones: false,
+            checkperiod: 0,
+            cacheAll: true
+        }));
 
         self.app.use(api.getApiPath() + api.usersPath, users);
         self.app.use(api.getApiPath() + api.languagesPath, languages);

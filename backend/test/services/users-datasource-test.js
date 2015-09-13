@@ -19,6 +19,18 @@ describe('Users Datasource Test suite', function () {
                 })
                 .done(done);
         });
+
+        it('should return germans users from ge_users folder', function (done) {
+
+            usersDs.getUsers('ge')
+                .then(function (users) {
+                    expect(users).has.property('total_count');
+                    expect(users.total_count).to.be.above(24000);
+                    expect(users).has.property('items');
+                    expect(users.total_count).to.be.equal(users.items.length);
+                })
+                .done(done);
+        });
     });
 
     describe('findBy', function () {
