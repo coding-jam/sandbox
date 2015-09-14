@@ -10,10 +10,10 @@ module.exports = {
 
     location: {
         "it": "italy",
-        //"uk": "uk",
+        "uk": "uk",
         "sp": "spain",
         "fr": "france",
-        "ge": "germany"
+        //"ge": "germany"
     },
 
     districtLevel: {
