@@ -65,7 +65,7 @@ var usersDs = {
 
 var users = [];
 users['it'] = loadUsers('it');
-users['uk'] = loadUsers('uk');
+//users['uk'] = loadUsers('uk');
 users['sp'] = loadUsers('sp');
 users['fr'] = loadUsers('fr');
 users['ge'] = loadUsers('ge');
