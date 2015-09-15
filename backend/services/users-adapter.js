@@ -1,8 +1,8 @@
 var _ = require("underscore");
 var Q = require('q');
-var userDs = require(__dirname + "/users-datasource");
-var locationDs = require(__dirname + "/locations-datasource");
-var countryMappings = require(__dirname + "/country-mappings");
+var userDs = require("./dao/files/users-datasource");
+var locationDs = require("./dao/files/locations-datasource");
+var countryMappings = require("./country-mappings");
 require('./utils');
 
 var userAdapter = {

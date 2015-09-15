@@ -1,7 +1,7 @@
 var express = require('express');
-var _ = require("underscore");
-var countriesDs = require(__dirname + "/../services/countries-datasource");
-var api = require(__dirname + '/../services/api-params');
+var _ = require('underscore');
+var countriesDs = require('../services/dao/files/countries-datasource');
+var api = require('../services/api-params');
 
 var router = express.Router();
 

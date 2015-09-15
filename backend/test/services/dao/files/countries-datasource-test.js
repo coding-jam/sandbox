@@ -1,4 +1,4 @@
-var countriesDs = require('../../services/countries-datasource');
+var countriesDs = require('../../../../services/dao/files/countries-datasource');
 var expect = require('chai').expect;
 
 describe('Countries Datasource Test suite', function () {

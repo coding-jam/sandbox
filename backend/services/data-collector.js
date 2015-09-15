@@ -1,10 +1,10 @@
 var Q = require('q');
 var fs = require('fs');
 var _ = require("underscore");
-var ghHttp = require(__dirname + '/gh-http');
-var geolocator = require(__dirname + '/geolocator');
-var usersDs = require(__dirname + '/users-datasource');
-var locationDs = require(__dirname + "/locations-datasource");
+var ghHttp = require('./gh-http');
+var geolocator = require('./geolocator');
+var usersDs = require('./dao/files/users-datasource');
+var locationDs = require('./dao/files/locations-datasource');
 var countryMapping = require('./country-mappings');
 var dataFixer = require('./data-fixer');
 

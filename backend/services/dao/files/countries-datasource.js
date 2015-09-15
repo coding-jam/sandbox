@@ -1,7 +1,7 @@
 var _ = require("underscore");
 var Q = require('q');
-var countriesData = require(__dirname + '/../data/countries');
-var continents = require(__dirname + '/../data/static_continents');
+var countriesData = require(__dirname + '/../../../data/countries');
+var continents = require(__dirname + '/../../../data/static_continents');
 
 var countriesDs = {
 

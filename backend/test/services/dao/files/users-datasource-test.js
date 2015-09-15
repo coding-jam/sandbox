@@ -1,4 +1,4 @@
-var usersDs = require('../../services/users-datasource');
+var usersDs = require('../../../../services/dao/files/users-datasource');
 var expect = require('chai').expect;
 
 describe('Users Datasource Test suite', function () {

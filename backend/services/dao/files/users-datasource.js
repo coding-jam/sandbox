@@ -5,7 +5,7 @@ var Q = require('q');
 var usersDs = {
 
     data: {
-        folder: __dirname + '/../data/',
+        folder: __dirname + '/../../../data/',
         usersFolder: '_users'
     },
 

@@ -1,4 +1,4 @@
-var usersDs = require('./users-datasource');
+var usersDs = require('./dao/files/users-datasource');
 var Q = require('q');
 var fs = require('fs');
 var _ = require("underscore");
