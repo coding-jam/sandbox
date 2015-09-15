@@ -13,7 +13,7 @@ module.exports = {
         "uk": "uk",
         "sp": "spain",
         "fr": "france",
-        "ge": "germany"
+        //"ge": "germany"
     },
 
     districtLevel: {

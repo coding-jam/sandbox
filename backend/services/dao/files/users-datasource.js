@@ -68,7 +68,7 @@ users['it'] = loadUsers('it');
 users['uk'] = loadUsers('uk');
 users['sp'] = loadUsers('sp');
 users['fr'] = loadUsers('fr');
-users['ge'] = loadUsers('ge');
+//users['ge'] = loadUsers('ge');
 
 function loadUsers(country) {
     var users = {
@@ -89,11 +89,12 @@ function loadUsers(country) {
                     fs.readFile(filePath, 'utf8', function (err, data) {
                         if (err) {
                             deferredLoop.reject(err);
+                        } else {
+                            var json = JSON.parse(data);
+                            users.total_count += json.total_count;
+                            users.items = users.items.concat(json.items);
+                            deferredLoop.resolve();
                         }
-                        var json = JSON.parse(data);
-                        users.total_count += json.total_count;
-                        users.items = users.items.concat(json.items);
-                        deferredLoop.resolve();
                     });
                     promises.push(deferredLoop.promise);
                 }
