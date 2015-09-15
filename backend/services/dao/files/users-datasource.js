@@ -68,7 +68,7 @@ users['it'] = loadUsers('it');
 users['uk'] = loadUsers('uk');
 users['sp'] = loadUsers('sp');
 users['fr'] = loadUsers('fr');
-//users['ge'] = loadUsers('ge');
+users['ge'] = loadUsers('ge');
 
 function loadUsers(country) {
     var users = {
