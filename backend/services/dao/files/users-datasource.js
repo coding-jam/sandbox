@@ -60,6 +60,13 @@ var usersDs = {
             // Se l'intersezione delle liste ha la stessa lunghezza di languages, languages è contenuta in user.languages
             return _.intersection(languages, toLowerCase(user.languages)).length == languages.length;
         }
+    },
+
+    getCreationDate: function (country) {
+        return Q.nfcall(fs.stat, usersDs.data.folder + country + usersDs.data.usersFolder)
+            .then(function (data) {
+               return data.birthtime;
+            });
     }
 };
 
@@ -105,10 +112,11 @@ function loadUsers(country) {
                         return user.languages && user.languages.length > 0;
                     });
                     console.log(users.total_count + ' ' + country.toUpperCase() + ' users loaded, ' + usersWithLanguage.length + ' with languages');
-                    deferred.resolve({
-                        total_count: usersWithLanguage.length,
-                        items: usersWithLanguage
-                    });
+                    //deferred.resolve({
+                    //    total_count: usersWithLanguage.length,
+                    //    items: usersWithLanguage
+                    //});
+                    deferred.resolve(users);
                 })
                 .catch(function (err) {
                     deferred.reject(err);

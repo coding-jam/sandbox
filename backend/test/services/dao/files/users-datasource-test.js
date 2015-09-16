@@ -65,4 +65,16 @@ describe('Users Datasource Test suite', function () {
                 .done(done);
         });
     });
+
+    describe('getCreationDate', function () {
+
+        it('should return country folder creation date', function (done) {
+
+            usersDs.getCreationDate('it')
+                .then(function (date) {
+                    expect(date).to.be.a('date');
+                })
+                .done(done);
+        });
+    });
 });
