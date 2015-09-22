@@ -314,29 +314,34 @@ var collector = {
         function getLocations(country, users, deferred) {
             fs.exists(collector.data.folder + country + collector.data.locations, function (exists) {
                 if (!exists) {
-                    createBasicFileStructure(country, users)
+                    createBasicFileStructure(country, users, {})
                         .then(function(locationCache) {
                             cacheLocations(country, locationCache, deferred);
                         });
                 } else {
                     Q.nfcall(fs.readFile, collector.data.folder + country + collector.data.locations, 'utf8')
                         .then(function(data) {
-                            cacheLocations(country, JSON.parse(data), deferred);
+                            createBasicFileStructure(country, users, JSON.parse(data))
+                                .then(function(locationCache) {
+                                    cacheLocations(country, locationCache, deferred);
+                                });
                         });
                 }
             });
         };
 
-        function createBasicFileStructure(country, users) {
+        function createBasicFileStructure(country, users, locationCache) {
             var distinctLocations = _.chain(users.items)
+                .filter(function (item) {
+                    return !!item.location;
+                })
                 .map(function (item) {
-                    return item.location ? item.location.toLowerCase() : item.location
+                    return item.location.toLowerCase();
                 })
                 .unique()
                 .value();
-            var locationCache = {};
             distinctLocations.forEach(function (location) {
-                if (location) {
+                if (!locationCache[location]) {
                     locationCache[location] = [];
                 }
             });
