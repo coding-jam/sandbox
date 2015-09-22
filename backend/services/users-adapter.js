@@ -58,7 +58,9 @@ var userAdapter = {
             .then(function (users) {
                 return _.chain(users.items)
                     .map(function (user) {
-                        user.geolocation = locationsFound[user.location];
+                        if (user.location) {
+                            user.geolocation = locationsFound[user.location.toLowerCase()];
+                        }
                         return user;
                     })
                     .sortBy(function(user) {
