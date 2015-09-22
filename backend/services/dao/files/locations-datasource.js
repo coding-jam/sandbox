@@ -58,7 +58,7 @@ var locationsDs = {
     },
 
     /**
-     * @deprecated use {@link findLocationsBy} provinding Country (i.e. 'it', 'uk') and shortName
+     * @deprecated use {@link findLocationsBy} providing Country (i.e. 'it', 'uk') and shortName
      *
      * @param shortName
      * @returns {Promise}
@@ -79,7 +79,7 @@ var locationsDs = {
     },
 
     /**
-     * @deprecated use {@link findDistricts} provinding Country (i.e. 'it', 'uk')
+     * @deprecated use {@link findDistricts} providing Country (i.e. 'it', 'uk')
      *
      * Find regions from it_locations.json
      *
@@ -138,6 +138,15 @@ var locationsDs = {
                 return region.district;
             });
         });
+    },
+
+    /**
+     * Internal use only
+     * @param country
+     * @returns {*}
+     */
+    _getLocationData: function (country) {
+        return locationData[country];
     }
 
 }
