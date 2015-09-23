@@ -62,7 +62,7 @@ describe('Languages Adapter Test suite', function () {
         it('should return languages per Uk districts', function(done) {
 
             this.timeout(0);
-            setTimeout(done, 7000);
+            setTimeout(done, 10000);
 
             languagesAdapter.getLanguagesPerDistrict('uk')
                 .then(function(languages) {

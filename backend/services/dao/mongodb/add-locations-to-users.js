@@ -20,7 +20,7 @@ countries.forEach(function (country) {
                 .then(function (count) {
                     var i = 0;
                     users.forEach(function (user) {
-                        console.log('country: ' + country + ', count: ' + count + ', iteration ' + i)
+                        //console.log('country: ' + country + ', count: ' + count + ', iteration ' + i)
                         if (user.location) {
                             var geolocation = locations[user.location.toLowerCase()];
                             if (geolocation && geolocation.length > 0) {
