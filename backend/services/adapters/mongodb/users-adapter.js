@@ -13,8 +13,20 @@ var userAdapter = {
      * @param district
      * @returns {Promise}
      */
-    getByDistrict: function (country, district, languages) {
-        var users = db().then(function (db) {
+    getByDistrict: function (country, district, languages, dbFunc) {
+        if (dbFunc) {
+            return Q.when(findUsers(dbFunc, country));
+        } else {
+            return Q.when(db().then(function (db) {
+                return findUsers(db, country)
+                    .then(function (users) {
+                        db.close();
+                        return users;
+                    });
+            }));
+        }
+
+        function findUsers(db, country) {
             var findModel = {
                 'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}
             };
@@ -34,13 +46,7 @@ var userAdapter = {
                         items: users
                     };
                 })
-                .then(function (users) {
-                    db.close();
-                    return users;
-                })
-        });
-
-        return Q.when(users);
+        }
 
         function normalizeForQuery(array) {
             if (array && array.length) {
@@ -61,11 +67,16 @@ var userAdapter = {
         }
     },
 
+    /**
+     * Return users count per district
+     *
+     * @param country
+     * @param baseUrl
+     * @returns {Promise}
+     */
     getUsersPerDistrict: function (country, baseUrl) {
         var users = db().then(function (db) {
-            return db.collection(country + '_districts')
-                .find({}, {district: 1, _id: 0})
-                .toArray()
+            return locationDs.getDistricts(country, db)
                 .then(function (districts) {
                     return Q.each(districts, function (deferred, district) {
                         userAdapter.getByDistrict(country, district.district)
@@ -95,6 +106,10 @@ var userAdapter = {
         });
 
         return Q.when(users);
+    },
+
+    getUsersPerCountry: function(baseUrl) {
+        //TODO
     }
 };
 

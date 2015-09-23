@@ -67,7 +67,7 @@ describe('Users Mongo Adapter Test suite', function () {
                 .done(done);
         });
 
-        it.only('should return uk users grouped by districts', function (done) {
+        it('should return uk users grouped by districts', function (done) {
 
             usersAdapter.getUsersPerDistrict('uk', 'http://mock.url')
                 .then(function (users) {
