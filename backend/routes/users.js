@@ -1,6 +1,6 @@
 var express = require('express');
 var _ = require('underscore');
-var userAdapter = require('../services/users-adapter');
+var userAdapter = require('../services/adapters/files/users-adapter');
 var api = require('../services/api-params');
 
 var router = express.Router();

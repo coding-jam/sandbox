@@ -1,4 +1,4 @@
-var userAdapter = require('../../services/users-adapter');
+var userAdapter = require('../../services/adapters/files/users-adapter');
 var expect = require('chai').expect;
 var _ = require('underscore');
 
