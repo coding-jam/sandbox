@@ -89,4 +89,22 @@ describe('Users Mongo Adapter Test suite', function () {
                 .done(done);
         });
     });
+
+    describe('getUsersPerCountry', function () {
+
+        it.only('should return all users count per country', function (done) {
+
+            usersAdapter.getUsersPerCountry('http://mock.url')
+                .then(function (result) {
+                    expect(result).has.property('usersInCounties');
+                    expect(result.usersInCounties).to.be.a('array');
+                    expect(result.usersInCounties).has.length(5);
+                    expect(result.usersInCounties).has.deep.property('[0].countryName');
+                    expect(result.usersInCounties).has.deep.property('[0].countryKey');
+                    expect(result.usersInCounties).has.deep.property('[0].countryDetails');
+                    expect(result.usersInCounties).has.deep.property('[0].usersCount');
+                })
+                .done(done);
+        });
+    });
 });

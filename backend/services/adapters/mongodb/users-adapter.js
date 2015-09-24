@@ -2,7 +2,39 @@ var _ = require("underscore");
 var Q = require("q");
 var db = require('./../../dao/mongodb/mongo-connection');
 var locationDs = require('./../../dao/mongodb/locations-datasource');
+var countryMappings = require("./../../country-mappings");
 require('./../../utils');
+
+function createDistrictFindModel(district, languages) {
+    var findModel = {
+        'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}
+    };
+
+    if (languages) {
+        findModel.languages = {$all: normalizeForQuery(languages)};
+    } else {
+        findModel['languages.0'] = {$exists: true};
+    }
+    return findModel;
+
+    function normalizeForQuery(array) {
+        if (array && array.length) {
+            return _.chain(array)
+                .map(function (value) {
+                    return value.toLowerCase().trim();
+                })
+                .filter(function (value) {
+                    return !!value;
+                })
+                .map(function (value) {
+                    return new RegExp('^' + value + '$', 'i');
+                })
+                .value();
+        } else {
+            return array;
+        }
+    }
+};
 
 var userAdapter = {
 
@@ -27,18 +59,8 @@ var userAdapter = {
         }
 
         function findUsers(db, country) {
-            var findModel = {
-                'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}
-            };
-
-            if (languages) {
-                findModel.languages = {$all: normalizeForQuery(languages)};
-            } else {
-                findModel['languages.0'] = {$exists: true};
-            }
-
             return db.collection(country + '_users')
-                .find(findModel)
+                .find(createDistrictFindModel(district, languages))
                 .toArray()
                 .then(function (users) {
                     return {
@@ -47,23 +69,32 @@ var userAdapter = {
                     };
                 })
         }
+    },
 
-        function normalizeForQuery(array) {
-            if (array && array.length) {
-                return _.chain(array)
-                    .map(function (value) {
-                        return value.toLowerCase().trim();
-                    })
-                    .filter(function (value) {
-                        return !!value;
-                    })
-                    .map(function (value) {
-                        return new RegExp('^' + value + '$', 'i');
-                    })
-                    .value();
-            } else {
-                return array;
-            }
+    /**
+     * Count user in a district of a country
+     *
+     * @param country
+     * @param district
+     * @returns {Promise}
+     */
+    countByDistrict: function (country, district, languages, dbFunc) {
+        if (dbFunc) {
+            return Q.when(findUsers(dbFunc, country));
+        } else {
+            return Q.when(db().then(function (db) {
+                return findUsers(db, country)
+                    .then(function (count) {
+                        db.close();
+                        return count;
+                    });
+            }));
+        }
+
+        function findUsers(db, country) {
+            return db.collection(country + '_users')
+                .find(createDistrictFindModel(district, languages))
+                .count(false);
         }
     },
 
@@ -79,12 +110,12 @@ var userAdapter = {
             return locationDs.getDistricts(country, db)
                 .then(function (districts) {
                     return Q.each(districts, function (deferred, district) {
-                        userAdapter.getByDistrict(country, district.district)
-                            .then(function (users) {
+                        userAdapter.countByDistrict(country, district.district)
+                            .then(function (count) {
                                 deferred.resolve({
                                     districtName: district.district,
                                     usersDetails: baseUrl + '/' + encodeURIComponent(district.district.toLowerCase()),
-                                    usersCount: users.total_count
+                                    usersCount: count
                                 });
                             })
                             .catch(function (err) {
@@ -108,8 +139,34 @@ var userAdapter = {
         return Q.when(users);
     },
 
-    getUsersPerCountry: function(baseUrl) {
-        //TODO
+    /**
+     * 
+     * @param baseUrl
+     * @returns {*}
+     */
+    getUsersPerCountry: function (baseUrl) {
+        var users = db().then(function (db) {
+            return Q.each(_.keys(countryMappings.language), function (deferred, country) {
+                db.collection(country + '_users')
+                    .find({'languages.0': {$exists: true}})
+                    .count(false)
+                    .then(function (count) {
+                        deferred.resolve({
+                            countryName: countryMappings.location[country].capitalize(),
+                            countryKey: country,
+                            countryDetails: baseUrl + '/' + country,
+                            usersCount: count
+                        });
+                    })
+            })
+                .then(function (usersInCounties) {
+                    db.close();
+                    return {
+                        usersInCounties: usersInCounties
+                    }
+                });
+        });
+        return Q.when(users);
     }
 };
 

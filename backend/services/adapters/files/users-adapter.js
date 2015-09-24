@@ -155,7 +155,7 @@ var userAdapter = {
                         usersCount: users.total_count
                     });
                     deferredLoop.resolve();
-                }).catch(deferredLoop.resolve); //FIXME quando ci sono tutti i paesi
+                }).catch(deferredLoop.reject);
             promises.push(deferredLoop.promise);
         });
         return Q.all(promises).then(function() {
