@@ -140,9 +140,10 @@ var userAdapter = {
     },
 
     /**
-     * 
+     * Return users grouped by country
+     *
      * @param baseUrl
-     * @returns {*}
+     * @returns {Promise}
      */
     getUsersPerCountry: function (baseUrl) {
         var users = db().then(function (db) {
