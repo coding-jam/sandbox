@@ -11,11 +11,11 @@ var countriesDs = {
     getCountriesLocations: function() {
         return Q.when(db().then(function (db) {
             return db.collection('countries')
-                .find({})
+                .find({}, {_id: false})
                 .toArray()
                 .then(function (countries) {
                     db.close();
-                    return countries;
+                    return countries[0];
                 })
         }));
     }
