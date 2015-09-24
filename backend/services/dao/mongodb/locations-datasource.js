@@ -28,7 +28,26 @@ var locationsDs = {
                 .find({}, {district: 1, _id: 0})
                 .toArray();
         }
-    }
+    },
+
+    /**
+     * Return all districts of a country with geolocation information
+     *
+     * @param country
+     * @returns {Promise}
+     */
+    getDistrictsWithDetails: function (country) {
+        return db().then(function (db) {
+            return db.collection(country + '_districts')
+                .find({})
+                .then(function (result) {
+                    db.close();
+                    return {
+                        districts: result
+                    };
+                });
+        });
+    },
 
 }
 
