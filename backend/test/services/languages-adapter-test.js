@@ -1,4 +1,4 @@
-var languagesAdapter = require('../../services/languages-adapter');
+var languagesAdapter = require('../../services/adapters/files/languages-adapter');
 var expect = require('chai').expect;
 var _ = require('underscore');
 

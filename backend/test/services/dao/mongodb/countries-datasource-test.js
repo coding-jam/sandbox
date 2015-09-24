@@ -3,6 +3,9 @@ var expect = require('chai').expect;
 
 describe('Countries Mongo Datasource Test suite', function () {
 
+    this.timeout(100000);
+    this.slow(250000);
+
     describe('getCountriesLocations', function () {
 
         it('should return all countries geo info', function (done) {
