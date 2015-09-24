@@ -92,7 +92,7 @@ describe('Users Mongo Adapter Test suite', function () {
 
     describe('getUsersPerCountry', function () {
 
-        it.only('should return all users count per country', function (done) {
+        it('should return all users count per country', function (done) {
 
             usersAdapter.getUsersPerCountry('http://mock.url')
                 .then(function (result) {

@@ -1,9 +1,9 @@
 var _ = require("underscore");
 var Q = require('q');
-var userDs = require("./dao/files/users-datasource");
-var locationDs = require("./dao/files/locations-datasource");
-var countryMappings = require("./country-mappings");
-require('./utils');
+var userDs = require("./../../dao/files/users-datasource");
+var locationDs = require("./../../dao/files/locations-datasource");
+var countryMappings = require("./../../country-mappings");
+require('./../../utils');
 
 function sortByValue(obj, desc) {
     var sortable = [];
