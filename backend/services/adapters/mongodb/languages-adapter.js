@@ -1,6 +1,7 @@
 var _ = require("underscore");
 var Q = require('q');
 var db = require('./../../dao/mongodb/mongo-connection');
+var locationsDs = require('./../../dao/mongodb/locations-datasource');
 var countryMappings = require("./../../country-mappings");
 require('./../../utils');
 
@@ -14,14 +15,26 @@ function createGroupByLanguageModel() {
 
 var languagesAdapter = {
 
-    getRankedLanguages: function (country, district) {
+    getRankedLanguages: function (country, district, dbRef) {
 
         var findModel = createGroupByLanguageModel();
         if (district) {
             findModel.unshift({ $match : {'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}}});
         }
 
-        return Q.when(db().then(function (db) {
+        if (dbRef) {
+            return Q.when(executeQuery(dbRef, country, findModel));
+        } else {
+            return Q.when(db().then(function (db) {
+                return executeQuery(db, country, findModel)
+                    .then(function (ranked) {
+                        db.close();
+                        return ranked;
+                    })
+            }));
+        }
+
+        function executeQuery(db, country, findModel) {
             return db.collection(country + '_users')
                 .aggregate(findModel)
                 .toArray()
@@ -31,37 +44,35 @@ var languagesAdapter = {
                         delete res._id;
                         return res;
                     });
-                    db.close();
                     return ranked;
                 })
-        }));
+        }
     },
 
     getLanguagesPerDistrict: function (country) {
-        //return locationDs.getDistricts(country)
-        //    .then(function (districts) {
-        //        var promises = [];
-        //        districts.forEach(function(district) {
-        //            var deferredLoop = Q.defer();
-        //            languagesAdapter.getRankedLanguages(country, district.toLowerCase())
-        //                .then(function(languages) {
-        //                    deferredLoop.resolve({
-        //                        districtName: district,
-        //                        languages: languages
-        //                    });
-        //                })
-        //                .catch(function(err) {
-        //                    deferredLoop.reject(err);
-        //                });
-        //            promises.push(deferredLoop.promise);
-        //        });
-        //        return Q.all(promises);
-        //    })
-        //    .then(function(languagesPerDistricts) {
-        //        return {
-        //            languagesPerDistricts: languagesPerDistricts
-        //        }
-        //    });
+        return Q.when(db().then(function (db) {
+            return locationsDs.getDistricts(country, db)
+                .then(function (districts) {
+                    return Q.each(districts, function (deferred, district) {
+                        languagesAdapter.getRankedLanguages(country, district.district.toLowerCase(), db)
+                            .then(function (languages) {
+                                deferred.resolve({
+                                    districtName: district.district,
+                                    languages: languages
+                                });
+                            })
+                    })
+                    .then(function(languagesPerDistricts) {
+                        return {
+                            languagesPerDistricts: languagesPerDistricts
+                        }
+                    });
+                })
+                .then(function (languagesPerDistricts) {
+                    db.close();
+                    return languagesPerDistricts;
+                })
+        }));
     },
 
     getLanguagesPerCountry: function () {
