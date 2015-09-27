@@ -39,10 +39,11 @@ var locationsDs = {
     getDistrictsWithDetails: function (country) {
         return db().then(function (db) {
             return db.collection(country + '_districts')
-                .find({})
+                .find({}, {_id: false})
                 .toArray()
                 .then(function (result) {
                     db.close();
+
                     return {
                         districts: result
                     };

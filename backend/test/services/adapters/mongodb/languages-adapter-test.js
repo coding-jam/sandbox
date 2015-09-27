@@ -65,7 +65,7 @@ describe('Languages Mongo Adapter Test suite', function () {
         it('should return languages per Uk districts', function(done) {
 
             this.timeout(0);
-            setTimeout(done, 10000);
+            setTimeout(done, 1000000);
 
             languagesAdapter.getLanguagesPerDistrict('uk')
                 .then(function(languages) {

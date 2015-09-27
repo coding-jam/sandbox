@@ -2,10 +2,11 @@ var _ = require("underscore");
 var Q = require("q");
 var db = require('./../../dao/mongodb/mongo-connection');
 var locationDs = require('./../../dao/mongodb/locations-datasource');
+var countriesDs = require('./../../dao/mongodb/countries-datasource');
 var countryMappings = require("./../../country-mappings");
 require('./../../utils');
 
-function createDistrictFindModel(district, languages) {
+function districtFindModel(district, languages) {
     var findModel = {
         'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}
     };
@@ -60,7 +61,7 @@ var userAdapter = {
 
         function findUsers(db, country) {
             return db.collection(country + '_users')
-                .find(createDistrictFindModel(district, languages))
+                .find(districtFindModel(district, languages))
                 .toArray()
                 .then(function (users) {
                     return {
@@ -76,14 +77,16 @@ var userAdapter = {
      *
      * @param country
      * @param district
+     * @param languages
+     * @param dbFunc [optional]
      * @returns {Promise}
      */
     countByDistrict: function (country, district, languages, dbFunc) {
         if (dbFunc) {
-            return Q.when(findUsers(dbFunc, country));
+            return Q.when(findUsers(dbFunc, country, district, languages));
         } else {
             return Q.when(db().then(function (db) {
-                return findUsers(db, country)
+                return findUsers(db, country, district, languages)
                     .then(function (count) {
                         db.close();
                         return count;
@@ -91,9 +94,9 @@ var userAdapter = {
             }));
         }
 
-        function findUsers(db, country) {
+        function findUsers(db, country, district, languages) {
             return db.collection(country + '_users')
-                .find(createDistrictFindModel(district, languages))
+                .find(districtFindModel(district, languages))
                 .count(false);
         }
     },
@@ -110,7 +113,7 @@ var userAdapter = {
             return locationDs.getDistricts(country, db)
                 .then(function (districts) {
                     return Q.each(districts, function (deferred, district) {
-                        userAdapter.countByDistrict(country, district.district)
+                        userAdapter.countByDistrict(country, district.district, null, db)
                             .then(function (count) {
                                 deferred.resolve({
                                     districtName: district.district,
@@ -147,25 +150,28 @@ var userAdapter = {
      */
     getUsersPerCountry: function (baseUrl) {
         var users = db().then(function (db) {
-            return Q.each(_.keys(countryMappings.language), function (deferred, country) {
-                db.collection(country + '_users')
-                    .find({'languages.0': {$exists: true}})
-                    .count(false)
-                    .then(function (count) {
-                        deferred.resolve({
-                            countryName: countryMappings.location[country].capitalize(),
-                            countryKey: country,
-                            countryDetails: baseUrl + '/' + country,
-                            usersCount: count
-                        });
+            return countriesDs.getCountriesLocations(db)
+                .then(function (continents) {
+                    return Q.each(_.keys(continents.europe.countries), function (deferred, country) {
+                        db.collection(country + '_users')
+                            .find({'languages.0': {$exists: true}})
+                            .count(false)
+                            .then(function (count) {
+                                deferred.resolve({
+                                    countryName: countryMappings.location[country].capitalize(),
+                                    countryKey: country,
+                                    countryDetails: baseUrl + '/' + country,
+                                    usersCount: count
+                                });
+                            })
                     })
-            })
-                .then(function (usersInCounties) {
-                    db.close();
-                    return {
-                        usersInCounties: usersInCounties
-                    }
-                });
+                        .then(function (usersInCounties) {
+                            db.close();
+                            return {
+                                usersInCounties: usersInCounties
+                            }
+                        });
+                })
         });
         return Q.when(users);
     }

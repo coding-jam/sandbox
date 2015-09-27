@@ -1,6 +1,6 @@
 var express = require('express');
 var _ = require('underscore');
-var countriesDs = require('../services/dao/files/countries-datasource');
+var countriesDs = require('../services/dao/mongodb/countries-datasource');
 var api = require('../services/api-params');
 
 var router = express.Router();

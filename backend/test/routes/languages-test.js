@@ -19,7 +19,7 @@ describe('Languages Routes Test suite', function () {
                 .then(function (resp) {
                     expect(resp.body).to.have.property('languagesPerCountries');
                     expect(resp.body.languagesPerCountries).to.be.a('array');
-                    expect(resp.body.languagesPerCountries).to.have.deep.property('[0].links.details', '/api/v1/languages/it');
+                    expect(resp.body.languagesPerCountries).to.have.deep.property('[0].links.details', '/api/v1/languages/fr');
                 })
                 .done(done);
         });
