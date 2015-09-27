@@ -40,6 +40,7 @@ var locationsDs = {
         return db().then(function (db) {
             return db.collection(country + '_districts')
                 .find({})
+                .toArray()
                 .then(function (result) {
                     db.close();
                     return {
