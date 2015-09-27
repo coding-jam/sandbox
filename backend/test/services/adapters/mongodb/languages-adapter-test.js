@@ -91,8 +91,8 @@ describe('Languages Mongo Adapter Test suite', function () {
                     expect(languages).to.have.property('languagesPerCountries');
                     expect(languages.languagesPerCountries).to.be.a('array');
                     expect(languages.languagesPerCountries).to.have.length(5);
-                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryName', 'Italy');
-                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryKey', 'it');
+                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryName', 'France');
+                    expect(languages.languagesPerCountries).to.have.deep.property('[0].countryKey', 'fr');
                     expect(languages.languagesPerCountries).to.have.deep.property('[0].languages');
                 })
                 .done(done);

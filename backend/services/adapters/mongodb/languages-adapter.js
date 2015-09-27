@@ -2,14 +2,15 @@ var _ = require("underscore");
 var Q = require('q');
 var db = require('./../../dao/mongodb/mongo-connection');
 var locationsDs = require('./../../dao/mongodb/locations-datasource');
+var countriesDs = require('./../../dao/mongodb/countries-datasource');
 var countryMappings = require("./../../country-mappings");
 require('./../../utils');
 
 function createGroupByLanguageModel() {
     return [
-        { $unwind : "$languages" },
-        { $group : { _id : "$languages", usersPerLanguage : { $sum : 1 } } },
-        { $sort : { usersPerLanguage : -1, _id: 1 } }
+        {$unwind: "$languages"},
+        {$group: {_id: "$languages", usersPerLanguage: {$sum: 1}}},
+        {$sort: {usersPerLanguage: -1, _id: 1}}
     ];
 }
 
@@ -19,7 +20,7 @@ var languagesAdapter = {
 
         var findModel = createGroupByLanguageModel();
         if (district) {
-            findModel.unshift({ $match : {'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}}});
+            findModel.unshift({$match: {'gitmap.geolocation.address_components': {$elemMatch: {short_name: new RegExp('^' + district + '$', 'i')}}}});
         }
 
         if (dbRef) {
@@ -62,43 +63,38 @@ var languagesAdapter = {
                                 });
                             })
                     })
-                    .then(function(languagesPerDistricts) {
-                        return {
-                            languagesPerDistricts: languagesPerDistricts
-                        }
-                    });
                 })
                 .then(function (languagesPerDistricts) {
                     db.close();
-                    return languagesPerDistricts;
+                    return {
+                        languagesPerDistricts: languagesPerDistricts
+                    }
                 })
         }));
     },
 
     getLanguagesPerCountry: function () {
-        //var result = {
-        //    languagesPerCountries: []
-        //};
-        //
-        //var promises = [];
-        //_.keys(countryMappings.language).forEach(function(country) {
-        //    var deferredLoop = Q.defer();
-        //    languagesAdapter.getRankedLanguages(country)
-        //        .then(function(languages) {
-        //            result.languagesPerCountries.push({
-        //                countryName: countryMappings.location[country].capitalize(),
-        //                countryKey: country,
-        //                languages: languages
-        //            });
-        //            deferredLoop.resolve();
-        //        })
-        //        .catch(deferredLoop.resolve); //FIXME quando ci sono tutti i paesi
-        //    promises.push(deferredLoop.promise);
-        //});
-        //return Q.all(promises)
-        //    .then(function() {
-        //        return result;
-        //    });
+        return Q.when(db().then(function (db) {
+            return countriesDs.getCountriesLocations()
+                .then(function (continents) {
+                    return Q.each(_.keys(continents.europe.countries), function (deferred, country) {
+                        languagesAdapter.getRankedLanguages(country, null, db)
+                            .then(function (languages) {
+                                deferred.resolve({
+                                    countryName: countryMappings.location[country].capitalize(),
+                                    countryKey: country,
+                                    languages: languages
+                                });
+                            })
+                    })
+                })
+                .then(function (languagesPerCountry) {
+                    db.close();
+                    return {
+                        languagesPerCountries: languagesPerCountry
+                    };
+                })
+        }));
     }
 }
 
