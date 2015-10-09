@@ -70,8 +70,15 @@ represents district and fill *backend/services/country-mappings.js* (both *distr
  
     ```
     ./backend/services/dao/mongodb/countries-writer.js
+    ```
+    ```
     ./backend/services/dao/mongodb/users-writer.js
-    ./backend/services/dao/mongodb/locations-writer.js
+    ```
+    ```
+    ./backend/services/dao/mongodb/districts-writer.js
+    ```
+    ```
+    ./backend/services/dao/mongodb/add-locations-to-users.js
     ```
     
 
