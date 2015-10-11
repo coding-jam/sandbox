@@ -1,7 +1,7 @@
 var express = require('express');
-var _ = require("underscore");
-var languagesAdapter = require(__dirname + "/../services/languages-adapter");
-var api = require(__dirname + '/../services/api-params');
+var _ = require('underscore');
+var languagesAdapter = require('../services/adapters/mongodb/languages-adapter');
+var api = require('../services/api-params');
 
 var router = express.Router();
 

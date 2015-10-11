@@ -25,7 +25,8 @@ var getDistricts = (country) => {
 				return {
 					country:country,
 					name:district.district,
-					coordinates: district.details.results[0].geometry.location
+					//coordinates: district.details.results[0].geometry.location
+					coordinates: district.details.geometry.location
 				};
 			});
 

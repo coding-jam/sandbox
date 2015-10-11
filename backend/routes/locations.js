@@ -1,7 +1,7 @@
 var express = require('express');
-var _ = require("underscore");
-var locationsDs = require(__dirname + "/../services/locations-datasource");
-var api = require(__dirname + '/../services/api-params');
+var _ = require('underscore');
+var locationsDs = require('../services/dao/mongodb/locations-datasource');
+var api = require('../services/api-params');
 
 var router = express.Router();
 

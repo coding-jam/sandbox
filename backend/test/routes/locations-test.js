@@ -21,6 +21,9 @@ describe('Locations Routes Test suite', function () {
                     expect(resp.body).to.have.property('districts');
                     expect(resp.body.districts).is.a('array');
                     expect(resp.body.districts).to.have.length(20);
+                    expect(resp.body.districts).to.have.deep.property('[0].district');
+                    expect(resp.body.districts).to.have.deep.property('[0].details');
+                    expect(resp.body.districts).to.not.have.deep.property('[0]._id');
                 })
                 .done(done);
         });
