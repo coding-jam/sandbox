@@ -9,95 +9,111 @@ var chai = require('chai');
 var expect = chai.expect;
 var fail = chai.fail;
 
+etagUpdater.options.maxNum = 5;
 
-describe("Starting etag updater", function () {
-    it("updater has to be defined", function () {
-        expect(etagUpdater).to.be.not.null;
+describe.only("Etag updater", function () {
+
+    describe("if it requires all country", function () {
+
+        var countriesResult;
+
+        beforeEach(function (done) {
+            etagUpdater.getEuropeCountries()
+                .then(function (countries) {
+                    countriesResult = countries;
+                    return countriesResult;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .finally(done);
+        });
+
+        it("receives a list of country as iso name", function () {
+            expect(countriesResult).to.be.not.empty
+        });
     });
 
-    it("function to get all user is define", function () {
-        expect(etagUpdater.allUsers).to.be.not.null;
+    describe("if it requires all users", function () {
+
+        var users;
+
+        beforeEach(function (done) {
+            etagUpdater.allUsers()
+                .then(function (data) {
+                    users = data;
+                    return users;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .finally(done);
+        });
+
+        it("receives a list of user from db", function () {
+            expect(users).to.be.not.empty;
+        });
+
+    });
+
+    describe("if it requires all users of Italy", function () {
+
+        var italianUsers;
+
+        beforeEach(function (done) {
+            etagUpdater.getUsersByCountry("it")
+                .then(function (users) {
+                    italianUsers = users;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .fin(done);
+        });
+
+        it("receive all italian users", function () {
+            expect(italianUsers).to.be.not.empty;
+        });
+    });
+
+    describe("if it requires all url for users of Italy", function () {
+
+        var italianUsersUrl;
+
+        beforeEach(function (done) {
+            etagUpdater.getUsersUrlByCountry("it")
+                .then(function (data) {
+                    italianUsersUrl = data;
+                    return italianUsersUrl;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .fin(done);
+        });
+
+        it("receive all italian users", function () {
+            expect(italianUsersUrl).to.be.not.empty;
+        });
+    });
+
+
+    describe("if it requires all etags for users of Italy", function () {
+
+        var italianEtags;
+
+        etagUpdater.maxNum = 4;
+
+        beforeEach(function (done) {
+            etagUpdater.getEtagsByCountry("it")
+                .then(function (etags) {
+                    italianEtags = data;
+                    return italianEtags;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .fin(done);
+        });
+
+        it("receive all italian users", function () {
+            expect(italianEtags).to.be.not.empty;
+        });
     });
 
 });
-
-describe.only("if it requires all district", function() {
-    var countries;
-    beforeEach(function (done) {
-        etagUpdater.allDistrict()
-            .then(function (data) {
-                countries = data.europe.countries;
-            }) .catch(console.error)
-            .finally(done);
-    });
-
-    it("receives a list of district", function(){
-        expect(countries).to.be.not.empty;
-
-    });
-
-});
-
-
-describe("if it requires all users", function () {
-
-    var users;
-    beforeEach(function (done) {
-        etagUpdater.allUsers()
-            .then(function (data) {
-                users = data;
-                users.forEach(function(user) {
-                    console.log(user.id)
-                });
-            }) .catch(console.error)
-            .finally(done);
-    });
-
-    it("receives a list of user from db", function () {
-        expect(users).to.be.not.empty;
-    });
-
-});
-
-describe("if it requires all url", function () {
-    var urls;
-
-    beforeEach(function (done) {
-        console.log("" + etagUpdater.allUsersToUrl);
-        etagUpdater.allUsersToUrl()
-            .then(function (data) {
-                urls = data;
-            })
-            .catch(console.error)
-            .finally(done);
-    });
-
-
-    it("receives a list of url", function () {
-        console.log("" + urls);
-        urls.forEach(console.log);
-        expect(urls).to.be.not.empty;
-    });
-});
-
-describe("if it requires all etags", function () {
-    var etags;
-
-    beforeEach(function (done) {
-        etagUpdater.allEtags()
-            .then(function (data) {
-                etags = data;
-            })
-            .catch(console.error)
-            .finally(done);
-    });
-
-    it("receives a list of etags", function () {
-        console.log("" + etags);
-        etags.forEach(console.log);
-        expect(etags).to.be.not.empty;
-
-    });
-
-});
-
