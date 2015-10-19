@@ -6,6 +6,7 @@
 
 var etagUpdater = require('../../services/etag-updater.js');
 var chai = require('chai');
+var Q = require('q');
 var expect = chai.expect;
 var fail = chai.fail;
 
@@ -78,7 +79,7 @@ describe("Etag updater", function () {
         });
     });
 
-    describe("if it requires all etags for users of Italy", function () {
+    describe.only("if it requires all etags for users of Italy", function () {
 
         var italianEtags;
 
@@ -88,6 +89,9 @@ describe("Etag updater", function () {
             etagUpdater.getETagsByCountry("it")
                 .then(function(cursor) {
                     return cursor.toArray();
+                })
+                .then(function(promises){
+                    return Q.all(promises);
                 })
                 .then(function (etags) {
                     italianEtags = etags;
@@ -103,7 +107,7 @@ describe("Etag updater", function () {
         });
     });
 
-    describe.only("if it requires etags for alberto", function () {
+    describe("if it requires etag for alberto", function () {
 
         var albertoEtag;
 
@@ -111,7 +115,7 @@ describe("Etag updater", function () {
 
         beforeEach(function (done) {
             etagUpdater.toEtags("https://api.github.com/users/albertorugnone")
-                .then(function (etags) {
+                .then(function (etag) {
                     albertoEtag = etag;
                     return albertoEtag;
                 })
@@ -122,6 +126,28 @@ describe("Etag updater", function () {
 
         it("receive all italian users", function () {
             expect(albertoEtag).to.be.not.null;
+        });
+    });
+
+    describe("if it requires all tags", function () {
+
+        var allEtags;
+
+        etagUpdater.maxNum = 4;
+
+        beforeEach(function (done) {
+            etagUpdater.allEtags()
+                .then(function (etags) {
+                    allEtags = etags;
+                    return allEtags;
+                })
+                .then(console.log)
+                .catch(console.error)
+                .fin(done);
+        });
+
+        it("receive all tags", function () {
+            expect(allEtags).to.be.not.empty;
         });
     });
 
