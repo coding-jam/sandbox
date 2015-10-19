@@ -10,11 +10,15 @@ var ghHttp = require('./gh-http');
 
 var connect = _.compose(Q.when, connectToDB);
 
+var toUrl = function (user) {
+    return user.url;
+}
+
 var etag_updater = {
-    options : {
+    options: {
         maxNum: Number.MAX_VALUE
     },
-    getEuropeCountries:  function () {
+    getEuropeCountries: function () {
         return connect().then(function (db) {
             return countriesDs.getCountriesLocations(db);
         }).then(function (continent) {
@@ -23,28 +27,29 @@ var etag_updater = {
         });
     },
     getUsersByCountry: function (country) {
-        return connectToDB().then(function (db) {
-            return db.collection(country + "_users").find({}).limit(etag_updater.options.maxNum).toArray();
+        return connect().then(function (db) {
+            return db.collection(country + "_users").find({}).limit(etag_updater.options.maxNum);
         });
     },
     getUsersUrlByCountry: function (country) {
-        return connectToDB().then(function (db) {
-            return db.collection(country + "_users").find({}).limit(etag_updater.options.maxNum).map(function (user) {
-                return user.url;
-            }).toArray();
+        return this.getUsersByCountry(country).then(function (cursor) {
+            return cursor.map(toUrl);
         });
     },
-    getEtagsByCountry: function(country) {
-        return connectToDB().then(function (db) {
-            return db.collection(country + "_users").find({}).limit(etag_updater.options.maxNum).map(function (user) {
-                return user.url;
-            }).map(function(url) {
-                ghHttp.getWithLimit(url).then(function(res) {
-                    console.log(res.response);
-                })
-            });
+    getETagsByCountry: function (country) {
+        return this.getUsersUrlByCountry(country).then(function (cursor) {
+            return cursor.map(ghHttp.getWithLimit);
+        }).then(function(response) {
+            return response;
         });
+    },
+    toEtags: function (url) {
+        return ghHttp.getWithLimit(url).then(function(http) {
+            if(!http.response.headers.etag) throw new Error(http.response.headers.status);
+            return http.response.headers.etag;
+        })
     }
+
 };
 
 module.exports = etag_updater;
