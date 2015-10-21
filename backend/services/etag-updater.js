@@ -37,24 +37,34 @@ var etag_updater = {
         });
     },
     toEtags: function (url) {
-        return ghHttp.getWithLimit(url).then(function(http) {
-            if(!http.response.headers.etag) throw new Error(http.response.headers.status);
+        return ghHttp.getWithLimit(url).then(function (http) {
+            if (!http.response.headers.etag) throw new Error(http.response.headers.status);
             return http.response.headers.etag;
         })
     },
     toEtagsFromUser: function (user) {
-        return ghHttp.getWithLimit(user.url).then(function(http) {
-            if(!http.response.headers.etag) throw new Error(http.response.headers.status);
-            return http.response.headers.etag;
-        })
+        return ghHttp.getWithLimit(user.url)
+            .then(function (http) {
+                if (!http.response.headers.etag) throw new Error(http.response.headers.status);
+                return http.response.headers.etag;
+            })
     },
     getETagsByCountry: function (country) {
-        return this.getUsersUrlByCountry(country).then(function (cursor) {
-            return cursor.map(etag_updater.toEtagsFromUser);
-        });
+        return this.getUsersUrlByCountry(country)
+            .then(function (cursor) {
+                //FIXME non capisco qui perchè non vada bene
+                //return cursor.map(toUrl).map(etag_updater.toEtags);
+                return cursor.map(etag_updater.getUsersUrlByCountry);
+            })
+            .then(function (cursor) {
+                return cursor.toArray();
+            })
+            .then(function (promises) {
+                return Q.all(promises);
+            });
     },
-    allEtags: function() {
-        return this.getEuropeCountries().then(function(countries) {
+    allEtags: function () {
+        return this.getEuropeCountries().then(function (countries) {
             return _.map(countries, etag_updater.getETagsByCountry);
         });
     }

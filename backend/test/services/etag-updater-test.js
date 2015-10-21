@@ -83,16 +83,9 @@ describe("Etag updater", function () {
 
         var italianEtags;
 
-        etagUpdater.maxNum = 4;
 
         beforeEach(function (done) {
             etagUpdater.getETagsByCountry("it")
-                .then(function(cursor) {
-                    return cursor.toArray();
-                })
-                .then(function(promises){
-                    return Q.all(promises);
-                })
                 .then(function (etags) {
                     italianEtags = etags;
                     return italianEtags;
